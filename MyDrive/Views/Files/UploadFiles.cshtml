@@ -1,0 +1,12 @@
+﻿@model MyDrive.ViewModels.FileViewModel
+@{
+    ViewBag.Title = "UploadFiles";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@ViewBag.Message</h2>
+<ul>
+    <li>@Model.name</li>
+</ul>
+<button>@Html.ActionLink("View all uploaded Files", "GetFiles", "Files")</button>
+

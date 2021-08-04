@@ -1,0 +1,14 @@
+﻿
+@{
+    ViewBag.Title = "FileProfile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>FileProfile</h2>
+@using (Html.BeginForm("UploadFiles", "Files", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <label>Choose File:</label>
+    <input type="file" id="userFile" name="userFile" /><br />
+    <input type="submit" value="Upload" />
+}
+
