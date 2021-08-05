@@ -53,7 +53,7 @@ namespace MyDrive.Controllers
             string[] filesNames = new String[fileEntries.Length];
             for (int i = 0; i < fileEntries.Length; i++)
             {
-                testing = fileEntries[i].Substring(44);
+                testing = fileEntries[i];
                 filesNames[i] = testing;
             }
             var FilesNamesToView = new FilesNamesViewModel

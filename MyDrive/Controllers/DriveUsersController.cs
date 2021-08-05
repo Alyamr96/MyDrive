@@ -43,7 +43,8 @@ namespace MyDrive.Controllers
         {
             var users = new List<DriveUsers>{
                 new DriveUsers {Name = "Aly Amr", Id = 1},
-                new DriveUsers {Name = "Mohamed Osama", Id = 2}
+                new DriveUsers {Name = "Mohamed Osama", Id = 2},
+                new DriveUsers {Name = "Ahmed Emad", Id = 3}
             };
 
             DriveUsers user = null;
