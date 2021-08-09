@@ -47,7 +47,7 @@ namespace MyDrive.Controllers
         [Route("Files/FilesNames")]
         public ActionResult GetFiles()
         {
-            string targetDirectory = @"C:\Users\dell\Desktop\MyDrive\MyDrive\Files";
+            string targetDirectory = @"C: \Users\cashless\Desktop\MyDrive\MyDrive\Files";
             string[] fileEntries = Directory.GetFiles(targetDirectory);
             string testing;
             string[] filesNames = new String[fileEntries.Length];
@@ -68,7 +68,7 @@ namespace MyDrive.Controllers
         [Route("Files/DeleteFile/{Id}")]
         public ActionResult DeleteFile(int Id)
         {
-            string targetDirectory = @"C:\Users\dell\Desktop\MyDrive\MyDrive\Files";
+            string targetDirectory = @"C: \Users\cashless\Desktop\MyDrive\MyDrive\Files";
             string[] fileEntries = Directory.GetFiles(targetDirectory); 
             
             System.IO.File.Delete(fileEntries[Id]);
