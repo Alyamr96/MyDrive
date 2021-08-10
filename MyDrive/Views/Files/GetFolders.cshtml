@@ -1,0 +1,44 @@
+﻿@model MyDrive.ViewModels.FoldersNameViewModel
+@{
+    ViewBag.Title = "GetFolders";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+   
+   ul {
+       list-style: none;
+   } 
+   ul .myFolders{
+       display: block;
+       float:left;
+       margin-right: 1%;
+       width: 24%
+   }
+   i {
+        font-size:100px;
+        color: #CC5500;
+    }
+    ul .myFolders a span {
+        color: black;
+        margin-right: 120px;
+        font-size: 10px;
+        text-align: center;
+        padding-top: 1px;
+        display: block;
+        text-transform: uppercase;
+        font-family: Arial, Helvetica, sans-serif;
+        letter-spacing: 1px;
+    }
+</style>
+
+<!--<h2>Folders</h2>-->
+
+<ul>
+
+    @foreach(var directory in Model.Directories)
+    {
+        
+    <li class="myFolders"><a href="#"> <i class="fas fa-folder"></i><span>@directory</span></a></li>
+    }
+</ul>

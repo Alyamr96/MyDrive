@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.IO;
 using MyDrive.ViewModels;
+using MyDrive.Models;
 
 namespace MyDrive.Controllers
 {
@@ -75,6 +76,46 @@ namespace MyDrive.Controllers
             
 
             return RedirectToAction("GetFiles");
+        }
+
+        public ActionResult New()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult CreateFolder(Folder folder)
+        {
+            string FolderName = folder.Name;
+            string folderPath = "";
+            folderPath = Server.MapPath("~/Files/");
+            folderPath = folderPath + FolderName;
+
+            if (!Directory.Exists(folderPath))
+                Directory.CreateDirectory(folderPath);
+            else
+                return HttpNotFound();
+
+            return RedirectToAction("GetFolders");
+        }
+
+        public ActionResult GetFolders()
+        {
+            //string targetDirectory = "~/Files";
+            string targetDirectory = @"C: \Users\cashless\Desktop\MyDrive\MyDrive\Files";
+            //var dirs = from dir in Directory.EnumerateDirectories(targetDirectory) select dir;
+            List<string> dirs = new List<string>(Directory.EnumerateDirectories(targetDirectory));
+            List<string> folderNames = new List<string>(dirs.Count);
+            foreach(var directory in dirs)
+            {
+                string testing = directory.Substring(49);
+                folderNames.Add(testing);
+            }
+            var FoldersNamesToView = new FoldersNameViewModel
+            {
+                Directories = folderNames
+            };
+            return View(FoldersNamesToView);
         }
     }
 }

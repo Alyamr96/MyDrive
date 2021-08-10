@@ -4,6 +4,37 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+
+    ul {
+        list-style: none;
+    }
+
+        ul .myFolders {
+            display: block;
+            float: left;
+            margin-right: 1%;
+            width: 24%
+        }
+
+    i {
+        font-size: 70px;
+        color: #CC5500;
+    }
+
+    ul .myFolders a span {
+        color: black;
+        margin-right: 120px;
+        font-size: 10px;
+        text-align: left;
+        padding-top: 1px;
+        display: block;
+        text-transform: uppercase;
+        font-family: Arial, Helvetica, sans-serif;
+        letter-spacing: 1px;
+    }
+</style>
+
 <h2>Uploaded Files</h2>
 <!--
     <table class="table table-bordered table-hover">
@@ -22,7 +53,7 @@
 </table>
 -->
 
-
+<!--
 <table class="table table-bordered table-hover">
     <tr>
         <th>Name</th>
@@ -40,6 +71,31 @@
         </tr>
     }
 </table>
+-->
+<!--
+<table class="table table-bordered table-hover">
+    <tr>
+        <th>Name</th>
+        <th>Id</th>
+        <th>Delete</th>
+    </tr>
 
+    @for (int i = 0; i < Model.name.Length; i++)
+    {
+        int j = i + 1;
+        <tr>
+            <td><a href=@Model.name[i].Substring(49) target="_blank">@Model.name[i]</a></td>
+            <td>@j</td>
+            <td><button>@Html.ActionLink("Delete", "DeleteFile", "Files", new { Id = i }, null)</button></td>
+        </tr>
+    }
+</table>
+-->
+<ul>
 
+    @foreach (var fileName in Model.name)
+    {
 
+        <li class="myFolders"><a href=@fileName.Substring(49) target="_blank"> <i class="fas fa-file"></i><span>@fileName.Substring(49)</span></a></li>
+    }
+</ul>
