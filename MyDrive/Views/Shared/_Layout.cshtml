@@ -14,14 +14,17 @@
             width: 100%;
             height: 2.5rem;
         }
+        .body-content {
+            margin-left: 200px;
+        }
     </style>
 
 </head>
 <body>
-    @Html.Partial("_NavBar")
+    @Html.Partial("_MyNavBar")
     <div class="container body-content">
         @RenderBody()
-        <hr />
+       <!-- <hr /> -->
         <footer class="myFooter">
             <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
         </footer>

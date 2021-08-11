@@ -1,17 +1,62 @@
-﻿
-    <div class="wrapper">
-        <div class="sidebar">
+﻿<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        list-style: none;
+        text-decoration: none;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .Mywrapper {
+        display: flex;
+        position: relative;
+    }
+
+    .Mywrapper .Mysidebar {
+        position: fixed;
+        width: 200px;
+        height: 100%;
+        background: #FFA500;
+        padding: 30px 0;
+    }
+
+    .Mywrapper .Mysidebar h2 {
+        color: #fff;
+        text-transform: uppercase;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .Mywrapper .Mysidebar ul li {
+        padding: 15px 15px;
+        border-bottom: 1px solidrgba(0,0,0,0.05);
+        border-top: 1px solidrgba(255,255,255,0.05);
+    }
+
+    .Mywrapper .Mysidebar ul li:hover {
+        background: #CC5500;
+    }
+
+</style>
+    
+<div class="navbar navbar-inverse navbar-fixed-top">
+    @Html.Partial("_LoginPartial")
+</div>
+
+<div class="Mywrapper">
+        <div class="Mysidebar">
             <h2>SideBar</h2>
-            @Html.Partial("_LoginPartial")
-            <ul>
-                <li><a href="/Home/Index">Home</a></li>
-                <li><a href="/DriveUsers/DisplayUsers">DriveUsers</a></li>
-                <li><a href="/Home/About">About</a></li>
-                <li><a href="/Files/FileProfile">Upload File</a></li>
-            </ul>
+          <!--  @Html.Partial("_LoginPartial")-->
+        <ul>
+            <li>@Html.ActionLink("Drive Users", "DisplayUsers", "DriveUsers")</li>
+            <li>@Html.ActionLink("About", "About", "Home")</li>
+            <li>@Html.ActionLink("Upload Files", "GetFiles", "Files")</li>
+            <li>@Html.ActionLink("Create Folder", "GetFolders", "Files")</li>
+        </ul>
 
         </div>
-    </div>
+</div>
 
     <!--
     <div class="folder1">

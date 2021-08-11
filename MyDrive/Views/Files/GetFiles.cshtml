@@ -1,4 +1,4 @@
-﻿@model MyDrive.ViewModels.FilesNamesViewModel
+﻿
 @{
     ViewBag.Title = "GetFiles";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -35,67 +35,38 @@
     }
 </style>
 
-<h2>Uploaded Files</h2>
-<!--
-    <table class="table table-bordered table-hover">
-    <tr>
-        <th>Name</th>
-        <th>Delete File</th>
-    </tr>
+<!--<h2>Uploaded Files</h2>-->
+<p>
+    <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#uploadFileModal">Upload File</a>
+</p>
+@using (Html.BeginForm("UploadFiles", "Files", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="modal fade" id="uploadFileModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Upload File</h2>
+                </div>
+                <div class="modal-body">
+                    <form id="uploadFileModal">
+                        <label>Choose File:</label>
+                        <input type="file" id="userFile" name="userFile" /><br />
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-group">
+                        <input type="submit" value="Upload" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ul>
 
-    @foreach (var filename in Model.name)
-    {
-        <tr>
-            <td>@filename</td>
-            <td><button>@Html.ActionLink("Delete", "DeleteFile", "Files", new {fileName = @filename }, null)</button></td> 
-        </tr>
-    }
-</table>
--->
+        @foreach (var fileName in ViewBag.filesNames)
+        {
 
-<!--
-<table class="table table-bordered table-hover">
-    <tr>
-        <th>Name</th>
-        <th>Id</th>
-        <th>Delete</th>
-    </tr>
-
-    @for (int i = 0; i < Model.name.Length; i++)
-    {
-        int j = i + 1;
-        <tr>
-            <td>@Model.name[i]</td>
-            <td>@j</td> 
-            <td><button>@Html.ActionLink("Delete", "DeleteFile", "Files", new { Id = i }, null)</button></td>
-        </tr>
-    }
-</table>
--->
-<!--
-<table class="table table-bordered table-hover">
-    <tr>
-        <th>Name</th>
-        <th>Id</th>
-        <th>Delete</th>
-    </tr>
-
-    @for (int i = 0; i < Model.name.Length; i++)
-    {
-        int j = i + 1;
-        <tr>
-            <td><a href=@Model.name[i].Substring(49) target="_blank">@Model.name[i]</a></td>
-            <td>@j</td>
-            <td><button>@Html.ActionLink("Delete", "DeleteFile", "Files", new { Id = i }, null)</button></td>
-        </tr>
-    }
-</table>
--->
-<ul>
-
-    @foreach (var fileName in Model.name)
-    {
-
-        <li class="myFolders"><a href=@fileName.Substring(49) target="_blank"> <i class="fas fa-file"></i><span>@fileName.Substring(49)</span></a></li>
-    }
-</ul>
+            <li class="myFolders"><a href=@fileName.Substring(49) target="_blank"> <i class="fas fa-file"></i><span>@fileName.Substring(49)</span></a></li>
+        }
+    </ul>
+}

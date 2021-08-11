@@ -12,8 +12,9 @@
             <ul class="nav navbar-nav">
                 <li>@Html.ActionLink("Drive Users", "DisplayUsers", "DriveUsers")</li>
                 <li>@Html.ActionLink("About", "About", "Home")</li>
-                <li>@Html.ActionLink("Upload Files", "FileProfile", "Files")</li>
-                <li>@Html.ActionLink("Create Folder", "New", "Files")</li>
+                <li>@Html.ActionLink("Upload Files", "GetFiles", "Files")</li>
+                <li>@Html.ActionLink("Create Folder", "GetFolders", "Files")</li>
+                
             </ul>
             @Html.Partial("_LoginPartial")
         </div>

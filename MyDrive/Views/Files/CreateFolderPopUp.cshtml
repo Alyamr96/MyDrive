@@ -1,42 +1,10 @@
 ﻿@model MyDrive.Models.Folder
 @{
-    ViewBag.Title = "GetFolders";
+    ViewBag.Title = "CreateFolderPopUp";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<style>
-
-    ul {
-        list-style: none;
-    }
-
-        ul .myFolders {
-            display: block;
-            float: left;
-            margin-right: 1%;
-            width: 24%
-        }
-
-    i {
-        font-size: 100px;
-        color: #CC5500;
-    }
-
-    ul .myFolders a span {
-        color: black;
-        margin-right: 120px;
-        font-size: 10px;
-        text-align: center;
-        padding-top: 1px;
-        display: block;
-        text-transform: uppercase;
-        font-family: Arial, Helvetica, sans-serif;
-        letter-spacing: 1px;
-    }
-    
-</style>
-
-<!--<h2>Folders</h2>-->
+<h2>CreateFolderPopUp</h2>
 
 <p>
     <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#createFolderModal">Create Folder</a>
@@ -64,14 +32,4 @@
             </div>
         </div>
     </div>
-
-
-<ul>
-
-    @foreach (var folderName in ViewBag.folderNames)
-    {
-
-        <li class="myFolders"><a href="#"> <i class="fas fa-folder"></i><span>@folderName</span></a></li>
-    }
-</ul>
 }

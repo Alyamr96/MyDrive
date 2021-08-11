@@ -42,7 +42,7 @@ namespace MyDrive.Controllers
             var FileModel = new FileViewModel() { 
             name = postedFile.FileName
             };
-            return View(FileModel);
+            return RedirectToAction("GetFiles");
         }
 
         [Route("Files/FilesNames")]
@@ -61,8 +61,9 @@ namespace MyDrive.Controllers
             {
                 name = filesNames
             };
+            ViewBag.filesNames = filesNames;
 
-                return View(FilesNamesToView); 
+                return View(); 
         }
 
         
@@ -115,7 +116,13 @@ namespace MyDrive.Controllers
             {
                 Directories = folderNames
             };
-            return View(FoldersNamesToView);
+            ViewBag.folderNames = folderNames;
+            return View();
+        }
+
+        public ActionResult CreateFolderPopUp()
+        {
+            return View();
         }
     }
 }
