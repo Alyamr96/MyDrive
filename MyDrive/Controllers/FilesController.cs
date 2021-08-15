@@ -109,20 +109,72 @@ namespace MyDrive.Controllers
             List<string> folderNames = new List<string>(dirs.Count);
             foreach(var directory in dirs)
             {
-                string testing = directory.Substring(49);
-                folderNames.Add(testing);
+                string fullpath = Path.GetFullPath(directory).TrimEnd(Path.DirectorySeparatorChar);
+                string projectName = directory.Split(Path.DirectorySeparatorChar).Last();
+                folderNames.Add(projectName);
             }
-            var FoldersNamesToView = new FoldersNameViewModel
-            {
-                Directories = folderNames
-            };
             ViewBag.folderNames = folderNames;
+            ViewBag.directories = dirs;
             return View();
         }
 
         public ActionResult CreateFolderPopUp()
         {
             return View();
+        }
+
+        [Route("Files/GetFoldersByPath/{folderName}")]
+        public ActionResult GetFoldersByPath(string folderName)
+        {
+            string targetDirectory = @"C: \Users\cashless\Desktop\MyDrive\MyDrive\Files";
+            string searchPattern = "*";
+            string[] dirs = Directory.GetDirectories(targetDirectory,searchPattern ,SearchOption.AllDirectories);
+            string path = "";
+            foreach(string dir in dirs)
+            {
+                if(dir.Substring((dir.Length - folderName.Length), folderName.Length) == folderName)
+                {
+                    path = dir;
+                }
+            }
+            List<string> dirsToShow = new List<string>(Directory.EnumerateDirectories(path));
+            List<string> folderNamesToShow = new List<string>(dirsToShow.Count);
+            foreach (var directory in dirsToShow)
+            {
+                string fullpath = Path.GetFullPath(directory).TrimEnd(Path.DirectorySeparatorChar);
+                string projectName = directory.Split(Path.DirectorySeparatorChar).Last();
+                folderNamesToShow.Add(projectName);
+            }
+            ViewBag.directories = folderNamesToShow;
+            string FolderNameSplitFromPath = path;
+            string fullpath2 = Path.GetFullPath(FolderNameSplitFromPath).TrimEnd(Path.DirectorySeparatorChar);
+            string projectName2 = FolderNameSplitFromPath.Split(Path.DirectorySeparatorChar).Last();
+
+            ViewBag.path = projectName2;
+            return View();
+        }
+
+        [Route("Files/CreateFolderInPath/{folderName}")]
+        public ActionResult CreateFolderInPath(string folderName, Folder folder)
+        {
+            string folderToBeCreated = folder.Name;
+            string targetDirectory = @"C: \Users\cashless\Desktop\MyDrive\MyDrive\Files";
+            string searchPattern = "*";
+            string[] dirs = Directory.GetDirectories(targetDirectory, searchPattern, SearchOption.AllDirectories);
+            string path = "";
+            foreach (string dir in dirs)
+            {
+                if (dir.Substring((dir.Length - folderName.Length), folderName.Length) == folderName)
+                {
+                    path = dir;
+                }
+            }
+            path = path + @"\" + folderToBeCreated;
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+            else
+                return HttpNotFound();
+            return RedirectToAction("GetFoldersByPath/" + folderName);
         }
     }
 }
