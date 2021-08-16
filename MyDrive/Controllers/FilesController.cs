@@ -45,6 +45,29 @@ namespace MyDrive.Controllers
             return RedirectToAction("GetFiles");
         }
 
+        [Route("Files/UploadFilesInPath/{folderName}")]
+        public ActionResult UploadFilesInPath(string folderName, HttpPostedFileBase postedFile)
+        {
+            string targetDirectory = @"C: \Users\cashless\Desktop\MyDrive\MyDrive\Files";
+            string searchPattern = "*";
+            string[] dirs = Directory.GetDirectories(targetDirectory, searchPattern, SearchOption.AllDirectories);
+            string path = "";
+            foreach (string dir in dirs)
+            {
+                if (dir.Substring((dir.Length - folderName.Length), folderName.Length) == folderName)
+                {
+                    path = dir;
+                }
+            }
+
+            if (postedFile == null)
+                postedFile = Request.Files["userFile"];
+
+            string filePath = path + @"\" + Path.GetFileName(postedFile.FileName);
+            postedFile.SaveAs(filePath);
+            return RedirectToAction("GetFoldersByPath/" + folderName);
+        }
+
         [Route("Files/FilesNames")]
         public ActionResult GetFiles()
         {
@@ -151,6 +174,28 @@ namespace MyDrive.Controllers
             string projectName2 = FolderNameSplitFromPath.Split(Path.DirectorySeparatorChar).Last();
 
             ViewBag.path = projectName2;
+            string[] fileEntries = Directory.GetFiles(path);
+            List<string> fileNamesToShow = new List<string>(fileEntries.Length);
+            foreach(string filename in fileEntries)
+            {
+                string fullpath3 = Path.GetFullPath(filename).TrimEnd(Path.DirectorySeparatorChar);
+                string projectName3 = filename.Split(Path.DirectorySeparatorChar).Last();
+                fileNamesToShow.Add(projectName3);
+            }
+            ViewBag.files = fileNamesToShow;
+            string filespathHREF = path;
+            string pathAfterFiles = "";
+            for (int i =0; i<filespathHREF.Length; i++)
+            {
+                string test = filespathHREF.Substring(i, 5);
+                if(test.CompareTo("Files") == 0)
+                {
+                    int number = i + 6;
+                    pathAfterFiles = filespathHREF.Substring(number);
+                    break;
+                }
+            }
+            ViewBag.PathAfterFile = pathAfterFiles;
             return View();
         }
 
