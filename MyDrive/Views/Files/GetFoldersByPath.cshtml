@@ -149,11 +149,12 @@
 
             @foreach (var fileName in ViewBag.files)
             {
-
-                <li class="myFiles">
-                    <button class="btn-link js-file-delete" data-file-name="@fileName"><i class="fas fa-backspace"></i></button>
-                    <a href="~/Files/@ViewBag.pathAfterFile/@fileName" target="_blank"> <i class="fas fa-file"></i><span>@fileName</span></a>
-                </li>
+                var fileNameWithoutExtention = System.IO.Path.GetFileNameWithoutExtension(fileName);
+            <li class="myFiles">
+                
+                <button class="btn-link js-file-delete" data-file-name="@fileNameWithoutExtention"><i class="fas fa-backspace"></i></button>
+                <a href="~/Files/@ViewBag.pathAfterFile/@fileName" target="_blank"> <i class="fas fa-file"></i><span>@fileName</span></a>
+            </li>
             }
         </ul>
     </div>

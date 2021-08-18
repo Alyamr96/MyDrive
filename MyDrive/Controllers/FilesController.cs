@@ -174,7 +174,7 @@ namespace MyDrive.Controllers
                 string projectName3 = filename.Split(Path.DirectorySeparatorChar).Last();
                 fileNamesToShow.Add(projectName3);
             }
-            ViewBag.files = fileEntriesWithoutExtention;
+            ViewBag.files = fileNamesToShow;
             string filespathHREF = path;
             string pathAfterFiles = "";
             for (int i =0; i<filespathHREF.Length; i++)
@@ -244,8 +244,10 @@ namespace MyDrive.Controllers
                 string testing = System.IO.Path.ChangeExtension(fileEntries[i],null);
                 //fileEntriesWithoutExtention[i] = testing;
                 if (testing.Substring((testing.Length - fileNameToDelete.Length), fileNameToDelete.Length) == fileNameToDelete)
+                {
                     path = fileEntries[i];
-                break;
+                    break;
+                }
             }
             /*string path = "";
             foreach (string dir in fileEntriesWithoutExtention)
