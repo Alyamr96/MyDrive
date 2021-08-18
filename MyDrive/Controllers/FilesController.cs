@@ -88,20 +88,6 @@ namespace MyDrive.Controllers
 
                 return View(); 
         }
-
-        
-        [Route("Files/DeleteFile/{Id}")]
-        public ActionResult DeleteFile(int Id)
-        {
-            string targetDirectory = @"C: \Users\cashless\Desktop\MyDrive\MyDrive\Files";
-            string[] fileEntries = Directory.GetFiles(targetDirectory); 
-            
-            System.IO.File.Delete(fileEntries[Id]);
-            
-
-            return RedirectToAction("GetFiles");
-        }
-
         public ActionResult New()
         {
             return View();
@@ -176,13 +162,19 @@ namespace MyDrive.Controllers
             ViewBag.path = projectName2;
             string[] fileEntries = Directory.GetFiles(path);
             List<string> fileNamesToShow = new List<string>(fileEntries.Length);
-            foreach(string filename in fileEntries)
+            string[] fileEntriesWithoutExtention = new string[fileEntries.Length];
+            for (int i = 0; i < fileEntries.Length; i++)
+            {
+                string testing = System.IO.Path.GetFileNameWithoutExtension(fileEntries[i]);
+                fileEntriesWithoutExtention[i] = testing;
+            }
+            foreach (string filename in fileEntries)
             {
                 string fullpath3 = Path.GetFullPath(filename).TrimEnd(Path.DirectorySeparatorChar);
                 string projectName3 = filename.Split(Path.DirectorySeparatorChar).Last();
                 fileNamesToShow.Add(projectName3);
             }
-            ViewBag.files = fileNamesToShow;
+            ViewBag.files = fileEntriesWithoutExtention;
             string filespathHREF = path;
             string pathAfterFiles = "";
             for (int i =0; i<filespathHREF.Length; i++)
@@ -220,6 +212,55 @@ namespace MyDrive.Controllers
             else
                 return HttpNotFound();
             return RedirectToAction("GetFoldersByPath/" + folderName);
+        }
+
+        [Route("Files/DeleteFolder/{nameToDelete}")]
+        public void DeleteFolder(string nameToDelete)
+        {
+            string targetDirectory = @"C: \Users\cashless\Desktop\MyDrive\MyDrive\Files";
+            string searchPattern = "*";
+            string[] dirs = Directory.GetDirectories(targetDirectory, searchPattern, SearchOption.AllDirectories);
+            string path = "";
+            foreach (string dir in dirs)
+            {
+                if (dir.Substring((dir.Length - nameToDelete.Length), nameToDelete.Length) == nameToDelete)
+                {
+                    path = dir;
+                }
+            }
+            Directory.Delete(path, true);
+        }
+
+
+        [Route("Files/DeleteFile/{fileNameToDelete}")]
+        public void DeleteFile(string fileNameToDelete)
+        {
+            string targetDirectory = @"C: \Users\cashless\Desktop\MyDrive\MyDrive\Files";
+            string[] fileEntries = Directory.GetFiles(targetDirectory, "*", SearchOption.AllDirectories);
+            string[] fileEntriesWithoutExtention = new string[fileEntries.Length];
+            string path = "";
+            for(int i =0; i<fileEntries.Length; i++)
+            {
+                string testing = System.IO.Path.ChangeExtension(fileEntries[i],null);
+                //fileEntriesWithoutExtention[i] = testing;
+                if (testing.Substring((testing.Length - fileNameToDelete.Length), fileNameToDelete.Length) == fileNameToDelete)
+                    path = fileEntries[i];
+                break;
+            }
+            /*string path = "";
+            foreach (string dir in fileEntriesWithoutExtention)
+            {
+                if (dir.Substring((dir.Length - fileNameToDelete.Length), fileNameToDelete.Length) == fileNameToDelete)
+                {
+                    path = dir;
+                }
+            }*/
+
+            System.IO.File.Delete(path);
+            //ViewBag.files = fileEntriesWithoutExtention;
+            //ViewBag.path = path;
+            //System.IO.File.Delete(fileEntries[Id]);
+            //return View();
         }
     }
 }
