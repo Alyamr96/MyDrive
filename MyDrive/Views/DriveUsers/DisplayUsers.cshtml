@@ -4,22 +4,48 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Users</h2> 
-<table class="table table-bordered table-hover">
-    <tr>
-        <th>Name</th>
-        <th>ID</th>
-        
-    </tr>
-    
+<h2>Users</h2>
+@if (User.IsInRole("CanManageUsers"))
+{
+    <table class="table table-bordered table-hover">
+        <tr>
+            <th>Name</th>
+            <th>ID</th>
+            <th>Delete</th>
+
+        </tr>
+
         @foreach (var user in Model.Users)
         {
-        <tr>
-            <td>@Html.ActionLink(@user.Name, "ViewInformation", "DriveUsers", new { Id = @user.Id}, null)</td>
-            <td>@user.Id</td>
-        </tr>
+            <tr>
+                <td>@Html.ActionLink(@user.Name, "ViewInformation", "DriveUsers", new { Id = @user.Id }, null)</td>
+                <td>@user.Id</td>
+                <td><a href="#">Delete</a></td>
+            </tr>
         }
-    
-</table>
+
+    </table>
+}
+else
+{
+    <table class="table table-bordered table-hover">
+        <tr>
+            <th>Name</th>
+            <th>ID</th>
+
+        </tr>
+
+        @foreach (var user in Model.Users)
+        {
+            <tr>
+                <td>@Html.ActionLink(@user.Name, "ViewInformation", "DriveUsers", new { Id = @user.Id }, null)</td>
+                <td>@user.Id</td>
+            </tr>
+        }
+
+    </table>
+}
+
+
 
 

@@ -110,3 +110,10 @@ C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.csproj.CoreCompileIn
 C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.csproj.CopyComplete
 C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.dll
 C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.pdb
+C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.InitialCreate.resources
+C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.csproj.GenerateResource.cache
+C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.InitialModel.resources
+C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.SeedUsers.resources
+C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.AddPhoneNumberIntToApplicationUser.resources
+C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.AddFirstNameToApplicationUser.resources
+C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.AddLastNameToApplicationUser.resources
