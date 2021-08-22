@@ -6,6 +6,9 @@ using System.Web.Mvc;
 using MyDrive.Models;
 using MyDrive.ViewModels;
 using System.IO;
+using System.Net.Http;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace MyDrive.Controllers
 {
@@ -30,6 +33,36 @@ namespace MyDrive.Controllers
                 Users = users
             };
             return View(viewModel); 
+        }
+
+        public ActionResult DisplayApiUsers()
+        {
+            IEnumerable<DriveUsers> users = null;
+            using(var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("http://81.29.108.91/api/");
+                var responseTask = client.GetAsync("users");
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+                if(result.IsSuccessStatusCode)
+                {
+                    var results = result.Content.ReadAsStringAsync().Result;
+                    var o = JsonConvert.DeserializeObject<JObject>(results);
+                    users = o.Value<JArray>("users")
+                    .ToObject<IList<DriveUsers>>();
+                    //var readTask = result.Content.ReadAsAsync<IList<DriveUsers>>();
+                    //readTask.Wait();
+
+                    //users = readTask.Result;
+                }
+                else
+                {
+                    users = Enumerable.Empty<DriveUsers>();
+                    ModelState.AddModelError(string.Empty, "server error. please contact api admin");
+                }
+            }
+            return View(users);
         }
 
         [Route("DriveUsers/released/{year:regex(\\d{4})}/{month:regex(\\d{2}):range(1,12)}")]
