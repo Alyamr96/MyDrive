@@ -438,8 +438,6 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
-    <Content Include="Views\DriveUsers\DisplayUsers.cshtml" />
-    <Content Include="Views\DriveUsers\ViewInformation.cshtml" />
     <Content Include="Views\Files\FileProfile.cshtml" />
     <Content Include="Views\Files\UploadFiles.cshtml" />
     <Content Include="Views\Files\GetFiles.cshtml" />

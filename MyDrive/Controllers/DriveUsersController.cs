@@ -9,36 +9,29 @@ using System.IO;
 using System.Net.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Microsoft.AspNet.Identity;
+using System.Data.Entity.Validation;
 
 namespace MyDrive.Controllers
 {
     public class DriveUsersController : Controller
     {
+        private ApplicationDbContext _context;
+        public DriveUsersController()
+        {
+            _context = new ApplicationDbContext();
+        }
+        protected override void Dispose(bool disposing)
+        {
+            _context.Dispose();
+        }
         // GET: DriveUsers
-        public ActionResult Index()
-        {
-            return View();
-        }
-
-        public ActionResult DisplayUsers()
-        {
-            var users = new List<DriveUsers>{
-                new DriveUsers {Name = "Aly Amr", Id = 1},
-                new DriveUsers {Name = "Mohamed Osama", Id = 2},
-                new DriveUsers {Name = "Ahmed Emad", Id = 3}
-            };
-
-            var viewModel = new DisplayUsersViewModel()
-            {
-                Users = users
-            };
-            return View(viewModel); 
-        }
 
         public ActionResult DisplayApiUsers()
         {
-            IEnumerable<DriveUsers> users = null;
-            using(var client = new HttpClient())
+            IEnumerable<DriveUsers> Apiusers = null;
+            var dbusers = _context.Users.ToList();
+            using (var client = new HttpClient())
             {
                 client.BaseAddress = new Uri("http://81.29.108.91/api/");
                 var responseTask = client.GetAsync("users");
@@ -49,7 +42,7 @@ namespace MyDrive.Controllers
                 {
                     var results = result.Content.ReadAsStringAsync().Result;
                     var o = JsonConvert.DeserializeObject<JObject>(results);
-                    users = o.Value<JArray>("users")
+                    Apiusers = o.Value<JArray>("users")
                     .ToObject<IList<DriveUsers>>();
                     //var readTask = result.Content.ReadAsAsync<IList<DriveUsers>>();
                     //readTask.Wait();
@@ -58,40 +51,63 @@ namespace MyDrive.Controllers
                 }
                 else
                 {
-                    users = Enumerable.Empty<DriveUsers>();
+                    Apiusers = Enumerable.Empty<DriveUsers>();
                     ModelState.AddModelError(string.Empty, "server error. please contact api admin");
                 }
             }
-            return View(users);
-        }
-
-        [Route("DriveUsers/released/{year:regex(\\d{4})}/{month:regex(\\d{2}):range(1,12)}")]
-        public ActionResult ByReleaseDate(int year, int month)
-        {
-            return Content(year + "/" + month);
-        }
-
-        [Route("DriveUsers/UsersInfo/{Id}")]
-        public ActionResult ViewInformation(int Id)
-        {
-            var users = new List<DriveUsers>{
-                new DriveUsers {Name = "Aly Amr", Id = 1},
-                new DriveUsers {Name = "Mohamed Osama", Id = 2},
-                new DriveUsers {Name = "Ahmed Emad", Id = 3}
-            };
-
-            DriveUsers user = null;
-
-            for (int i = 0; i < users.Count; i++)
+            foreach(var user in Apiusers)
             {
-                if (users[i].Id == Id)
-                    user = users[i];
-            }
-            if (user != null)
-                return View(user);
-            else
-                return HttpNotFound();
-        }
+                Boolean found = false;
+                string email = user.email;
+                foreach(var dbuser in dbusers)
+                {
+                    if (dbuser.Email == email)
+                        found = true;
+                }
+                if(found == false)
+                {
+                    user.password = "12345678";
+                    /*
+                    ApplicationUser newuser = new ApplicationUser();
+                    newuser.Email = user.email;
+                    newuser.PasswordHash = user.password;
+                    newuser.UserName = user.email;
+                    newuser.PhoneNumberInt = user.phone;
+                    newuser.FirstName = user.Name;
+                    */
+                    var newuser = new ApplicationUser
+                    {
+                        Id = user.Id.ToString(),
+                        UserName = user.email,
+                        Email = user.email,
+                        PhoneNumberInt = user.phone,
+                        FirstName = user.Name,
+                        PasswordHash = user.password,
+                        LastName = "lastname"
+                    };
+                    
+                    try
+                    {
+                        _context.Users.Add(newuser);
+                        _context.SaveChanges();
+                    }
+                    catch (DbEntityValidationException dbEx)
+                    {
+                        foreach (var validationErrors in dbEx.EntityValidationErrors)
+                        {
+                            foreach (var validationError in validationErrors.ValidationErrors)
+                            {
+                                System.Console.WriteLine("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
+                                ViewBag.Error = validationError.ErrorMessage;
+                            }
+                        }
+                    }
 
+                }
+
+            }
+            return View(dbusers);
+        }
+    
     }
 }

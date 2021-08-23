@@ -1,35 +1,58 @@
-﻿@model IEnumerable<MyDrive.Models.DriveUsers>
+﻿@model IEnumerable<MyDrive.Models.ApplicationUser>
 @{
     ViewBag.Title = "DisplayApiUsers";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>DisplayApiUsers</h2>
+<h2>Users</h2>
 
-<table class="table table-bordered table-hover">
-    <tr>
-        <th>@Html.DisplayNameFor(model => model.Id)</th>
-        <th>@Html.DisplayNameFor(model => model.Name)</th>
-        <th>@Html.DisplayNameFor(model => model.email)</th>
-        <th>@Html.DisplayNameFor(model => model.phone)</th>
-    </tr>
-    @foreach (var item in Model)
-    {
+@if (Model.Any())
+{
+    <table id="myusers" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>@Html.DisplayNameFor(model => model.Email)</th>
+                <th>Phone Number</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                if (item.Email != "admin@mydrive.com")
+                {
+            <tr>
+                @if (item.Id.Length > 4)
+                {
+                    <td>@item.FirstName @item.LastName</td>
+                }
+                else
+                {
+                    <td>@Html.DisplayFor(modelItem => item.FirstName)</td>
+                }
+                <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                <td><span>0</span>@Html.DisplayFor(modelItem => item.PhoneNumberInt)</td>
+            </tr>
+                }
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <table>
+        <tr><th>Error Message</th></tr>
         <tr>
-            <td>@Html.DisplayFor(modelItem => item.Id)</td>
-            <td>@Html.DisplayFor(modelItem => item.Name)</td>
-            <td>@Html.DisplayFor(modelItem => item.email)</td>
-            <td>@Html.DisplayFor(modelItem => item.phone)</td>
+            <td>@Html.ValidationSummary(true, "", new { @class = "text-danger" })</td>
         </tr>
-    }
-    <tr><td>@Html.ValidationSummary(true, "", new { @class = "text-danger" })</td></tr>
-</table>
+    </table>
+}
 
 @section scripts
 {
     <script>
         $(document).ready(function () {
-            $(".table table-bordered table-hover").DataTable();
+            $("#myusers").DataTable();
         })
     </script>
 }
