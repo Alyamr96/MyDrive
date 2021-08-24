@@ -1,0 +1,164 @@
+﻿@model MyDrive.ViewModels.FoldersandFilesViewModel
+@{
+    ViewBag.Title = "GetFolders";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+
+    .FolderClass ul {
+        list-style: none;
+    }
+
+        .FolderClass ul .myFolders {
+            display: block;
+            float: left;
+            margin-right: 1%;
+            width: 24%
+        }
+
+    .FolderClass i {
+        font-size: 100px;
+        color: #CC5500;
+    }
+
+    .FolderClass ul .myFolders a span {
+        color: black;
+        margin-right: 120px;
+        font-size: 7px;
+        text-align: center;
+        padding-top: 1px;
+        display: block;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: bold;
+        letter-spacing: 1px;
+    }
+
+    .FileClass ul {
+        list-style: none;
+    }
+
+        .FileClass ul .myFiles {
+            display: block;
+            float: left;
+            margin-right: 1%;
+            width: 24%;
+        }
+
+    .FileClass i {
+        font-size: 100px;
+        color: #CC5500;
+    }
+
+    .FileClass ul .myFiles a span {
+        color: black;
+        margin-right: 120px;
+        font-size: 7px;
+        text-align: center;
+        padding-top: 1px;
+        display: block;
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: bold;
+        letter-spacing: 1px;
+    }
+
+    .btn-link i {
+        font-size: 10px;
+        color: #89CFF0;
+        display: block;
+        padding-bottom: 1px;
+        margin-right: 120px;
+    }
+
+    .mycontainer{
+        display:flex;
+    }
+
+    .mycontainer .Second-button{
+        margin-left: 15px;
+    }
+</style>
+
+<!--<h2>Folders</h2>-->
+
+<div class="mycontainer">
+    <p>
+        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#createFolderModal">Create Folder</a>
+    </p>
+
+    <p class="Second-button">
+        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#uploadFileModal">Upload File</a>
+    </p>
+</div>
+@using (Html.BeginForm("UploadFileWithinPath", "Folder", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="modal fade" id="uploadFileModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Upload File</h2>
+                </div>
+                <div class="modal-body">
+                    <form id="uploadFileModal">
+                        <label>Choose File:</label>
+                        <input type="file" id="userFile" name="userFile" /><br />
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-group">
+                        <input type="submit" value="Upload" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@using (Html.BeginForm("CreateFolderWithinPath", "Folder"))
+{
+    <div class="modal fade" id="createFolderModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Create Folder</h2>
+                </div>
+                <div class="modal-body">
+                    <form id="createFolderModal">
+                        <label>Folder Name</label>
+                        @Html.TextBox("Name")
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="FolderClass">
+    <ul>
+
+        @foreach (var folderName in Model.Folders)
+        {
+        <li class="myFolders">
+            <button class="btn-link"><i class="fas fa-backspace"></i></button>
+            <a href="/Folder/GetFolderFromPath/@folderName.Path"> <i class="fas fa-folder"></i><span>@folderName.Name</span></a>
+        </li>
+        }
+    </ul>
+</div>
+
+<div class="FileClass">
+    <ul>
+        @foreach (var fileName in Model.Files)
+        {
+        <li class="myFiles">
+            <button class="btn-link"><i class="fas fa-backspace"></i></button>
+            <a href="~/files/@fileName.Path" target="_blank"> <i class="fas fa-file"></i><span>@fileName.Name</span></a>
+        </li>
+        }
+    </ul>
+</div>

@@ -166,6 +166,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\DriveUsersController.cs" />
     <Compile Include="Controllers\FilesController.cs" />
+    <Compile Include="Controllers\FolderController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Global.asax.cs">
@@ -198,6 +199,7 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\DriveUsers.cs" />
+    <Compile Include="Models\FileModel.cs" />
     <Compile Include="Models\Folder.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -207,6 +209,7 @@
     <Compile Include="ViewModels\FilesNamesViewModel.cs" />
     <Compile Include="ViewModels\FileViewModel.cs" />
     <Compile Include="ViewModels\FoldersNameViewModel.cs" />
+    <Compile Include="ViewModels\FoldersandFilesViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
@@ -448,6 +451,10 @@
     <Content Include="Views\Files\CreateFolderPopUp.cshtml" />
     <Content Include="Views\Files\GetFoldersByPath.cshtml" />
     <Content Include="Views\DriveUsers\DisplayApiUsers.cshtml" />
+    <Content Include="Views\DriveUsers\DisplayUsers.cshtml" />
+    <Content Include="Views\Folder\GetFolders1.cshtml" />
+    <Content Include="Views\Folder\GetFoldersFromPath.cshtml" />
+    <Content Include="Views\Folder\GetFiles1.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

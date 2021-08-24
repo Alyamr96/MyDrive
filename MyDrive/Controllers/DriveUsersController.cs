@@ -27,7 +27,12 @@ namespace MyDrive.Controllers
         }
         // GET: DriveUsers
 
-        public ActionResult DisplayApiUsers()
+        public ActionResult DisplayUsers()
+        {
+            var users = _context.Users.ToList();
+            return View(users);
+        }
+        /*public ActionResult DisplayApiUsers()
         {
             IEnumerable<DriveUsers> Apiusers = null;
             var dbusers = _context.Users.ToList();
@@ -38,7 +43,7 @@ namespace MyDrive.Controllers
                 responseTask.Wait();
 
                 var result = responseTask.Result;
-                if(result.IsSuccessStatusCode)
+                if (result.IsSuccessStatusCode)
                 {
                     var results = result.Content.ReadAsStringAsync().Result;
                     var o = JsonConvert.DeserializeObject<JObject>(results);
@@ -55,26 +60,19 @@ namespace MyDrive.Controllers
                     ModelState.AddModelError(string.Empty, "server error. please contact api admin");
                 }
             }
-            foreach(var user in Apiusers)
+            foreach (var user in Apiusers)
             {
                 Boolean found = false;
                 string email = user.email;
-                foreach(var dbuser in dbusers)
+                foreach (var dbuser in dbusers)
                 {
                     if (dbuser.Email == email)
                         found = true;
                 }
-                if(found == false)
+                if (found == false)
                 {
                     user.password = "12345678";
-                    /*
-                    ApplicationUser newuser = new ApplicationUser();
-                    newuser.Email = user.email;
-                    newuser.PasswordHash = user.password;
-                    newuser.UserName = user.email;
-                    newuser.PhoneNumberInt = user.phone;
-                    newuser.FirstName = user.Name;
-                    */
+                    
                     var newuser = new ApplicationUser
                     {
                         Id = user.Id.ToString(),
@@ -85,7 +83,7 @@ namespace MyDrive.Controllers
                         PasswordHash = user.password,
                         LastName = "lastname"
                     };
-                    
+
                     try
                     {
                         _context.Users.Add(newuser);
@@ -107,7 +105,7 @@ namespace MyDrive.Controllers
 
             }
             return View(dbusers);
-        }
-    
+        }*/
+
     }
 }

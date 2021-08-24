@@ -1,0 +1,71 @@
+﻿@model List<MyDrive.Models.FileModel>
+@{
+    ViewBag.Title = "GetFiles";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+
+    ul {
+        list-style: none;
+    }
+
+        ul .myFolders {
+            display: block;
+            float: left;
+            margin-right: 1%;
+            width: 24%
+        }
+
+    i {
+        font-size: 70px;
+        color: #CC5500;
+    }
+
+    ul .myFolders a span {
+        color: black;
+        margin-right: 120px;
+        font-size: 10px;
+        text-align: left;
+        padding-top: 1px;
+        display: block;
+        text-transform: uppercase;
+        font-family: Arial, Helvetica, sans-serif;
+        letter-spacing: 1px;
+    }
+</style>
+
+<!--<h2>Uploaded Files</h2>-->
+<p>
+    <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#uploadFileModal">Upload File</a>
+</p>
+@using (Html.BeginForm("UploadFiles", "Folder", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="modal fade" id="uploadFileModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Upload File</h2>
+                </div>
+                <div class="modal-body">
+                    <form id="uploadFileModal">
+                        <label>Choose File:</label>
+                        <input type="file" id="userFile" name="userFile" /><br />
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-group">
+                        <input type="submit" value="Upload" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ul>
+
+        @foreach (var file in Model)
+        {
+            <li class="myFolders"><a href="~/files/@file.Path" target="_blank"> <i class="fas fa-file"></i><span>@file.Path</span></a></li>
+        }
+    </ul>
+}

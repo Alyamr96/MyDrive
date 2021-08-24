@@ -32,7 +32,6 @@
         font-family: Arial, Helvetica, sans-serif;
         letter-spacing: 1px;
     }
-    
 </style>
 
 <!--<h2>Folders</h2>-->
@@ -41,7 +40,7 @@
     <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#createFolderModal">Create Folder</a>
 </p>
 
-@using (Html.BeginForm("CreateFolder", "Files"))
+@using (Html.BeginForm("CreateFolder", "Folder"))
 {
     <div class="modal fade" id="createFolderModal">
         <div class="modal-dialog">
@@ -65,11 +64,11 @@
     </div>
 
 
-<ul>
+    <ul>
 
-    @foreach (var folderName in Model)
-    {
-        <li class="myFolders"><a href="/Files/GetFoldersByPath/@folderName.Path"> <i class="fas fa-folder"></i><span>@folderName.Path</span></a></li>
-    }
-</ul>
+        @foreach (var folderName in Model)
+        {
+            <li class="myFolders"><a href="/Folder/GetFolderFromPath/@folderName.Path"> <i class="fas fa-folder"></i><span>@folderName.Path</span></a></li>
+        }
+    </ul>
 }

@@ -12,6 +12,7 @@ namespace MyDrive.Controllers
     [Authorize]
     public class FilesController : Controller
     {
+        //static string absouloutePath = "";
         // GET: Files
         public ActionResult Index()
         {
@@ -111,20 +112,40 @@ namespace MyDrive.Controllers
 
         public ActionResult GetFolders()
         {
+            
             //string targetDirectory = "~/Files";
             string targetDirectory = @"C: \Users\cashless\Desktop\MyDrive\MyDrive\Files";
             //var dirs = from dir in Directory.EnumerateDirectories(targetDirectory) select dir;
             List<string> dirs = new List<string>(Directory.EnumerateDirectories(targetDirectory));
+            List<string> foldersPathAfterFile = new List<string>(dirs.Count);
             List<string> folderNames = new List<string>(dirs.Count);
+            List<Folder> folders = new List<Folder>(dirs.Count);
             foreach(var directory in dirs)
             {
                 string fullpath = Path.GetFullPath(directory).TrimEnd(Path.DirectorySeparatorChar);
                 string projectName = directory.Split(Path.DirectorySeparatorChar).Last();
                 folderNames.Add(projectName);
             }
-            ViewBag.folderNames = folderNames;
-            ViewBag.directories = dirs;
-            return View();
+            foreach(var directory in dirs)
+            {
+                for (int i = 0; i < directory.Length; i++)
+                {
+                    string test = directory.Substring(i, 5);
+                    if (test.CompareTo("Files") == 0)
+                    {
+                        int number = i + 6;
+                        foldersPathAfterFile.Add(directory.Substring(number));
+                        break;
+                    }
+                }
+            }
+            for(int i =0; i<dirs.Count; i++)
+            {
+                folders.Add(new Folder { Name = folderNames[i], Path = foldersPathAfterFile[i] });
+            }
+            //absouloutePath = @"C: \Users\cashless\Desktop\MyDrive\MyDrive\Files";
+            //ViewBag.absouloutePath = absouloutePath;
+            return View(folders);
         }
 
         public ActionResult CreateFolderPopUp()
@@ -135,6 +156,8 @@ namespace MyDrive.Controllers
         [Route("Files/GetFoldersByPath/{folderName}")]
         public ActionResult GetFoldersByPath(string folderName)
         {
+            //absouloutePath = absouloutePath + @"\" + folderName;
+            
             string targetDirectory = @"C: \Users\cashless\Desktop\MyDrive\MyDrive\Files";
             string searchPattern = "*";
             string[] dirs = Directory.GetDirectories(targetDirectory,searchPattern ,SearchOption.AllDirectories);
@@ -146,6 +169,7 @@ namespace MyDrive.Controllers
                     path = dir;
                 }
             }
+            
             List<string> dirsToShow = new List<string>(Directory.EnumerateDirectories(path));
             List<string> folderNamesToShow = new List<string>(dirsToShow.Count);
             foreach (var directory in dirsToShow)
@@ -188,12 +212,15 @@ namespace MyDrive.Controllers
                 }
             }
             ViewBag.PathAfterFile = pathAfterFiles;
+            ViewBag.absouloutePath = path;
             return View();
         }
 
         [Route("Files/CreateFolderInPath/{folderName}")]
         public ActionResult CreateFolderInPath(string folderName, Folder folder)
         {
+            //string path = absouloutePath + @"\" + folder.Name;
+            
             string folderToBeCreated = folder.Name;
             string targetDirectory = @"C: \Users\cashless\Desktop\MyDrive\MyDrive\Files";
             string searchPattern = "*";
@@ -206,7 +233,7 @@ namespace MyDrive.Controllers
                     path = dir;
                 }
             }
-            path = path + @"\" + folderToBeCreated;
+            
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
             else
