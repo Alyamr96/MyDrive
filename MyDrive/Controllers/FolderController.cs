@@ -217,5 +217,22 @@ namespace MyDrive.Controllers
             postedFile.SaveAs(filePath);
             return RedirectToAction("GetFolderFromPath/" + folderName);
         }
+
+        [Route("Folder/DeleteFolder/{folderPath}")]
+        public void DeleteFolder(string folderPath)
+        {
+            string myFolderPath = folderPath.Replace(";", @"\");
+            string path = absoloutePath + @"/" + myFolderPath;
+            Directory.Delete(path, true);
+        }
+
+        [Route("Folder/DeleteFile/{filePath}")]
+        public void DeleteFile(string filePath)
+        {
+            string myFilePath = filePath.Replace(";", @"\");
+            string myFinalPath = myFilePath.Replace("'", ".");
+            string path = absoloutePath + @"/" + myFinalPath;
+            System.IO.File.Delete(path);
+        }
     }
 }

@@ -144,7 +144,7 @@
         @foreach (var folderName in Model.Folders)
         {
         <li class="myFolders">
-            <button class="btn-link"><i class="fas fa-backspace"></i></button>
+            <button class="btn-link js-delete" data-folder-path="@folderName.Path"><i class="fas fa-backspace"></i></button>
             <a href="/Folder/GetFolderFromPath/@folderName.Path"> <i class="fas fa-folder"></i><span>@folderName.Name</span></a>
         </li>
         }
@@ -155,10 +155,45 @@
     <ul>
         @foreach (var fileName in Model.Files)
         {
-        <li class="myFiles">
-            <button class="btn-link"><i class="fas fa-backspace"></i></button>
+            string filePathNormalized = @fileName.Path.Replace(@"\", ";");
+            string finalPathNormalized = filePathNormalized.Replace(".", "'");
+        <li class="myFiles">          
+            <button class="btn-link js-file-delete" data-file-path="@finalPathNormalized"><i class="fas fa-backspace"></i></button>
             <a href="~/files/@fileName.Path" target="_blank"> <i class="fas fa-file"></i><span>@fileName.Name</span></a>
         </li>
         }
     </ul>
 </div>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $(".FolderClass").on("click", ".js-delete", function () {
+                var button = $(this);
+                if (confirm("Are you sure you want to delete this folder?")) {
+                    $.ajax({
+                        url: "/Folder/DeleteFolder/" + button.attr("data-folder-path"),
+                        success: function () {
+                            console.log("success");
+                            button.parent("li").remove();
+                        }
+                    });
+                }
+            });
+
+            $(".FileClass").on("click", ".js-file-delete", function () {
+                var button = $(this);
+                if (confirm("Are you sure you want to delete this file?")) {
+                    $.ajax({
+                        url: "/Folder/DeleteFile/" + button.attr("data-file-path"),
+                        success: function () {
+                            console.log("success");
+                            button.parent("li").remove();
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}
