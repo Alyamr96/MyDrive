@@ -1,17 +1,57 @@
-﻿using MyDrive.Models;
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+using MyDrive.Models;
 using MyDrive.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
 namespace MyDrive.Controllers
 {
+    [Authorize]
     public class FolderController : Controller
     {
         static string absoloutePath = @"C: \Users\cashless\Desktop\MyDrive\MyDrive\Files";
+        /*private ApplicationSignInManager _signInManager;
+        private ApplicationUserManager _userManager;
+
+        public FolderController()
+        {
+        }
+        public FolderController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
+        {
+            UserManager = userManager;
+            SignInManager = signInManager;
+        }
+
+        public ApplicationSignInManager SignInManager
+        {
+            get
+            {
+                return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
+            }
+            private set
+            {
+                _signInManager = value;
+            }
+        }
+
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }*/
         // GET: Folder
         public ActionResult CreateFolder(Folder folder)
         {
@@ -58,7 +98,41 @@ namespace MyDrive.Controllers
             {
                 folders.Add(new Folder { Name = folderNames[i], Path = foldersPathAfterFile[i] });
             }
-            return View(folders);
+            // starting here we are getting all files
+            string[] fileEntries = Directory.GetFiles(absoloutePath);
+            List<string> filesPathAfterFile = new List<string>(fileEntries.Length);
+            string[] fileNames = new string[fileEntries.Length];
+            List<FileModel> files = new List<FileModel>(fileEntries.Length);
+            for (int i = 0; i < fileEntries.Length; i++)
+            {
+                string fullpath = Path.GetFullPath(fileEntries[i]).TrimEnd(Path.DirectorySeparatorChar);
+                string projectName = fileEntries[i].Split(Path.DirectorySeparatorChar).Last();
+                fileNames[i] = projectName;
+            }
+            for (int j = 0; j < fileEntries.Length; j++)
+            {
+                for (int i = 0; i < fileEntries[j].Length; i++)
+                {
+                    string test = fileEntries[j].Substring(i, 5);
+                    if (test.CompareTo("Files") == 0)
+                    {
+                        int number = i + 6;
+                        filesPathAfterFile.Add(fileEntries[j].Substring(number));
+                        break;
+                    }
+                }
+            }
+            for (int i = 0; i < fileEntries.Length; i++)
+            {
+                files.Add(new FileModel { Name = fileNames[i], Path = filesPathAfterFile[i] });
+            }
+            // Folders and files viewModel
+            var FoldersAndFiles = new FoldersandFilesViewModel
+            {
+                Folders = folders,
+                Files = files
+            };
+            return View(FoldersAndFiles);
         }
         
         [Route("Folder/GetFolderFromPath/{folderName}")]
@@ -180,6 +254,7 @@ namespace MyDrive.Controllers
             {
                 files.Add(new FileModel { Name = fileNames[i], Path = filesPathAfterFile[i] });
             }
+            
             return View(files);
         }
 
@@ -202,7 +277,7 @@ namespace MyDrive.Controllers
             {
                 name = postedFile.FileName
             };
-            return RedirectToAction("GetFiles1");
+            return RedirectToAction("GetFolders1");
         }
 
         [Route("Folder/UploadFileWithinPath/{folderName}")]
@@ -221,6 +296,8 @@ namespace MyDrive.Controllers
         [Route("Folder/DeleteFolder/{folderPath}")]
         public void DeleteFolder(string folderPath)
         {
+            //var userid = User.Identity.GetUserId();
+            //ApplicationUser user1 = UserManager.FindByIdAsync(userid).Result;
             string myFolderPath = folderPath.Replace(";", @"\");
             string path = absoloutePath + @"/" + myFolderPath;
             Directory.Delete(path, true);

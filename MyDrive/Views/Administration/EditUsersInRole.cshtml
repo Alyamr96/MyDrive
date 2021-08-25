@@ -1,0 +1,28 @@
+﻿@model List<MyDrive.Models.ApplicationUser>
+@{
+    ViewBag.Title = "EditUsersInRole1";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Add Users To Role</h2>
+
+<table class="table table-bordered table-hover">
+    <tr>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Assign To Role</th>
+    </tr>
+
+    @foreach(var user in Model)
+    {
+        if (user.Email != "admin@mydrive.com")
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>Delete Folders</td>
+                <td>@Html.ActionLink("Assign To Role", "AddUserToRole", "Administration", new { userId = user.Id }, null)</td>
+            </tr>
+        }
+    }
+
+</table>

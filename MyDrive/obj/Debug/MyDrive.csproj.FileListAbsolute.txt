@@ -119,3 +119,4 @@ C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.AddFirstN
 C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.AddLastNameToApplicationUser.resources
 C:\Users\cashless\Desktop\MyDrive\MyDrive\bin\System.Net.Http.Formatting.dll
 C:\Users\cashless\Desktop\MyDrive\MyDrive\bin\System.Net.Http.Formatting.xml
+C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.AddDeleteFoldersRole.resources
