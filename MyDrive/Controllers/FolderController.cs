@@ -311,5 +311,10 @@ namespace MyDrive.Controllers
             string path = absoloutePath + @"/" + myFinalPath;
             System.IO.File.Delete(path);
         }
+
+        public ActionResult TestView()
+        {
+            return View();
+        }
     }
 }

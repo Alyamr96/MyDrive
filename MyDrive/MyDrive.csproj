@@ -466,6 +466,7 @@
     <Content Include="Views\Administration\CreateRole.cshtml" />
     <Content Include="Views\Administration\EditUsersInRole.cshtml" />
     <Content Include="Views\Administration\EditUsersInRole2.cshtml" />
+    <Content Include="Views\Folder\TestView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
