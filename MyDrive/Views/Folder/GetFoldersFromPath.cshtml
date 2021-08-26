@@ -5,78 +5,69 @@
 }
 
 <style>
-
-    .FolderClass ul {
-        list-style: none;
+    .myCustomContainer {
+        display: flex;
+        flex-wrap: wrap;
     }
 
-        .FolderClass ul .myFolders {
-            display: block;
-            float: left;
-            margin-right: 1%;
-            width: 24%
+    .CustomFolder {
+        display: flex;
+        flex-direction: column;
+        margin: 30px;
+    }
+
+        .CustomFolder button {
+            display: flex;
         }
 
-    .FolderClass i {
-        font-size: 100px;
-        color: #CC5500;
-    }
-
-    .FolderClass ul .myFolders a span {
-        color: black;
-        margin-right: 120px;
-        font-size: 7px;
-        text-align: center;
-        padding-top: 1px;
-        display: block;
-        font-family: Arial, Helvetica, sans-serif;
-        font-weight: bold;
-        letter-spacing: 1px;
-    }
-
-    .FileClass ul {
-        list-style: none;
-    }
-
-        .FileClass ul .myFiles {
+        .CustomFolder span {
             display: block;
-            float: left;
-            margin-right: 1%;
-            width: 24%;
+            padding-left: 30px;
+            width: 150px;
+            font-family: Arial, Helvetica, sans-serif;
+            color: black;
         }
 
-    .FileClass i {
-        font-size: 100px;
-        color: #CC5500;
+        .CustomFolder .myFolderIcon {
+            font-size: 100px;
+            color: #CC5500;
+        }
+
+    .myCustomContainerForFiles {
+        display: flex;
+        flex-wrap: wrap;
     }
 
-    .FileClass ul .myFiles a span {
-        color: black;
-        margin-right: 120px;
-        font-size: 7px;
-        text-align: center;
-        padding-top: 1px;
-        display: block;
-        font-family: Arial, Helvetica, sans-serif;
-        font-weight: bold;
-        letter-spacing: 1px;
+    .CustomFile {
+        display: flex;
+        flex-direction: column;
+        margin: 40px;
     }
 
-    .btn-link i {
-        font-size: 10px;
-        color: #89CFF0;
-        display: block;
-        padding-bottom: 1px;
-        margin-right: 120px;
+        .CustomFile button {
+            display: flex;
+        }
+
+        .CustomFile span {
+            display: block;
+            padding-left: 0;
+            width: 150px;
+            font-family: Arial, Helvetica, sans-serif;
+            color: black;
+        }
+
+        .CustomFile .myFolderIcon {
+            font-size: 100px;
+            color: #CC5500;
+        }
+
+    .mycontainer {
+        display: flex;
     }
 
-    .mycontainer{
-        display:flex;
-    }
-
-    .mycontainer .Second-button{
-        margin-left: 15px;
-    }
+        .mycontainer .Second-button {
+            margin-left: 15px;
+        }
 </style>
 
 <!--<h2>Folders</h2>-->
@@ -138,64 +129,71 @@
     </div>
 }
 
-<div class="FolderClass">
-    <ul>
+<div class="myCustomContainer">
+    @foreach (var folderName in Model.Folders)
+    {
 
-        @foreach (var folderName in Model.Folders)
-        {
-        <li class="myFolders">
+
+        <div class="CustomFolder">
+            @if (User.IsInRole("CanManageUsers"))
+            {
+                <button class="btn-link"><i class="fas fa-backspace"></i></button>
+            }
             @if (User.IsInRole("CanManageUsers") || User.IsInRole("DeleteFolders"))
             {
-            <button class="btn-link js-delete" data-folder-path="@folderName.Path"><i class="fas fa-backspace"></i></button>
+                <button class="btn-link js-delete" data-folder-path="@folderName.Path"><i class="fas fa-backspace"></i></button>
             }
-            <a href="/Folder/GetFolderFromPath/@folderName.Path"> <i class="fas fa-folder"></i><span>@folderName.Name</span></a>
-        </li>
-        }
-    </ul>
+            <a href="/Folder/GetFolderFromPath/@folderName.Path"> <i class="fas fa-folder myFolderIcon"></i><span>@folderName.Name</span></a>
+        </div>
+    }
 </div>
 
-<div class="FileClass">
-    <ul>
-        @foreach (var fileName in Model.Files)
-        {
-            string filePathNormalized = @fileName.Path.Replace(@"\", ";");
-            string finalPathNormalized = filePathNormalized.Replace(".", "'");
-        <li class="myFiles">  
+<div class="myCustomContainerForFiles">
+    @foreach (var fileName in Model.Files)
+    {
+        string filePathNormalized = @fileName.Path.Replace(@"\", ";");
+        string finalPathNormalized = filePathNormalized.Replace(".", "'");
+
+
+        <div class="CustomFile">
+            @if (User.IsInRole("CanManageUsers"))
+            {
+                <button class="btn-link"><i class="fas fa-backspace"></i></button>
+            }
             @if (User.IsInRole("CanManageUsers") || User.IsInRole("DeleteFolders"))
             {
-            <button class="btn-link js-file-delete" data-file-path="@finalPathNormalized"><i class="fas fa-backspace"></i></button>
+                <button class="btn-link js-file-delete" data-file-path="@finalPathNormalized"><i class="fas fa-backspace"></i></button>
             }
-            <a href="~/files/@fileName.Path" target="_blank"> <i class="fas fa-file"></i><span>@fileName.Name</span></a>
-        </li>
-        }
-    </ul>
+            <a href="~/files/@fileName.Path" target="_blank"> <i class="fas fa-file myFolderIcon"></i><span>@fileName.Name</span></a>
+        </div>
+    }
 </div>
 
 @section scripts
 {
     <script>
         $(document).ready(function () {
-            $(".FolderClass").on("click", ".js-delete", function () {
+            $(".myCustomContainer").on("click", ".js-delete", function () {
                 var button = $(this);
                 if (confirm("Are you sure you want to delete this folder?")) {
                     $.ajax({
                         url: "/Folder/DeleteFolder/" + button.attr("data-folder-path"),
                         success: function () {
                             console.log("success");
-                            button.parent("li").remove();
+                            button.parent("div").remove();
                         }
                     });
                 }
             });
 
-            $(".FileClass").on("click", ".js-file-delete", function () {
+            $(".myCustomContainerForFiles").on("click", ".js-file-delete", function () {
                 var button = $(this);
                 if (confirm("Are you sure you want to delete this file?")) {
                     $.ajax({
                         url: "/Folder/DeleteFile/" + button.attr("data-file-path"),
                         success: function () {
                             console.log("success");
-                            button.parent("li").remove();
+                            button.parent("div").remove();
                         }
                     });
                 }

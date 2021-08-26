@@ -1,30 +1,34 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "GetFolders";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <style>
-    .myCustomContainer{
-        display:flex;
-        flex-wrap:wrap;
+    .myCustomContainer {
+        display: flex;
+        flex-wrap: wrap;
     }
-    .CustomFolder{
-        display:flex;
-        flex-direction:column;
+
+    .CustomFolder {
+        display: flex;
+        flex-direction: column;
         margin: 30px;
     }
-    .CustomFolder button{
-        display:flex;
-    }
-    .CustomFolder span{
-        display:block;
-        padding-left: 30px;
-    }
-    .CustomFolder .myFolderIcon {
-        font-size: 100px;
-        color: #CC5500;
-    }
+
+        .CustomFolder button {
+            display: flex;
+        }
+
+        .CustomFolder span {
+            display: block;
+            padding-left: 30px;
+        }
+
+        .CustomFolder .myFolderIcon {
+            font-size: 100px;
+            color: #CC5500;
+        }
+
     .myCustomContainerForFiles {
         display: flex;
         flex-wrap: wrap;
@@ -36,123 +40,26 @@
         margin: 40px;
     }
 
-    .CustomFile button {
-        display: flex;
-    }
-
-    .CustomFile span {
-        display: block;
-        padding-left: 30px;
-    }
-
-    .CustomFile .myFolderIcon {
-        font-size: 100px;
-        color: #CC5500;
-    }
-
-   /* .FolderClass-FirstRow {
-        border: 3px solid lightgrey;
-    }
-
-        .FolderClass-FirstRow .FolderClass-UlFirstRow {
-            list-style: none;
+        .CustomFile button {
             display: flex;
         }
 
-        .FolderClass-FirstRow .FolderClass-FirstRow .myFolders-FirstRow {
+        .CustomFile span {
             display: block;
+            padding-left: 30px;
         }
 
-        .FolderClass-FirstRow .FolderClass-UlFirstRow .myFolders-FirstRow {
-            margin-right: 1%;
-            width: 24%;
-        }
-
-        .FolderClass-FirstRow .myFolderIcon {
+        .CustomFile .myFolderIcon {
             font-size: 100px;
             color: #CC5500;
         }
-
-        .FolderClass-FirstRow span {
-            display: block;
-            text-align: center;
-        }
-
-        .FolderClass-FirstRow .myDeleteIcon {
-            margin-top: 0;
-        }*/
-
-    /*.FolderClass ul {
-        list-style: none;
-    }
-
-    .FolderClass ul .myFolders {
-            display: block;
-            float: left;
-            margin-right: 1%;
-            width: 24%
-    }
-
-    .FolderClass i {
-        font-size: 100px;
-        color: #CC5500;
-    }
-
-    .FolderClass ul .myFolders a span {
-        color: black;
-        margin-right: 120px;
-        font-size: 7px;
-        text-align: center;
-        padding-top: 1px;
-        display: block;
-        font-family: Arial, Helvetica, sans-serif;
-        font-weight: bold;
-        letter-spacing: 1px;
-    }
-
-    .FileClass ul {
-        list-style: none;
-    }
-
-        .FileClass ul .myFiles {
-            display: block;
-            float: left;
-            margin-right: 1%;
-            width: 24%;
-        }
-
-    .FileClass i {
-        font-size: 100px;
-        color: #CC5500;
-    }
-
-    .FileClass ul .myFiles a span {
-        color: black;
-        margin-right: 120px;
-        font-size: 7px;
-        text-align: center;
-        padding-top: 1px;
-        display: block;
-        font-family: Arial, Helvetica, sans-serif;
-        font-weight: bold;
-        letter-spacing: 1px;
-    }
-
-    .btn-link i {
-        font-size: 10px;
-        color: #89CFF0;
-        display: block;
-        padding-bottom: 1px;
-        margin-right: 120px;
-    }*/
-
     .mycontainer {
         display: flex;
     }
 
-    .mycontainer .Second-button {
-        margin-left: 15px;
-    }
+        .mycontainer .Second-button {
+            margin-left: 15px;
+        }
 </style>
 
 <!--<h2>Folders</h2>-->
@@ -169,10 +76,10 @@
 <div class="myCustomContainer">
     @for (int i = 0; i < 11; i++)
     {
-    <div class="CustomFolder">
-        <button class="btn-link"><i class="fas fa-backspace myDeleteIcon"></i></button>
-        <a href="#"> <i class="fas fa-folder myFolderIcon"></i><span>Folder @i</span></a>
-    </div>
+        <div class="CustomFolder">
+            <button class="btn-link"><i class="fas fa-backspace myDeleteIcon"></i></button>
+            <a href="#"> <i class="fas fa-folder myFolderIcon"></i><span>Folder @i</span></a>
+        </div>
     }
 </div>
 
@@ -185,40 +92,3 @@
         </div>
     }
 </div>
-<!--
-<div class="FolderClass-FirstRow">
-    <ul class="FolderClass-UlFirstRow">
-        @for (int i = 0; i < 4; i++)
-        {
-            <li class="myFolders-FirstRow">
-                <button class="btn-link"><i class="fas fa-backspace myDeleteIcon"></i></button>
-                <a href="#"> <i class="fas fa-folder myFolderIcon"></i><span>Folder @i</span></a>
-            </li>
-        }
-    </ul>
-</div>
-<div class="FolderClass">
-    <ul class="FolderClass-Ul">
-
-        @for (int i =4; i<7; i++)
-        {
-            <li class="myFolders">
-                <button class="btn-link"><i class="fas fa-backspace myDeleteIcon"></i></button>
-                <a href="#"> <i class="fas fa-folder myFolderIcon"></i><span>Folder @i</span></a>
-            </li>
-        }
-    </ul>
-</div>
-
-<div class="FileClass">
-    <ul>
-        @for (int i=0; i<7; i++)
-        {
-            <li class="myFiles">
-                <button class="btn-link"><i class="fas fa-backspace"></i></button>
-                <a href="#"> <i class="fas fa-file"></i><span>File @i</span></a>
-            </li>
-        }
-    </ul>
-</div>
-    -->
