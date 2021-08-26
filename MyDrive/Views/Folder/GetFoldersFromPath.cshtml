@@ -144,7 +144,10 @@
         @foreach (var folderName in Model.Folders)
         {
         <li class="myFolders">
+            @if (User.IsInRole("CanManageUsers") || User.IsInRole("DeleteFolders"))
+            {
             <button class="btn-link js-delete" data-folder-path="@folderName.Path"><i class="fas fa-backspace"></i></button>
+            }
             <a href="/Folder/GetFolderFromPath/@folderName.Path"> <i class="fas fa-folder"></i><span>@folderName.Name</span></a>
         </li>
         }
@@ -157,8 +160,11 @@
         {
             string filePathNormalized = @fileName.Path.Replace(@"\", ";");
             string finalPathNormalized = filePathNormalized.Replace(".", "'");
-        <li class="myFiles">          
+        <li class="myFiles">  
+            @if (User.IsInRole("CanManageUsers") || User.IsInRole("DeleteFolders"))
+            {
             <button class="btn-link js-file-delete" data-file-path="@finalPathNormalized"><i class="fas fa-backspace"></i></button>
+            }
             <a href="~/files/@fileName.Path" target="_blank"> <i class="fas fa-file"></i><span>@fileName.Name</span></a>
         </li>
         }

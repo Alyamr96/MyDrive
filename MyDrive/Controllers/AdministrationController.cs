@@ -143,6 +143,7 @@ namespace MyDrive.Controllers
             }
             return View(model);
         }*/
+        // shows all users who are not in role
         public ActionResult EditUsersInRole()
         {
             var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
@@ -161,6 +162,25 @@ namespace MyDrive.Controllers
             }
             return View(usersToShow);
         }
+        // Shows all users who are in role
+        public ActionResult EditUsersInRole2()
+        {
+            var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
+            var roleManager = new RoleManager<IdentityRole>(roleStore);
+            var users = UserManager.Users;
+            List<ApplicationUser> myUsers = new List<ApplicationUser>();
+            List<ApplicationUser> usersToShow = new List<ApplicationUser>();
+            foreach (var user in users)
+            {
+                myUsers.Add(user);
+            }
+            foreach (var user in myUsers)
+            {
+                if (UserManager.IsInRole(user.Id, "DeleteFolders") == true)
+                    usersToShow.Add(user);
+            }
+            return View(usersToShow);
+        }
 
         [Route("Administration/AddUserToRole/{userId}")]
         public ActionResult AddUserToRole(string userId)
@@ -169,6 +189,16 @@ namespace MyDrive.Controllers
             var roleManager = new RoleManager<IdentityRole>(roleStore);
             var roles = roleManager.Roles;
             UserManager.AddToRole(userId, "DeleteFolders");
+            return RedirectToAction("DisplayUsers", "DriveUsers");
+        }
+
+        [Route("Administration/RemoveUserFromRole/{userId}")]
+        public ActionResult RemoveUserFromRole(string userId)
+        {
+            var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
+            var roleManager = new RoleManager<IdentityRole>(roleStore);
+            var roles = roleManager.Roles;
+            UserManager.RemoveFromRole(userId, "DeleteFolders");
             return RedirectToAction("DisplayUsers", "DriveUsers");
         }
     }

@@ -53,7 +53,11 @@
             <li>@Html.ActionLink("About", "About", "Home")</li>
             <li>@Html.ActionLink("Upload Files", "GetFiles1", "Folder")</li>
             <li>@Html.ActionLink("Create Folder", "GetFolders1", "Folder")</li>
+            @if (User.IsInRole("CanManageUsers"))
+            {
             <li>@Html.ActionLink("Assign Role", "EditUsersInRole", "Administration")</li>
+            <li>@Html.ActionLink("Remove Role", "EditUsersInRole2", "Administration")</li>
+            }
         </ul>
 
         </div>

@@ -465,6 +465,7 @@
     <Content Include="Views\Folder\GetFiles1.cshtml" />
     <Content Include="Views\Administration\CreateRole.cshtml" />
     <Content Include="Views\Administration\EditUsersInRole.cshtml" />
+    <Content Include="Views\Administration\EditUsersInRole2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
