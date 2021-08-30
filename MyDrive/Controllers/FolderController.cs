@@ -17,6 +17,7 @@ namespace MyDrive.Controllers
     public class FolderController : Controller
     {
         static string absoloutePath = @"C: \Users\cashless\Desktop\MyDrive\MyDrive\Files";
+        static string folderPathWhenRename = "";
         /*private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
@@ -315,6 +316,115 @@ namespace MyDrive.Controllers
         public ActionResult TestView()
         {
             return View();
+        }
+
+        public ActionResult ShowFilesInTable()
+        {
+            string[] fileEntries = Directory.GetFiles(absoloutePath, "*", SearchOption.AllDirectories);
+            List<string> filesPathAfterFile = new List<string>(fileEntries.Length);
+            string[] fileNames = new string[fileEntries.Length];
+            List<FileModel> files = new List<FileModel>(fileEntries.Length);
+            for (int i = 0; i < fileEntries.Length; i++)
+            {
+                string fullpath = Path.GetFullPath(fileEntries[i]).TrimEnd(Path.DirectorySeparatorChar);
+                string projectName = fileEntries[i].Split(Path.DirectorySeparatorChar).Last();
+                fileNames[i] = projectName;
+            }
+            for (int j = 0; j < fileEntries.Length; j++)
+            {
+                for (int i = 0; i < fileEntries[j].Length; i++)
+                {
+                    string test = fileEntries[j].Substring(i, 5);
+                    if (test.CompareTo("Files") == 0)
+                    {
+                        int number = i + 6;
+                        filesPathAfterFile.Add(fileEntries[j].Substring(number));
+                        break;
+                    }
+                }
+            }
+            for (int i = 0; i < fileEntries.Length; i++)
+            {
+                files.Add(new FileModel { Name = fileNames[i], Path = filesPathAfterFile[i] });
+            }
+
+            return View(files);
+        }
+
+        [Route("Folder/RenameFolder/{folderPath}")]
+        public ActionResult RenameFolder(string folderPath)
+        {
+            folderPathWhenRename = folderPath;
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult RenameFolder2(Folder folder)
+        {
+            string path = folderPathWhenRename;
+            folderPathWhenRename = "";
+            string returnPath = "";
+            string[] words = path.Split(';');
+            string oldFolderName = words[words.Length-1];
+            string oldPath = "";
+
+            for(int i =0; i< words.Length-1; i++)
+            {
+                returnPath = returnPath + words[i] + ";";
+                oldPath = oldPath + words[i] + "/";
+            }
+            oldPath = oldPath + oldFolderName;
+            
+            oldPath = oldPath.Replace("/", @"\");
+            oldPath = absoloutePath + @"\" + oldPath;
+            DirectoryInfo di = new DirectoryInfo(oldPath);
+            di.MoveTo(Path.Combine(di.Parent.FullName, folder.Name));
+
+            if(returnPath != "")
+            {
+                return RedirectToAction("GetFolderFromPath/" + returnPath);
+            }
+            else
+                return RedirectToAction("GetFolders1");
+
+        }
+
+        [Route("Folder/RenameFile/{filePath}")]
+        public ActionResult RenameFile(string filePath)
+        {
+            folderPathWhenRename = filePath;
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult RenameFile2(Folder folder)
+        {
+            string path = folderPathWhenRename;
+            folderPathWhenRename = "";
+            string returnPath = "";
+            string[] words = path.Split(';');
+            string oldFolderName = words[words.Length - 1];
+            string oldPath = "";
+
+            for (int i = 0; i < words.Length - 1; i++)
+            {
+                returnPath = returnPath + words[i] + ";";
+                oldPath = oldPath + words[i] + "/";
+            }
+            oldPath = oldPath + oldFolderName;
+
+            oldPath = oldPath.Replace("/", @"\");
+            oldPath = absoloutePath + @"\" + oldPath;
+            FileInfo di = new FileInfo(oldPath);
+            di.MoveTo(Path.Combine(di.DirectoryName, folder.Name));
+
+            if (returnPath != "")
+            {
+                return RedirectToAction("GetFolderFromPath/" + returnPath);
+            }
+            else
+                return RedirectToAction("GetFolders1");
+
         }
     }
 }

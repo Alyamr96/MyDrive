@@ -134,17 +134,17 @@
     {
 
 
-        <div class="CustomFolder">
-            @if (User.IsInRole("CanManageUsers"))
-            {
-                <button class="btn-link"><i class="fas fa-backspace"></i></button>
-            }
-            @if (User.IsInRole("CanManageUsers") || User.IsInRole("DeleteFolders"))
-            {
-                <button class="btn-link js-delete" data-folder-path="@folderName.Path"><i class="fas fa-backspace"></i></button>
-            }
-            <a href="/Folder/GetFolderFromPath/@folderName.Path"> <i class="fas fa-folder myFolderIcon"></i><span>@folderName.Name</span></a>
-        </div>
+    <div class="CustomFolder">
+        @if (User.IsInRole("CanManageUsers"))
+        {
+            <a href="~/Folder/RenameFolder/@folderName.Path" class="btn-link"><i class="fas fa-pen"></i></a>
+        }
+        @if (User.IsInRole("CanManageUsers") || User.IsInRole("DeleteFolders"))
+        {
+            <button class="btn-link js-delete" data-folder-path="@folderName.Path"><i class="fas fa-backspace"></i></button>
+        }
+        <a href="/Folder/GetFolderFromPath/@folderName.Path"> <i class="fas fa-folder myFolderIcon"></i><span>@folderName.Name</span></a>
+    </div>
     }
 </div>
 
@@ -158,7 +158,7 @@
         <div class="CustomFile">
             @if (User.IsInRole("CanManageUsers"))
             {
-                <button class="btn-link"><i class="fas fa-backspace"></i></button>
+            <a href="~/Folder/RenameFile/@finalPathNormalized" class="btn-link"><i class="fas fa-pen"></i></a>
             }
             @if (User.IsInRole("CanManageUsers") || User.IsInRole("DeleteFolders"))
             {

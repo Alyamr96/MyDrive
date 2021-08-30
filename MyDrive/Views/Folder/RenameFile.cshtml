@@ -1,0 +1,12 @@
+﻿@model MyDrive.Models.Folder
+
+<h2>Rename File</h2>
+
+@using (Html.BeginForm("RenameFile2", "Folder"))
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.Name)
+        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+    </div>
+    <button type="submit" class="btn btn-primary">Update</button>
+}

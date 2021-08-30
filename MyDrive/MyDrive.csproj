@@ -467,6 +467,9 @@
     <Content Include="Views\Administration\EditUsersInRole.cshtml" />
     <Content Include="Views\Administration\EditUsersInRole2.cshtml" />
     <Content Include="Views\Folder\TestView.cshtml" />
+    <Content Include="Views\Folder\ShowFilesInTable.cshtml" />
+    <Content Include="Views\Folder\RenameFolder.cshtml" />
+    <Content Include="Views\Folder\RenameFile.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
