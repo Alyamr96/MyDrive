@@ -1,0 +1,43 @@
+﻿
+@{
+    ViewBag.Title = "DeleteAllSelected";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete All Selected</h2>
+
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Folder Path</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in ViewBag.Folders)
+        {
+             <tr>
+                 <td>@item</td>
+             </tr>
+        }
+    </tbody>
+</table>
+
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>File Path</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in ViewBag.Files)
+        {
+            <tr>
+                <td>@item</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div>
+    <a href="~/Folder/DeleteAllSelectedFoldersAndFiles" class="btn btn-primary">Delete</a>
+</div>

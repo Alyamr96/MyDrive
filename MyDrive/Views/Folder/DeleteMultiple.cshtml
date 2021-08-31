@@ -1,0 +1,96 @@
+﻿@model MyDrive.ViewModels.FoldersandFilesViewModel
+@{
+    ViewBag.Title = "GetFolders";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .myCustomContainer {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .CustomFolder {
+        display: flex;
+        flex-direction: column;
+        margin: 30px;
+    }
+
+    .CustomFolder button {
+        display: flex;
+    }
+
+    .CustomFolder span {
+        display: block;
+        padding-left: 30px;
+        width: 150px;
+        font-family: Arial, Helvetica, sans-serif;
+        color: black;
+    }
+
+    .CustomFolder .myFolderIcon {
+        font-size: 100px;
+        color: #CC5500;
+    }
+
+    .myCustomContainerForFiles {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .CustomFile {
+        display: flex;
+        flex-direction: column;
+        margin: 40px;
+    }
+
+    .CustomFile button {
+        display: flex;
+    }
+
+    .CustomFile span {
+        display: block;
+        padding-left: 0;
+        width: 150px;
+        font-family: Arial, Helvetica, sans-serif;
+        color: black;
+    }
+
+    .CustomFile .myFolderIcon {
+        font-size: 100px;
+        color: #CC5500;
+    }
+
+    .mycontainer {
+        display: flex;
+    }
+</style>
+
+<!--<h2>Folders</h2>-->
+
+<div class="mycontainer">
+    <p>
+        <a href="~/Folder/DeleteAllSelected" class="btn btn-primary">Delete All Selected</a>
+    </p>
+</div>
+
+<div class="myCustomContainer">
+    @foreach (var folderName in Model.Folders)
+    {
+        <div class="CustomFolder">
+            <a href="~/Folder/StoreFolderInList/@folderName.Path"> <i class="fas fa-folder myFolderIcon"></i><span>@folderName.Name</span></a>
+        </div>
+    }
+</div>
+
+<div class="myCustomContainerForFiles">
+    @foreach (var fileName in Model.Files)
+    {
+        string filePathNormalized = @fileName.Path.Replace(@"\", ";");
+        string finalPathNormalized = filePathNormalized.Replace(".", "'");
+
+        <div class="CustomFile">
+            <a href="~/Folder/StoreFileInList/@finalPathNormalized"> <i class="fas fa-file myFolderIcon"></i><span>@fileName.Name</span></a>
+        </div>
+    }
+</div>

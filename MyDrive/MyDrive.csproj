@@ -470,6 +470,8 @@
     <Content Include="Views\Folder\ShowFilesInTable.cshtml" />
     <Content Include="Views\Folder\RenameFolder.cshtml" />
     <Content Include="Views\Folder\RenameFile.cshtml" />
+    <Content Include="Views\Folder\DeleteMultiple.cshtml" />
+    <Content Include="Views\Folder\DeleteAllSelected.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

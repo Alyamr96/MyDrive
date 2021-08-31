@@ -68,6 +68,10 @@
         .mycontainer .Second-button {
             margin-left: 15px;
         }
+
+        .mycontainer .Third-button {
+            margin-left: 15px;
+        }
 </style>
 
 <!--<h2>Folders</h2>-->
@@ -80,6 +84,15 @@
     <p class="Second-button">
         <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#uploadFileModal">Upload File</a>
     </p>
+    @if ("hi" == "hi")
+    {
+        string path = HttpContext.Current.Request.Url.AbsolutePath;
+        string myPath = path.Split('/').Last();
+        <p class="Third-button">
+            <a href="~/Folder/DeleteMultiple/@myPath" class="btn btn-primary">Delete Multiple</a>
+        </p>
+    }
+
 </div>
 @using (Html.BeginForm("UploadFileWithinPath", "Folder", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
@@ -134,17 +147,17 @@
     {
 
 
-    <div class="CustomFolder">
-        @if (User.IsInRole("CanManageUsers"))
-        {
-            <a href="~/Folder/RenameFolder/@folderName.Path" class="btn-link"><i class="fas fa-pen"></i></a>
-        }
-        @if (User.IsInRole("CanManageUsers") || User.IsInRole("DeleteFolders"))
-        {
-            <button class="btn-link js-delete" data-folder-path="@folderName.Path"><i class="fas fa-backspace"></i></button>
-        }
-        <a href="/Folder/GetFolderFromPath/@folderName.Path"> <i class="fas fa-folder myFolderIcon"></i><span>@folderName.Name</span></a>
-    </div>
+        <div class="CustomFolder">
+            @if (User.IsInRole("CanManageUsers"))
+            {
+                <a href="~/Folder/RenameFolder/@folderName.Path" class="btn-link"><i class="fas fa-pen"></i></a>
+            }
+            @if (User.IsInRole("CanManageUsers") || User.IsInRole("DeleteFolders"))
+            {
+                <button class="btn-link js-delete" data-folder-path="@folderName.Path"><i class="fas fa-backspace"></i></button>
+            }
+            <a href="/Folder/GetFolderFromPath/@folderName.Path"> <i class="fas fa-folder myFolderIcon"></i><span>@folderName.Name</span></a>
+        </div>
     }
 </div>
 
@@ -158,7 +171,7 @@
         <div class="CustomFile">
             @if (User.IsInRole("CanManageUsers"))
             {
-            <a href="~/Folder/RenameFile/@finalPathNormalized" class="btn-link"><i class="fas fa-pen"></i></a>
+                <a href="~/Folder/RenameFile/@finalPathNormalized" class="btn-link"><i class="fas fa-pen"></i></a>
             }
             @if (User.IsInRole("CanManageUsers") || User.IsInRole("DeleteFolders"))
             {

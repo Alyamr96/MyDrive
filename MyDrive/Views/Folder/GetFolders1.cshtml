@@ -159,7 +159,7 @@
     <div class="CustomFile">
         @if (User.IsInRole("CanManageUsers"))
         {
-            <button class="btn-link"><i class="fas fa-pen"></i></button>
+        <a href="~/Folder/RenameFile/@finalPathNormalized" class="btn-link"><i class="fas fa-pen"></i></a>
         }
         @if (User.IsInRole("CanManageUsers") || User.IsInRole("DeleteFolders"))
         {
