@@ -472,6 +472,8 @@
     <Content Include="Views\Folder\RenameFile.cshtml" />
     <Content Include="Views\Folder\DeleteMultiple.cshtml" />
     <Content Include="Views\Folder\DeleteAllSelected.cshtml" />
+    <Content Include="Views\Folder\FolderExistsView.cshtml" />
+    <Content Include="Views\Folder\FileExistsView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

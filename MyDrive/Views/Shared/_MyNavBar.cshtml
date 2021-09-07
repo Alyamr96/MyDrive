@@ -51,7 +51,10 @@
         <ul>
             <li>@Html.ActionLink("Drive Users", "DisplayUsers", "DriveUsers")</li>
             <li>@Html.ActionLink("About", "About", "Home")</li>
+            @if (User.IsInRole("CanManageUsers"))
+            {
             <li>@Html.ActionLink("View All Upload Files", "ShowFilesInTable", "Folder")</li>
+            }
             <li>@Html.ActionLink("Create Folder", "GetFolders1", "Folder")</li>
             @if (User.IsInRole("CanManageUsers"))
             {

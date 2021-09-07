@@ -66,7 +66,7 @@ namespace MyDrive.Controllers
             if (!Directory.Exists(folderPath))
                 Directory.CreateDirectory(folderPath);
             else
-                return HttpNotFound();
+                return RedirectToAction("FolderExistsView");
 
             return RedirectToAction("GetFolders1");
         }
@@ -222,7 +222,9 @@ namespace MyDrive.Controllers
              if (!Directory.Exists(path))
                  Directory.CreateDirectory(path);
              else
-                 return HttpNotFound();
+                 return RedirectToAction("FolderExistsView");
+            
+                 //return HttpNotFound();
              return RedirectToAction("GetFolderFromPath/" + folderName);
         }
 
@@ -274,7 +276,12 @@ namespace MyDrive.Controllers
                 Directory.CreateDirectory(filePath);
 
             filePath = filePath + Path.GetFileName(postedFile.FileName);
-            postedFile.SaveAs(filePath);
+            if (!System.IO.File.Exists(filePath))
+            {
+                postedFile.SaveAs(filePath);
+            }
+            else
+                return RedirectToAction("FileExistsView");
             ViewBag.Message = "File Saved";
             var FileModel = new FileViewModel()
             {
@@ -292,7 +299,13 @@ namespace MyDrive.Controllers
                 postedFile = Request.Files["userFile"];
 
             string filePath = path + @"\" + Path.GetFileName(postedFile.FileName);
-            postedFile.SaveAs(filePath);
+            if (!System.IO.File.Exists(filePath))
+            {
+                postedFile.SaveAs(filePath);
+            }
+            else
+                return RedirectToAction("FileExistsView");
+            
             return RedirectToAction("GetFolderFromPath/" + folderName);
         }
 
@@ -586,6 +599,35 @@ namespace MyDrive.Controllers
             }
             returnPath1 = returnPath1.Substring(0, returnPath1.Length - 1);
             return RedirectToAction("GetFolderFromPath/" + returnPath1);
+        }
+
+        public ActionResult FolderExistsView()
+        {
+            return View();
+        }
+
+        public ActionResult FileExistsView()
+        {
+            return View();
+        }
+
+        [Route("Folder/BackButton/{path}")]
+        public ActionResult BackButton(string path)
+        {
+            string returnPath = path;
+            string returnPath1 = "";
+            string[] words = returnPath.Split(';');
+            if (words.Length == 1)
+                return RedirectToAction("GetFolders1");
+            else
+            {
+                for (int i = 0; i < words.Length - 1; i++)
+                {
+                    returnPath1 = returnPath1 + words[i] + ";";
+                }
+                returnPath1 = returnPath1.Substring(0, returnPath1.Length - 1);
+                return RedirectToAction("GetFolderFromPath/" + returnPath1);
+            }
         }
     }
 }

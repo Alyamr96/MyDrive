@@ -13,6 +13,10 @@
                 <th>Last Name</th>
                 <th>@Html.DisplayNameFor(model => model.Email)</th>
                 <th>Phone Number</th>
+                @if (User.IsInRole("CanManageUsers"))
+            {
+                <th>Delete</th>
+            }
             </tr>
         </thead>
         <tbody>
@@ -20,12 +24,16 @@
             {
                 if (item.Email != "admin@mydrive.com")
                 {
-                    <tr>  
-                        <td>@item.FirstName</td>
-                        <td>@Html.DisplayFor(modelItem => item.LastName)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Email)</td>
-                        <td><span>0</span>@Html.DisplayFor(modelItem => item.PhoneNumberInt)</td>
-                    </tr>
+            <tr>
+                <td>@item.FirstName</td>
+                <td>@Html.DisplayFor(modelItem => item.LastName)</td>
+                <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                <td><span>0</span>@Html.DisplayFor(modelItem => item.PhoneNumberInt)</td>
+                @if (User.IsInRole("CanManageUsers"))
+                {
+                    <td><a href="#">Delete</a></td>
+                }
+            </tr>
                 }
             }
         </tbody>

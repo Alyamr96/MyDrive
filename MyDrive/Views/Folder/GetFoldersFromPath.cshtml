@@ -72,12 +72,25 @@
         .mycontainer .Third-button {
             margin-left: 15px;
         }
+
+        .mycontainer .Fourth-button {
+            margin-left: 15px;
+        }
 </style>
 
 <!--<h2>Folders</h2>-->
 
 <div class="mycontainer">
-    <p>
+    @if ("hi" == "hi")
+    {
+        string path = HttpContext.Current.Request.Url.AbsolutePath;
+        string myPath = path.Split('/').Last();
+        <p class="Third-button">
+            <a href="~/Folder/BackButton/@myPath" class="btn-link"><i class="fas fa-long-arrow-alt-left"></i></a>
+        </p>
+    }
+
+    <p class="Fourth-button">
         <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#createFolderModal">Create Folder</a>
     </p>
 
