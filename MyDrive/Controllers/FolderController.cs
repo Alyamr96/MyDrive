@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using MyDrive.Models;
 using MyDrive.ViewModels;
@@ -20,12 +21,20 @@ namespace MyDrive.Controllers
         static string folderPathWhenRename = "";
         static List<string> FoldersToDelete = new List<string>();
         static List<string> FilesToDelete = new List<string>();
-        /*private ApplicationSignInManager _signInManager;
+        private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private ApplicationDbContext _context;
 
         public FolderController()
         {
+            _context = new ApplicationDbContext();
         }
+
+        protected override void Dispose(bool disposing)
+        {
+            _context.Dispose();
+        }
+
         public FolderController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
@@ -54,7 +63,7 @@ namespace MyDrive.Controllers
             {
                 _userManager = value;
             }
-        }*/
+        }
         // GET: Folder
         public ActionResult CreateFolder(Folder folder)
         {
@@ -135,9 +144,10 @@ namespace MyDrive.Controllers
                 Folders = folders,
                 Files = files
             };
+           
             return View(FoldersAndFiles);
         }
-        
+
         [Route("Folder/GetFolderFromPath/{folderName}")]
         public ActionResult GetFoldersFromPath(string folderName)
         {
@@ -217,15 +227,15 @@ namespace MyDrive.Controllers
         [Route("Folder/CreateFolderWithinPath/{folderName}")]
         public ActionResult CreateFolderWithinPath(string folderName, Folder folder)
         {
-             string myFolderName = folderName.Replace(";", @"\");
-             string path = absoloutePath + @"/" + myFolderName + @"/" +folder.Name;
-             if (!Directory.Exists(path))
-                 Directory.CreateDirectory(path);
-             else
-                 return RedirectToAction("FolderExistsView");
-            
-                 //return HttpNotFound();
-             return RedirectToAction("GetFolderFromPath/" + folderName);
+            string myFolderName = folderName.Replace(";", @"\");
+            string path = absoloutePath + @"/" + myFolderName + @"/" + folder.Name;
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+            else
+                return RedirectToAction("FolderExistsView");
+
+            //return HttpNotFound();
+            return RedirectToAction("GetFolderFromPath/" + folderName);
         }
 
         [Route("Folder/GetFiles")]
@@ -236,13 +246,13 @@ namespace MyDrive.Controllers
             List<string> filesPathAfterFile = new List<string>(fileEntries.Length);
             string[] fileNames = new string[fileEntries.Length];
             List<FileModel> files = new List<FileModel>(fileEntries.Length);
-            for (int i =0; i<fileEntries.Length; i++)
+            for (int i = 0; i < fileEntries.Length; i++)
             {
                 string fullpath = Path.GetFullPath(fileEntries[i]).TrimEnd(Path.DirectorySeparatorChar);
                 string projectName = fileEntries[i].Split(Path.DirectorySeparatorChar).Last();
                 fileNames[i] = projectName;
             }
-            for (int j =0; j<fileEntries.Length; j++)
+            for (int j = 0; j < fileEntries.Length; j++)
             {
                 for (int i = 0; i < fileEntries[j].Length; i++)
                 {
@@ -259,7 +269,7 @@ namespace MyDrive.Controllers
             {
                 files.Add(new FileModel { Name = fileNames[i], Path = filesPathAfterFile[i] });
             }
-            
+
             return View(files);
         }
 
@@ -268,7 +278,7 @@ namespace MyDrive.Controllers
         {
             string filePath = "";
             filePath = Server.MapPath("~/Files/");
-            
+
             if (postedFile == null)
                 postedFile = Request.Files["userFile"];
 
@@ -287,6 +297,9 @@ namespace MyDrive.Controllers
             {
                 name = postedFile.FileName
             };
+            var myFile = new FileModel { Name = postedFile.FileName, Path = filePath, Date = DateTime.Now};
+            _context.Files.Add(myFile);
+            _context.SaveChanges();
             return RedirectToAction("GetFolders1");
         }
 
@@ -305,7 +318,7 @@ namespace MyDrive.Controllers
             }
             else
                 return RedirectToAction("FileExistsView");
-            
+
             return RedirectToAction("GetFolderFromPath/" + folderName);
         }
 
@@ -325,6 +338,18 @@ namespace MyDrive.Controllers
             string myFilePath = filePath.Replace(";", @"\");
             string myFinalPath = myFilePath.Replace("'", ".");
             string path = absoloutePath + @"/" + myFinalPath;
+            string pathUsedForDelete = absoloutePath + @"\" + myFinalPath;
+            pathUsedForDelete = pathUsedForDelete.Replace(" ", "");
+            var DatabaseFiles = _context.Files.ToList();
+            //var fileInDb = _context.Files.Single(c => c.Path == pathUsedForDelete);
+            foreach(var DatabaseFile in DatabaseFiles)
+            {
+                if(DatabaseFile.Path == pathUsedForDelete)
+                {
+                    _context.Files.Remove(DatabaseFile);
+                    _context.SaveChanges();
+                }
+            }
             System.IO.File.Delete(path);
         }
 
@@ -380,22 +405,22 @@ namespace MyDrive.Controllers
             folderPathWhenRename = "";
             string returnPath = "";
             string[] words = path.Split(';');
-            string oldFolderName = words[words.Length-1];
+            string oldFolderName = words[words.Length - 1];
             string oldPath = "";
 
-            for(int i =0; i< words.Length-1; i++)
+            for (int i = 0; i < words.Length - 1; i++)
             {
                 returnPath = returnPath + words[i] + ";";
                 oldPath = oldPath + words[i] + "/";
             }
             oldPath = oldPath + oldFolderName;
-            
+
             oldPath = oldPath.Replace("/", @"\");
             oldPath = absoloutePath + @"\" + oldPath;
             DirectoryInfo di = new DirectoryInfo(oldPath);
             di.MoveTo(Path.Combine(di.Parent.FullName, folder.Name));
 
-            if(returnPath != "")
+            if (returnPath != "")
             {
                 return RedirectToAction("GetFolderFromPath/" + returnPath);
             }
@@ -568,7 +593,7 @@ namespace MyDrive.Controllers
         {
             List<string> FoldersToDeleteNoDuplicates = FoldersToDelete.Distinct().ToList();
             List<string> FilesToDeleteNoDuplicates = FilesToDelete.Distinct().ToList();
-            for(int i=0; i<FoldersToDeleteNoDuplicates.Count; i++)
+            for (int i = 0; i < FoldersToDeleteNoDuplicates.Count; i++)
             {
                 Directory.Delete(FoldersToDeleteNoDuplicates[i], true);
             }
@@ -580,7 +605,7 @@ namespace MyDrive.Controllers
             FilesToDelete.Clear();
             // starting here are operations to return to folders
             string returnPath = FoldersToDeleteNoDuplicates[0];
-            for(int i=0; i<returnPath.Length; i++)
+            for (int i = 0; i < returnPath.Length; i++)
             {
                 string test = returnPath.Substring(i, 5);
                 if (test.CompareTo("Files") == 0)
@@ -628,6 +653,17 @@ namespace MyDrive.Controllers
                 returnPath1 = returnPath1.Substring(0, returnPath1.Length - 1);
                 return RedirectToAction("GetFolderFromPath/" + returnPath1);
             }
+        }
+        [HttpPost]
+        public ActionResult ConfirmPassword(FoldersandFilesViewModel viewModel, string folderPath)
+        {
+            var userId = User.Identity.GetUserId();
+            ApplicationUser user1 = UserManager.FindById(userId);
+            var result = UserManager.CheckPassword(user1, viewModel.Password);
+            if (result)
+                return Content(viewModel.Password + userId + user1.FirstName + user1.Email + folderPath);
+            else
+                return HttpNotFound();
         }
     }
 }

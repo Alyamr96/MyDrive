@@ -91,18 +91,18 @@
     }
 
     <p class="Fourth-button">
-        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#createFolderModal">Create Folder</a>
+        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#createFolderModal">@MyDrive.Resources.Language.Create_Folder</a>
     </p>
 
     <p class="Second-button">
-        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#uploadFileModal">Upload File</a>
+        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#uploadFileModal">@MyDrive.Resources.Language.Upload_File</a>
     </p>
     @if ("hi" == "hi")
     {
         string path = HttpContext.Current.Request.Url.AbsolutePath;
         string myPath = path.Split('/').Last();
         <p class="Third-button">
-            <a href="~/Folder/DeleteMultiple/@myPath" class="btn btn-primary">Delete Multiple</a>
+            <a href="~/Folder/DeleteMultiple/@myPath" class="btn btn-primary">@MyDrive.Resources.Language.Delete_Multiple_Files</a>
         </p>
     }
 

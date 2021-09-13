@@ -10,5 +10,9 @@ namespace MyDrive.ViewModels
     {
         public List<Folder> Folders { get; set; }
         public List<FileModel> Files { get; set; }
+
+        public string Password { get; set; }
+
+        public string FolderPathToDelete { get; set; }
     }
 }

@@ -120,3 +120,8 @@ C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.AddLastNa
 C:\Users\cashless\Desktop\MyDrive\MyDrive\bin\System.Net.Http.Formatting.dll
 C:\Users\cashless\Desktop\MyDrive\MyDrive\bin\System.Net.Http.Formatting.xml
 C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.AddDeleteFoldersRole.resources
+C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.AddedFilesTable.resources
+C:\Users\cashless\Desktop\MyDrive\MyDrive\bin\ar\MyDrive.resources.dll
+C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Resources.Language.resources
+C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Resources.Language.ar.resources
+C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\ar\MyDrive.resources.dll

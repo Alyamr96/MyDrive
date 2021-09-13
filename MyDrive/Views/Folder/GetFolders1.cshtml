@@ -74,11 +74,11 @@
 
 <div class="mycontainer">
     <p>
-        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#createFolderModal">Create Folder</a>
+        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#createFolderModal">@MyDrive.Resources.Language.Create_Folder</a>
     </p>
 
     <p class="Second-button">
-        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#uploadFileModal">Upload File</a>
+        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#uploadFileModal">@MyDrive.Resources.Language.Upload_File</a>
     </p>
 </div>
 @using (Html.BeginForm("UploadFiles", "Folder", FormMethod.Post, new { enctype = "multipart/form-data" }))
@@ -129,22 +129,42 @@
     </div>
 }
 
+@using (Html.BeginForm("ConfirmPassword", "Folder", new { folderPath = "folderPath" }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <div class="modal fade" id="ConfirmPasswordModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title">Confirm Password</h2>
+                </div>
+                <div class="modal-body">
+
+                    @Html.LabelFor(m => m.Password)
+                    @Html.Password("password", "", new { id = "password", Textmode = "Password" })
+                   <!-- <input id="FolderPathToDelete" name="FolderPathToDelete" type="text" value="" />-->
+
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-group">
+                        <button type="submit" class="btn btn-primary">Confirm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 <div class="myCustomContainer">
-    
-    @foreach (var folderName in Model.Folders)
+
+
+    @for (int i = 0; i < Model.Folders.Count(); i++)
     {
 
-    
     <div class="CustomFolder">
-        @if (User.IsInRole("CanManageUsers"))
-        {
-        <a href="~/Folder/RenameFolder/@folderName.Path" class="btn-link"><i class="fas fa-pen"></i></a>
-        }
-        @if (User.IsInRole("CanManageUsers") || User.IsInRole("DeleteFolders"))
-        {
-            <button class="btn-link js-delete" data-folder-path="@folderName.Path"><i class="fas fa-backspace"></i></button>
-        }
-        <a href="/Folder/GetFolderFromPath/@folderName.Path"> <i class="fas fa-folder myFolderIcon"></i><span>@folderName.Name</span></a>
+        <a href="~/Folder/RenameFolder/@Model.Folders[i].Path" class="btn-link"><i class="fas fa-pen"></i></a>
+        <!--<button class="btn-link" data-toggle="modal" data-target="#ConfirmPasswordModal"><i class="fas fa-backspace"></i></button>-->
+        <button class="btn-link js-delete" data-folder-path="@Model.Folders[i].Path"><i class="fas fa-backspace"></i></button>
+        <a href="/Folder/GetFolderFromPath/@Model.Folders[i].Path"> <i class="fas fa-folder myFolderIcon"></i><span>@Model.Folders[i].Name</span></a>
     </div>
     }
 </div>
@@ -156,15 +176,15 @@
         string finalPathNormalized = filePathNormalized.Replace(".", "'");
 
 
-    <div class="CustomFile">
-        @if (User.IsInRole("CanManageUsers"))
-        {
-        <a href="~/Folder/RenameFile/@finalPathNormalized" class="btn-link"><i class="fas fa-pen"></i></a>
-        }
-        @if (User.IsInRole("CanManageUsers") || User.IsInRole("DeleteFolders"))
-        {
-            <button class="btn-link js-file-delete" data-file-path="@finalPathNormalized"><i class="fas fa-backspace"></i></button>
-        }
+        <div class="CustomFile">
+            @if (User.IsInRole("CanManageUsers"))
+            {
+                <a href="~/Folder/RenameFile/@finalPathNormalized" class="btn-link"><i class="fas fa-pen"></i></a>
+            }
+            @if (User.IsInRole("CanManageUsers") || User.IsInRole("DeleteFolders"))
+            {
+                <button class="btn-link js-file-delete" data-file-path="@finalPathNormalized"><i class="fas fa-backspace"></i></button>
+            }
             <a href="~/files/@fileName.Path" target="_blank"> <i class="fas fa-file myFolderIcon"></i><span>@fileName.Name</span></a>
         </div>
     }
