@@ -1,0 +1,16 @@
+﻿@model MyDrive.ViewModels.FiltersAppliedViewModel
+@{
+    ViewBag.Title = "FilterOptions";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Filter Options</h2>
+
+@using(Html.BeginForm("FilterSelected", "Filter"))
+{ 
+    <div class="form-group">
+        <label>Select Filter</label>
+        @Html.DropDownListFor(m => m.FilterSelected, new SelectList(Model.FiltersApplied), "", new { @class = "form-control"})
+    </div>
+    <button type="submit" class="btn btn-primary">Apply</button>
+}

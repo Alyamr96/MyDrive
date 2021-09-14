@@ -167,6 +167,7 @@
     <Compile Include="Controllers\AdministrationController.cs" />
     <Compile Include="Controllers\DriveUsersController.cs" />
     <Compile Include="Controllers\FilesController.cs" />
+    <Compile Include="Controllers\FilterController.cs" />
     <Compile Include="Controllers\FolderController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LanguageController.cs" />
@@ -230,6 +231,7 @@
     <Compile Include="ViewModels\EditRoleViewModel.cs" />
     <Compile Include="ViewModels\FilesNamesViewModel.cs" />
     <Compile Include="ViewModels\FileViewModel.cs" />
+    <Compile Include="ViewModels\FiltersAppliedViewModel.cs" />
     <Compile Include="ViewModels\FoldersNameViewModel.cs" />
     <Compile Include="ViewModels\FoldersandFilesViewModel.cs" />
     <Compile Include="ViewModels\UserRoleViewModel.cs" />
@@ -490,6 +492,12 @@
     <Content Include="Views\Folder\FolderExistsView.cshtml" />
     <Content Include="Views\Folder\FileExistsView.cshtml" />
     <Content Include="Views\Language\Index.cshtml" />
+    <Content Include="Views\Filter\FilterOptions.cshtml" />
+    <Content Include="Views\Filter\DateFilterView.cshtml" />
+    <Content Include="Views\Filter\UserNameFilter.cshtml" />
+    <Content Include="Views\Filter\SizeFilter.cshtml" />
+    <Content Include="Views\Filter\FolderFileNameFilter.cshtml" />
+    <Content Include="Views\Filter\CompanyFilter.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
