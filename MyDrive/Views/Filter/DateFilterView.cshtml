@@ -1,4 +1,4 @@
-﻿
+﻿@model MyDrive.ViewModels.DateFilterViewModel
 @{
     ViewBag.Title = "DateFilterView";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -6,3 +6,17 @@
 
 <h2>Filter By Date</h2>
 
+@using (Html.BeginForm("FilterByDate", "Filter"))
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.FromDate)
+        @Html.TextBoxFor(m => m.FromDate, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.FromDate)
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.ToDate)
+        @Html.TextBoxFor(m => m.ToDate, new { @class = "form-control" })
+        @Html.ValidationMessageFor(m => m.ToDate)
+    </div>
+    <button class="btn btn-primary" type="submit">Apply</button>
+}

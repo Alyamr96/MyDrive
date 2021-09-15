@@ -1,0 +1,44 @@
+﻿@model List<MyDrive.Models.FileModel>
+@{
+    ViewBag.Title = "FilterByDate";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Filter By Date</h2>
+
+<table id="myFiles" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>File Name</th>
+            <th>File Path</th>
+            <th>File Upload Date</th>
+            <th>View</th>
+            <th>Delete</th>
+            
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            
+             <tr>
+                 <td>@item.Name</td>
+                 <td>@item.Path</td>
+                 <td>@item.Date</td>
+                 <td><a href="#">View</a></td>
+                 <td><a href="#">Delete</a></td>
+                    
+             </tr>
+            
+        }
+    </tbody>
+</table>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $("#myFiles").DataTable();
+        })
+    </script>
+}

@@ -41,6 +41,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FoolproofValidation, Version=0.9.5851.39121, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\FoolproofValidation.0.9.4518\lib\net45\FoolproofValidation.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -227,6 +230,7 @@
     </Compile>
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\CreateRoleViewModel.cs" />
+    <Compile Include="ViewModels\DateFilterViewModel.cs" />
     <Compile Include="ViewModels\DisplayUsersViewModel.cs" />
     <Compile Include="ViewModels\EditRoleViewModel.cs" />
     <Compile Include="ViewModels\FilesNamesViewModel.cs" />
@@ -237,6 +241,12 @@
     <Compile Include="ViewModels\UserRoleViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Client Scripts\mvcfoolproof.unobtrusive.js" />
+    <Content Include="Client Scripts\mvcfoolproof.unobtrusive.min.js" />
+    <Content Include="Client Scripts\MvcFoolproofJQueryValidation.js" />
+    <Content Include="Client Scripts\MvcFoolproofJQueryValidation.min.js" />
+    <Content Include="Client Scripts\MvcFoolproofValidation.js" />
+    <Content Include="Client Scripts\MvcFoolproofValidation.min.js" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\DataTables\css\autoFill.bootstrap.css" />
@@ -498,6 +508,7 @@
     <Content Include="Views\Filter\SizeFilter.cshtml" />
     <Content Include="Views\Filter\FolderFileNameFilter.cshtml" />
     <Content Include="Views\Filter\CompanyFilter.cshtml" />
+    <Content Include="Views\Filter\FilterByDate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
