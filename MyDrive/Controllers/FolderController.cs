@@ -655,15 +655,13 @@ namespace MyDrive.Controllers
             }
         }
         [HttpPost]
-        public ActionResult ConfirmPassword(FoldersandFilesViewModel viewModel, string folderPath)
+        public void ConfirmPassword(FoldersandFilesViewModel viewModel, string folderPath)
         {
             var userId = User.Identity.GetUserId();
             ApplicationUser user1 = UserManager.FindById(userId);
             var result = UserManager.CheckPassword(user1, viewModel.Password);
             if (result)
-                return Content(viewModel.Password + userId + user1.FirstName + user1.Email + folderPath);
-            else
-                return HttpNotFound();
+              DeleteFolder(folderPath);
         }
     }
 }
