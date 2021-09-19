@@ -231,6 +231,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\CreateRoleViewModel.cs" />
     <Compile Include="ViewModels\DateFilterViewModel.cs" />
+    <Compile Include="ViewModels\SizeFilterViewModel.cs" />
     <Compile Include="ViewModels\DisplayUsersViewModel.cs" />
     <Compile Include="ViewModels\EditRoleViewModel.cs" />
     <Compile Include="ViewModels\FilesNamesViewModel.cs" />

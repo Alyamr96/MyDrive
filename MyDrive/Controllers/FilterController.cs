@@ -2,6 +2,7 @@
 using MyDrive.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -10,6 +11,7 @@ namespace MyDrive.Controllers
 {
     public class FilterController : Controller
     {
+        static string absoloutePath = @"C: \Users\cashless\Desktop\MyDrive\MyDrive\Files";
         private ApplicationDbContext _context;
 
         public FilterController()
@@ -45,6 +47,7 @@ namespace MyDrive.Controllers
                 return View("CompanyFilter");
         }
 
+        [HttpPost]
         public ActionResult FilterByDate(DateFilterViewModel viewModel)
         {
             if(!ModelState.IsValid)
@@ -69,6 +72,26 @@ namespace MyDrive.Controllers
 
             return View(FilesToShow);
 
+        }
+
+        [HttpPost]
+        public ActionResult FilterBySize(SizeFilterViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                var viewModelToReturn = new SizeFilterViewModel
+                {
+                    MinSize = viewModel.MinSize,
+                    MaxSize = viewModel.MaxSize
+                };
+                return View("SizeFilter", viewModelToReturn);
+            }
+            else
+            {
+                string[] fileEntries = Directory.GetFiles(absoloutePath, "*", SearchOption.AllDirectories);
+                int length = (int)(new System.IO.FileInfo(fileEntries[0]).Length%1024);
+                return Content(fileEntries[0] + length);
+            }       
         }
     }
 }

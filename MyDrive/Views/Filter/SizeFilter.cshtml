@@ -1,8 +1,80 @@
-﻿
+﻿@model MyDrive.ViewModels.SizeFilterViewModel
 @{
     ViewBag.Title = "SizeFilter";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>SizeFilter</h2>
+<h2>Filter By Size</h2>
 
+<style>
+    .size {
+        padding-top: 30px;
+        display: none;
+    }
+</style>
+
+
+
+<div>
+    <label><input type="radio" name="colorRadio" value="max"> Max Size</label>
+    <label><input type="radio" name="colorRadio" value="min"> Min Size</label>
+    <label><input type="radio" name="colorRadio" value="InBetween"> In Between</label>
+</div>
+
+<div class="max size">
+    <h3>Please enter a number without decimals: </h3> <br />
+    @using (Html.BeginForm("FilterBySize", "Filter"))
+    {
+        <div class="form-group">
+            @Html.LabelFor(m => m.MaxSize)
+            @Html.TextBoxFor(m => m.MaxSize, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.MaxSize)
+        </div>
+        <button class="btn btn-primary" type="submit">Apply</button>
+    }
+</div>
+
+<div class="min  size">
+    <h3>Please enter a number without decimals: </h3> <br />
+    @using (Html.BeginForm("FilterBySize", "Filter"))
+    {
+        <div class="form-group">
+            @Html.LabelFor(m => m.MinSize)
+            @Html.TextBoxFor(m => m.MinSize, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.MinSize)
+        </div>
+        <button class="btn btn-primary" type="submit">Apply</button>
+    }
+</div>
+
+<div class="InBetween size">
+    <h3>Please enter a number without decimals and make sure max size is greater than min size: </h3> <br />
+    @using (Html.BeginForm("FilterBySize", "Filter"))
+    {
+        <div class="form-group">
+            @Html.LabelFor(m => m.MinSize)
+            @Html.TextBoxFor(m => m.MinSize, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.MinSize)
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.MaxSize)
+            @Html.TextBoxFor(m => m.MaxSize, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.MaxSize)
+        </div>
+        <button class="btn btn-primary" type="submit">Apply</button>
+    }
+</div>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $('input[type="radio"]').click(function () {
+                var inputValue = $(this).attr("value");
+                var targetBox = $("." + inputValue);
+                $(".size").not(targetBox).hide();
+                $(targetBox).show();
+            });
+        });
+    </script>
+}
