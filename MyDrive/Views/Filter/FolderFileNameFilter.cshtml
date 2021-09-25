@@ -4,5 +4,14 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>FolderFileNameFilter</h2>
+<h2>Filter By Name</h2>
 
+@using(Html.BeginForm("FilterByName", "Filter"))
+{ 
+<div>
+    <label>Enter Folder/File Name:</label>
+    <input class="form-control" name="FolderFileName" id="FolderFileName" type="text" value"" />
+    <br />
+    <button class="btn btn-primary">Submit</button>
+</div>
+}

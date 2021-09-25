@@ -1,0 +1,56 @@
+﻿@model List<MyDrive.Models.Company>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Companies</h2>
+
+<style>
+    .CompanyButtons {
+        display: flex;
+    }
+
+    #SecondButton {
+        margin-left:15px;
+    }
+
+    #ThirdButton {
+        margin-left: 15px;
+    }
+
+    .Companies {
+        margin-top: 30px;
+    }
+
+    span {
+        display: block;
+        padding-left: 0;
+        width: 100px;
+        font-family: Arial, Helvetica, sans-serif;
+        color: black;
+        text-align: center;
+    }
+
+    img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+    }
+</style>
+
+<div class="CompanyButtons">
+    <a href="~/Company/CreateCompany" class="btn btn-primary">Create Company</a>
+    <a href="#" class="btn btn-primary" id="SecondButton">Edit Company</a>
+    <a href="#" class="btn btn-danger" id="ThirdButton">Delete Company</a>
+</div>
+
+<div class="Companies">
+    @for (int i = 0; i < Model.Count; i++)
+    {
+        string replaceString = Model[i].LogoPath.Replace(@"\", "/");
+        string[] imagePath = replaceString.Split('/');
+        string imagePath1 = imagePath[imagePath.Length - 1];
+        <a href="#"><img src="~/Images/@imagePath1" alt="Company logo" /><span>@Model[i].Name</span></a>
+    }
+</div>

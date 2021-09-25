@@ -24,14 +24,15 @@
     @Html.Partial("_MyNavBar")
     <div class="container body-content">
         @RenderBody()
-       <!-- <hr /> 
-        <footer class="myFooter">
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
-        -->
+        <!-- <hr />
+         <footer class="myFooter">
+             <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+         </footer>
+         -->
     </div>
 
     @Scripts.Render("~/bundles/lib")
+    @Scripts.Render("~/bundles/jqueryval")
     @RenderSection("scripts", required: false)
 </body>
 </html>

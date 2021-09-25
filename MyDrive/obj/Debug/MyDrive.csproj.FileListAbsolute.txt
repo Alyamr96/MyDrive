@@ -126,3 +126,4 @@ C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Resources.Language.r
 C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Resources.Language.ar.resources
 C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\ar\MyDrive.resources.dll
 C:\Users\cashless\Desktop\MyDrive\MyDrive\bin\FoolproofValidation.dll
+C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.AddedCompanyTable.resources

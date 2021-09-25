@@ -89,9 +89,16 @@ namespace MyDrive.Controllers
             else
             {
                 string[] fileEntries = Directory.GetFiles(absoloutePath, "*", SearchOption.AllDirectories);
-                int length = (int)(new System.IO.FileInfo(fileEntries[0]).Length%1024);
+                int length = (int)(new System.IO.FileInfo(fileEntries[2]).Length/1024000);
                 return Content(fileEntries[0] + length);
             }       
+        }
+
+        [HttpPost]
+        public ActionResult FilterByName()
+        {
+            string NameToSearch = Request["FolderFileName"].ToString();
+            return Content(NameToSearch);
         }
     }
 }

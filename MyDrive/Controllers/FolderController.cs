@@ -655,13 +655,178 @@ namespace MyDrive.Controllers
             }
         }
         [HttpPost]
-        public void ConfirmPassword(FoldersandFilesViewModel viewModel, string folderPath)
+        public ActionResult ConfirmPassword(FoldersandFilesViewModel viewModel, string folderPath)
         {
-            var userId = User.Identity.GetUserId();
-            ApplicationUser user1 = UserManager.FindById(userId);
-            var result = UserManager.CheckPassword(user1, viewModel.Password);
-            if (result)
-              DeleteFolder(folderPath);
+            if (ModelState.IsValid)
+            {
+                var userId = User.Identity.GetUserId();
+                ApplicationUser user1 = UserManager.FindById(userId);
+                try
+                {
+                    var result = UserManager.CheckPassword(user1, viewModel.Password);
+                    if (result)
+                    {
+                        DeleteFolder(folderPath);
+                        return Json(true, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(false, JsonRequestBehavior.AllowGet);
+                    }
+                       
+                }
+                catch(System.ArgumentNullException e)
+                {
+                    return Json(false, JsonRequestBehavior.AllowGet);
+                }    
+            }
+            else
+                return Json(false, JsonRequestBehavior.AllowGet);
+            
+        }
+
+        [HttpPost]
+        public ActionResult ConfirmPasswordForFile(FoldersandFilesViewModel viewModel, string filePath)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = User.Identity.GetUserId();
+                ApplicationUser user1 = UserManager.FindById(userId);
+                try
+                {
+                    var result = UserManager.CheckPassword(user1, viewModel.Password);
+                    if (result)
+                    {
+                        DeleteFile(filePath);
+                        return Json(true, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                        return Json(false, JsonRequestBehavior.AllowGet);
+                }
+                catch (System.ArgumentNullException e)
+                {
+                    return Json(false, JsonRequestBehavior.AllowGet);
+                }
+            }
+            else
+                return Json(false, JsonRequestBehavior.AllowGet);
+            
+        }
+
+        [HttpPost]
+        public ActionResult ConfirmPasswordForFolderRename(FoldersandFilesViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = User.Identity.GetUserId();
+                ApplicationUser user1 = UserManager.FindById(userId);
+                try
+                {
+                    var result = UserManager.CheckPassword(user1, viewModel.Password);
+                    if (result)
+                    {
+                        return Json(true, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                        return Json(false, JsonRequestBehavior.AllowGet);
+                }
+                catch (System.ArgumentNullException e)
+                {
+                    return Json(false, JsonRequestBehavior.AllowGet);
+                }
+            }
+            else
+                return Json(false, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult ConfirmPasswordForFileRename(FoldersandFilesViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = User.Identity.GetUserId();
+                ApplicationUser user1 = UserManager.FindById(userId);
+                try
+                {
+                    var result = UserManager.CheckPassword(user1, viewModel.Password);
+                    if (result)
+                    {
+                        return Json(true, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                        return Json(false, JsonRequestBehavior.AllowGet);
+                }
+                catch (System.ArgumentNullException e)
+                {
+                    return Json(false, JsonRequestBehavior.AllowGet);
+                }
+            }
+            else
+                return Json(false, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult RenameFolderModal(FoldersandFilesViewModel viewModel, string folderPath)
+        {
+            try
+            {
+                string path = folderPath;
+                string[] words = path.Split(';');
+                string oldFolderName = words[words.Length - 1];
+                string oldPath = "";
+
+                for (int i = 0; i < words.Length - 1; i++)
+                {
+                    oldPath = oldPath + words[i] + "/";
+                }
+                oldPath = oldPath + oldFolderName;
+
+                oldPath = oldPath.Replace("/", @"\");
+                oldPath = absoloutePath + @"\" + oldPath;
+                DirectoryInfo di = new DirectoryInfo(oldPath);
+                di.MoveTo(Path.Combine(di.Parent.FullName, viewModel.RenameFolderName));
+
+                return Json(true, JsonRequestBehavior.AllowGet);
+            }
+            catch(System.ArgumentNullException e)
+            {
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
+            
+        }
+
+        [HttpPost]
+        public ActionResult RenameFileModal(FoldersandFilesViewModel viewModel, string filePath)
+        {
+            try
+            {
+                string path = filePath;
+                path = path.Replace("'", ".");
+                string[] extentionArray = path.Split('.');
+                string extention = extentionArray[extentionArray.Length - 1];
+                string NewFileName = viewModel.RenameFolderName + '.' + extention;
+                string[] words = path.Split(';');
+                string oldFolderName = words[words.Length - 1];
+                string oldPath = "";
+
+                for (int i = 0; i < words.Length - 1; i++)
+                {
+                    oldPath = oldPath + words[i] + "/";
+                }
+                oldPath = oldPath + oldFolderName;
+
+                oldPath = oldPath.Replace("/", @"\");
+                oldPath = absoloutePath + @"\" + oldPath;
+                FileInfo di = new FileInfo(oldPath);
+                di.MoveTo(Path.Combine(di.Directory.FullName, NewFileName));
+
+                return Json(true, JsonRequestBehavior.AllowGet);
+            }
+            catch (System.ArgumentNullException e)
+            {
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
+
         }
     }
 }
