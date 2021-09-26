@@ -139,10 +139,12 @@ namespace MyDrive.Controllers
                 files.Add(new FileModel { Name = fileNames[i], Path = filesPathAfterFile[i] });
             }
             // Folders and files viewModel
+            var companiesInDb = _context.Companies.ToList();
             var FoldersAndFiles = new FoldersandFilesViewModel
             {
                 Folders = folders,
-                Files = files
+                Files = files,
+                Companies = companiesInDb
             };
            
             return View(FoldersAndFiles);
@@ -538,12 +540,18 @@ namespace MyDrive.Controllers
             {
                 files.Add(new FileModel { Name = fileNames[i], Path = filesPathAfterFile[i] });
             }
+            List<string> FoldersToDeleteNoDuplicates = FoldersToDelete.Distinct().ToList();
+            List<string> FilesToDeleteNoDuplicates = FilesToDelete.Distinct().ToList();
             // FoldersandFilesViewModel
             var FoldersAndFiles = new FoldersandFilesViewModel
             {
                 Folders = folders,
-                Files = files
+                Files = files,
+                FoldersToDelete = FoldersToDeleteNoDuplicates,
+                FilesToDelete = FilesToDeleteNoDuplicates
             };
+            
+     
             return View(FoldersAndFiles);
         }
 
@@ -551,7 +559,7 @@ namespace MyDrive.Controllers
         public ActionResult storeDeletedFoldersInArray(string folderPath)
         {
             string myFolderPath = folderPath.Replace(";", @"\");
-            string path = absoloutePath + @"/" + myFolderPath;
+            string path = absoloutePath + @"\" + myFolderPath;
             FoldersToDelete.Add(path);
             string[] words = folderPath.Split(';');
             string returnPath = "";
@@ -562,13 +570,54 @@ namespace MyDrive.Controllers
             return RedirectToAction("DeleteMultiple/" + returnPath);
         }
 
+        [Route("Folder/RemoveFolderFromList/{folderPath}")]
+        public ActionResult RemoveDeletedFoldersFromArray(string folderPath)
+        {
+            string myFolderPath = folderPath.Replace(";", @"\");
+            string path = Server.MapPath("~/Files/");
+            path += myFolderPath;
+            for(int i=0; i<FoldersToDelete.Count; i++)
+            {
+                if (FoldersToDelete[i].Replace(" ", "").Equals(path))
+                    FoldersToDelete.RemoveAt(i);
+            }
+            //FoldersToDelete.Add(path);
+            string[] words = folderPath.Split(';');
+            string returnPath = "";
+            for (int i = 0; i < words.Length - 1; i++)
+            {
+                returnPath = returnPath + words[i] + ";";
+            }
+            return RedirectToAction("DeleteMultiple/" + returnPath);
+        }
+
         [Route("Folder/StoreFileInList/{filePath}")]
-        public ActionResult storeDeletedFilesInArray(string filePath)
+        public ActionResult StoreDeletedFilesInArray(string filePath)
         {
             string myFilePath = filePath.Replace(";", @"\");
             string myFinalPath = myFilePath.Replace("'", ".");
-            string path = absoloutePath + @"/" + myFinalPath;
+            string path = absoloutePath + @"\" + myFinalPath;
             FilesToDelete.Add(path);
+            string[] words = filePath.Split(';');
+            string returnPath = "";
+            for (int i = 0; i < words.Length - 1; i++)
+            {
+                returnPath = returnPath + words[i] + ";";
+            }
+            return RedirectToAction("DeleteMultiple/" + returnPath);
+        }
+
+        [Route("Folder/RemoveFileFromList/{filePath}")]
+        public ActionResult RemoveDeletedFilesInArray(string filePath)
+        {
+            string myFilePath = filePath.Replace(";", @"\");
+            string myFinalPath = myFilePath.Replace("'", ".");
+            string path = Server.MapPath("~/Files/") + myFinalPath;
+            for (int i = 0; i < FilesToDelete.Count; i++)
+            {
+                if (FilesToDelete[i].Replace(" ", "").Equals(path))
+                    FilesToDelete.RemoveAt(i);
+            }
             string[] words = filePath.Split(';');
             string returnPath = "";
             for (int i = 0; i < words.Length - 1; i++)
@@ -589,6 +638,7 @@ namespace MyDrive.Controllers
             return View();
         }
 
+        [HttpPost]
         public ActionResult DeleteAllSelectedFoldersAndFiles()
         {
             List<string> FoldersToDeleteNoDuplicates = FoldersToDelete.Distinct().ToList();
@@ -826,6 +876,66 @@ namespace MyDrive.Controllers
             {
                 return Json(false, JsonRequestBehavior.AllowGet);
             }
+
+        }
+
+        [HttpPost]
+        public ActionResult ConfirmPasswordToDeleteAllSelected(FoldersandFilesViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = User.Identity.GetUserId();
+                ApplicationUser user1 = UserManager.FindById(userId);
+                try
+                {
+                    var result = UserManager.CheckPassword(user1, viewModel.Password);
+                    if (result)
+                    {
+                        DeleteAllSelectedFoldersAndFiles();
+                        return Json(true, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                        return Json(false, JsonRequestBehavior.AllowGet);
+                }
+                catch (System.ArgumentNullException e)
+                {
+                    return Json(false, JsonRequestBehavior.AllowGet);
+                }
+            }
+            else
+                return Json(false, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult ConfirmPasswordForCompanyDelete(FoldersandFilesViewModel viewModel, int id)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = User.Identity.GetUserId();
+                ApplicationUser user1 = UserManager.FindById(userId);
+                try
+                {
+                    var result = UserManager.CheckPassword(user1, viewModel.Password);
+                    if (result)
+                    {
+                        var companyInDb = _context.Companies.Single(c => c.Id == id);
+                        _context.Companies.Remove(companyInDb);
+                        _context.SaveChanges();
+                        return Json(true, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(false, JsonRequestBehavior.AllowGet);
+                    }
+
+                }
+                catch (System.ArgumentNullException e)
+                {
+                    return Json(false, JsonRequestBehavior.AllowGet);
+                }
+            }
+            else
+                return Json(false, JsonRequestBehavior.AllowGet);
 
         }
     }

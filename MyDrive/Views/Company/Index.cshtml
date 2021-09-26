@@ -1,4 +1,4 @@
-﻿@model List<MyDrive.Models.Company>
+﻿@model MyDrive.ViewModels.ListCreateEditDeleteCompaniesViewModel
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -7,16 +7,19 @@
 <h2>Companies</h2>
 
 <style>
+    .Companies {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .Companies .customFolder {
+        display: flex;
+        flex-direction: column;
+        margin: 30px;
+    }
+
     .CompanyButtons {
         display: flex;
-    }
-
-    #SecondButton {
-        margin-left:15px;
-    }
-
-    #ThirdButton {
-        margin-left: 15px;
     }
 
     .Companies {
@@ -41,16 +44,26 @@
 
 <div class="CompanyButtons">
     <a href="~/Company/CreateCompany" class="btn btn-primary">Create Company</a>
-    <a href="#" class="btn btn-primary" id="SecondButton">Edit Company</a>
-    <a href="#" class="btn btn-danger" id="ThirdButton">Delete Company</a>
 </div>
 
+
 <div class="Companies">
-    @for (int i = 0; i < Model.Count; i++)
+    @for (int i = 0; i < Model.Companies.Count; i++)
     {
-        string replaceString = Model[i].LogoPath.Replace(@"\", "/");
+        string replaceString = Model.Companies[i].LogoPath.Replace(@"\", "/");
         string[] imagePath = replaceString.Split('/');
         string imagePath1 = imagePath[imagePath.Length - 1];
-        <a href="#"><img src="~/Images/@imagePath1" alt="Company logo" /><span>@Model[i].Name</span></a>
+    <div class="customFolder">
+        <span>@Html.ActionLink("Edit Company", "EditCompany", "Company", new { id = Model.Companies[i].Id }, null)</span>
+        <span>@Html.ActionLink("Manage Users", "ManageUsers", "Company", new { id = Model.Companies[i].Id }, null)</span>
+        <a href="#"><img src="~/Images/@imagePath1" alt="Company logo" /><span>@Model.Companies[i].Name</span></a>
+    </div>  
     }
 </div>
+
+@section scripts
+{
+    <script>
+        
+    </script>
+}

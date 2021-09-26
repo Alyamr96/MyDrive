@@ -1,0 +1,53 @@
+﻿@model MyDrive.ViewModels.UsersInCompaniesViewModel
+@{
+    ViewBag.Title = "ManageUsers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Manage Users in @ViewBag.CompanyName</h2>
+
+<div><h4>Users In @ViewBag.CompanyName</h4></div>
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>User Name</th>
+            <th>Remove From Company</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.UsersInCompany)
+        {
+            if (user.Email != "admin @mydrive.com")
+            {
+                <tr>
+                    <td>@user.FirstName @user.LastName</td>
+                    <td>Assign</td>
+                </tr>
+            }
+
+        }
+    </tbody>
+</table>
+
+<div><h4>Users Not In @ViewBag.CompanyName</h4></div>
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>User Name</th>
+            <th>Assign To Company</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model.UsersNotInCompany)
+        {
+            if (user.Email != "admin@mydrive.com")
+            {
+                <tr>
+                    <td>@user.FirstName @user.LastName</td>
+                    <td>@Html.ActionLink("Assign", "AssignToCompany", "Company", new { UserEmail = @user.Email, CompanyName = ViewBag.CompanyName }, null)</td>
+                </tr>
+            }
+
+        }
+    </tbody>
+</table>

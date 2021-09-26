@@ -16,22 +16,22 @@
         margin: 30px;
     }
 
-    .CustomFolder button {
-        display: flex;
-    }
+        .CustomFolder button {
+            display: flex;
+        }
 
-    .CustomFolder span {
-        display: block;
-        padding-left: 30px;
-        width: 150px;
-        font-family: Arial, Helvetica, sans-serif;
-        color: black;
-    }
+        .CustomFolder span {
+            display: block;
+            padding-left: 30px;
+            width: 150px;
+            font-family: Arial, Helvetica, sans-serif;
+            color: black;
+        }
 
-    .CustomFolder .myFolderIcon {
-        font-size: 100px;
-        color: #CC5500;
-    }
+        .CustomFolder .myFolderIcon {
+            font-size: 100px;
+            color: #CC5500;
+        }
 
     .myCustomContainerForFiles {
         display: flex;
@@ -44,22 +44,22 @@
         margin: 40px;
     }
 
-    .CustomFile button {
-        display: flex;
-    }
+        .CustomFile button {
+            display: flex;
+        }
 
-    .CustomFile span {
-        display: block;
-        padding-left: 0;
-        width: 150px;
-        font-family: Arial, Helvetica, sans-serif;
-        color: black;
-    }
+        .CustomFile span {
+            display: block;
+            padding-left: 0;
+            width: 150px;
+            font-family: Arial, Helvetica, sans-serif;
+            color: black;
+        }
 
-    .CustomFile .myFolderIcon {
-        font-size: 100px;
-        color: #CC5500;
-    }
+        .CustomFile .myFolderIcon {
+            font-size: 100px;
+            color: #CC5500;
+        }
 
     .mycontainer {
         display: flex;
@@ -69,9 +69,44 @@
 <!--<h2>Folders</h2>-->
 
 <div class="mycontainer">
-    <p>
-        <a href="~/Folder/DeleteAllSelected" class="btn btn-primary">Delete All Selected</a>
-    </p>
+    @if ("hi" == "hi")
+    {
+        string path = HttpContext.Current.Request.Url.AbsolutePath;
+        string myPath = "";
+        for (int i = 0; i < path.Length; i++)
+        {
+            string test = path.Substring(i, 14);
+            if (test.CompareTo("DeleteMultiple") == 0)
+            {
+                int number = i + 15;
+                myPath = path.Substring(number);
+                break;
+            }
+        }
+        <button class="btn btn-primary my-delete" data-return-path="@myPath">Delete All Selected</button>
+    }
+</div>
+
+<div class="modal fade" id="ConfirmPasswordModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Confirm Password</h2>
+            </div>
+            <div class="modal-body">
+                <form id="ConfirmPasswordForm">
+                    @Html.LabelFor(m => m.Password)
+                    @Html.Password("password", "", new { id = "passwordForFolderDelete", Textmode = "Password" })
+                    @Html.ValidationMessageFor(m => m.Password)
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group">
+                    <a href="#" id="btnSave1" class="btn btn-primary">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="myCustomContainer">
@@ -94,3 +129,104 @@
         </div>
     }
 </div>
+
+@if (Model.FoldersToDelete.Count > 0)
+{
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Folders To Delete</th>
+                <th>Remove Folder</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.FoldersToDelete)
+            {
+                string RemoveFolderFromDelete = item.Replace(@"\", ";");
+                for(int i=0; i<RemoveFolderFromDelete.Length; i++)
+                {
+                    string test = RemoveFolderFromDelete.Substring(i, 5);
+                    if (test.CompareTo("Files") == 0)
+                    {
+                        int number = i + 6;
+                        RemoveFolderFromDelete = RemoveFolderFromDelete.Substring(number);
+                        break;
+                    }
+                }
+                string RemoveFolderFromDeleteWithSlash = RemoveFolderFromDelete.Replace(";", @"\");
+                <tr>
+                    <td>@RemoveFolderFromDeleteWithSlash</td>
+                    <td><a href="~/Folder/RemoveFolderFromList/@RemoveFolderFromDelete">Remove</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (Model.FilesToDelete.Count > 0)
+{
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Files To Delete</th>
+                <th>Remove File</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.FilesToDelete)
+            {
+                string RemoveFileFromDelete = item.Replace(@"\", ";");
+                for (int i = 0; i < RemoveFileFromDelete.Length; i++)
+                {
+                    string test = RemoveFileFromDelete.Substring(i, 5);
+                    if (test.CompareTo("Files") == 0)
+                    {
+                        int number = i + 6;
+                        RemoveFileFromDelete = RemoveFileFromDelete.Substring(number);
+                        break;
+                    }
+                }
+                string RemoveFileFromDeleteWithSlash = RemoveFileFromDelete.Replace(";", @"\");
+                string finalPathNormalized = RemoveFileFromDelete.Replace(".", "'");
+                <tr>
+                    <td>@RemoveFileFromDeleteWithSlash</td>
+                    <td><a href="~/Folder/RemoveFileFromList/@finalPathNormalized">Remove</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<input id="ReturnPath" type="hidden" />
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $(".mycontainer").on("click", ".my-delete", function () {
+                var button = $(this);
+                $("#ConfirmPasswordModal").modal('show');
+                $("#ReturnPath").val(button.attr("data-return-path"));
+            });
+
+            $("#btnSave1").click(function () {
+                var ConfirmPasswordForm = $("#ConfirmPasswordForm").serialize();
+                var MyReturnPath = $("#ReturnPath").val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Folder/ConfirmPasswordToDeleteAllSelected",
+                    data: ConfirmPasswordForm,
+                    success: function (res) {
+                        if (res) {
+                            window.location.href = "/Folder/GetFolderFromPath/" + MyReturnPath
+                        }
+                        else {
+                            confirm("Please Enter A Valid Password")
+                        }
+                    }
+                })
+            });
+        });
+    </script>
+}

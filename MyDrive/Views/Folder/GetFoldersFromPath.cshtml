@@ -81,21 +81,14 @@
 <!--<h2>Folders</h2>-->
 
 <div class="mycontainer">
-    @if ("hi" == "hi")
-    {
-        string path = HttpContext.Current.Request.Url.AbsolutePath;
-        string myPath = path.Split('/').Last();
-        <p class="Third-button">
-            <a href="~/Folder/BackButton/@myPath" class="btn-link"><i class="fas fa-long-arrow-alt-left"></i></a>
-        </p>
-    }
-
-    <p class="Fourth-button">
-        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#createFolderModal">@MyDrive.Resources.Language.Create_Folder</a>
+    <p>
+        <!--<a href="#" id="CreateFolderButton" class="btn btn-primary" data-toggle="modal" data-target="#createFolderModal">@MyDrive.Resources.Language.Create_Folder</a>-->
+        <button class="btn btn-primary" id="CreateFolderButton">@MyDrive.Resources.Language.Create_Folder</button>
     </p>
 
     <p class="Second-button">
-        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#uploadFileModal">@MyDrive.Resources.Language.Upload_File</a>
+       <!-- <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#uploadFileModal">@MyDrive.Resources.Language.Upload_File</a>-->
+        <button class="btn btn-primary" id="UploadFileButton">@MyDrive.Resources.Language.Upload_File</button>
     </p>
     @if ("hi" == "hi")
     {
@@ -155,51 +148,185 @@
     </div>
 }
 
+<div class="modal fade" id="ConfirmPasswordToCreateFolderModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Confirm Password</h2>
+            </div>
+            <div class="modal-body">
+                <form id="ConfirmPasswordToCreateFolderForm">
+                    @Html.LabelFor(m => m.Password)
+                    @Html.Password("password", "", new { id = "passwordForFolderDelete", Textmode = "Password" })
+                    @Html.ValidationMessageFor(m => m.Password)
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group">
+                    <a href="#" id="btnSaveToCreateFolder" class="btn btn-primary">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ConfirmPasswordToUploadFileModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Confirm Password</h2>
+            </div>
+            <div class="modal-body">
+                <form id="ConfirmPasswordToUploadFileForm">
+                    @Html.LabelFor(m => m.Password)
+                    @Html.Password("password", "", new { id = "passwordForFolderDelete1", Textmode = "Password" })
+                    @Html.ValidationMessageFor(m => m.Password)
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group">
+                    <a href="#" id="btnSaveToUploadFile" class="btn btn-primary">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="RenameFolderModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Rename Folder</h2>
+            </div>
+            <div class="modal-body">
+                <form id="RenameFolderForm">
+                    <label>Enter New Folder Name</label>
+                    @Html.TextBoxFor(m => m.RenameFolderName, new { @class = "form-control" })
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group">
+                    <a href="#" id="RenameFolderButton" class="btn btn-primary">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="myCustomContainer">
     @foreach (var folderName in Model.Folders)
     {
-
-
-        <div class="CustomFolder">
-            @if (User.IsInRole("CanManageUsers"))
-            {
-                <a href="~/Folder/RenameFolder/@folderName.Path" class="btn-link"><i class="fas fa-pen"></i></a>
-            }
-            @if (User.IsInRole("CanManageUsers") || User.IsInRole("DeleteFolders"))
-            {
-                <button class="btn-link js-delete" data-folder-path="@folderName.Path"><i class="fas fa-backspace"></i></button>
-            }
+        string[] returnPath = folderName.Path.Split(';');
+        string finalReturnPath = "";
+        for(int i =0; i< returnPath.Length -1; i++)
+                {
+            finalReturnPath = finalReturnPath + returnPath[i] + ";";
+                }
+        <div class="CustomFolder">        
+           <!-- <a href="~/Folder/RenameFolder/@folderName.Path" class="btn-link"><i class="fas fa-pen"></i></a>  -->
+            <button class="btn-link my-rename" data-folder-path="@folderName.Path" data-return-path="@finalReturnPath"><i class="fas fa-pen"></i></button>
+            <!--<button class="btn-link js-delete" data-folder-path="@folderName.Path"><i class="fas fa-backspace"></i></button>-->
+            <button class="btn-link my-delete" data-folder-path="@folderName.Path" data-return-path="@finalReturnPath"><i class="fas fa-backspace"></i></button>
             <a href="/Folder/GetFolderFromPath/@folderName.Path"> <i class="fas fa-folder myFolderIcon"></i><span>@folderName.Name</span></a>
         </div>
     }
 </div>
 
+<div class="modal fade" id="ConfirmPasswordModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Confirm Password</h2>
+            </div>
+            <div class="modal-body">
+                <form id="ConfirmPasswordForm">
+                    @Html.LabelFor(m => m.Password)
+                    @Html.Password("password", "", new { id = "passwordForFolderDelete2", Textmode = "Password" })
+                    @Html.ValidationMessageFor(m => m.Password)
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group">
+                    <a href="#" id="btnSave1" class="btn btn-primary">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ConfirmPasswordModalForRename">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Confirm Password</h2>
+            </div>
+            <div class="modal-body">
+                <form id="ConfirmPasswordFormForRename">
+                    @Html.LabelFor(m => m.Password)
+                    @Html.Password("password", "", new { id = "passwordForFolderRename", Textmode = "Password" })
+                    @Html.ValidationMessageFor(m => m.Password)
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group">
+                    <a href="#" id="btnSaveRenameFolder" class="btn btn-primary">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="myCustomContainerForFiles">
     @foreach (var fileName in Model.Files)
     {
-        string filePathNormalized = @fileName.Path.Replace(@"\", ";");
+        string filePathNormalized = fileName.Path.Replace(@"\", ";");
         string finalPathNormalized = filePathNormalized.Replace(".", "'");
+        string[] returnPath = filePathNormalized.Split(';');
+        string finalReturnPath = "";
+        for(int i =0;i< returnPath.Length -1; i++)
+        {
+            finalReturnPath = finalReturnPath + returnPath[i] + ";";
+        }
 
-
-        <div class="CustomFile">
-            @if (User.IsInRole("CanManageUsers"))
-            {
-                <a href="~/Folder/RenameFile/@finalPathNormalized" class="btn-link"><i class="fas fa-pen"></i></a>
-            }
-            @if (User.IsInRole("CanManageUsers") || User.IsInRole("DeleteFolders"))
-            {
-                <button class="btn-link js-file-delete" data-file-path="@finalPathNormalized"><i class="fas fa-backspace"></i></button>
-            }
-            <a href="~/files/@fileName.Path" target="_blank"> <i class="fas fa-file myFolderIcon"></i><span>@fileName.Name</span></a>
-        </div>
+    <div class="CustomFile">
+        <!--<a href="~/Folder/RenameFile/@finalPathNormalized" class="btn-link"><i class="fas fa-pen"></i></a>-->
+        <!--<button class="btn-link js-file-delete" data-file-path="@finalPathNormalized"><i class="fas fa-backspace"></i></button>-->
+        <button class="btn-link js-file-delete" data-file-path="@finalPathNormalized" data-return1-path="@finalReturnPath"><i class="fas fa-backspace"></i></button>
+        <a href="~/files/@fileName.Path" target="_blank"> <i class="fas fa-file myFolderIcon"></i><span>@fileName.Name</span></a>
+    </div>
     }
 </div>
+
+<div class="modal fade" id="ConfirmPasswordModalForFiles">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Confirm Password</h2>
+            </div>
+            <div class="modal-body">
+                <form id="ConfirmPasswordFormForFiles">
+                    @Html.LabelFor(m => m.Password)
+                    @Html.Password("password", "", new { id = "passwordForFileDelete", Textmode = "Password" })
+                    @Html.ValidationMessageFor(m => m.Password)
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group">
+                    <a href="#" id="btnSave2" class="btn btn-primary">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input id="testPurpose" type="hidden" />
+<input id="ReturnPath" type="hidden" />
 
 @section scripts
 {
     <script>
         $(document).ready(function () {
-            $(".myCustomContainer").on("click", ".js-delete", function () {
+            /*$(".myCustomContainer").on("click", ".js-delete", function () {
                 var button = $(this);
                 if (confirm("Are you sure you want to delete this folder?")) {
                     $.ajax({
@@ -210,9 +337,9 @@
                         }
                     });
                 }
-            });
+            });*/
 
-            $(".myCustomContainerForFiles").on("click", ".js-file-delete", function () {
+            /*$(".myCustomContainerForFiles").on("click", ".js-file-delete", function () {
                 var button = $(this);
                 if (confirm("Are you sure you want to delete this file?")) {
                     $.ajax({
@@ -223,6 +350,159 @@
                         }
                     });
                 }
+            });*/
+
+            $(".myCustomContainer").on("click", ".my-delete", function () {
+                var button = $(this);
+                $("#ConfirmPasswordModal").modal('show');
+                $("#testPurpose").val(button.attr("data-folder-path"));
+                $("#ReturnPath").val(button.attr("data-return-path"));
+            });
+
+            $("#btnSave1").click(function () {
+                var ConfirmPasswordForm = $("#ConfirmPasswordForm").serialize();
+                var Myid = $("#testPurpose").val();
+                var MyReturnPath = $("#ReturnPath").val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Folder/ConfirmPassword",
+                    data: (ConfirmPasswordForm ? ConfirmPasswordForm + "&" : "") + "folderPath=" + Myid,
+                    success: function (res) {
+                        if (res) {
+                            window.location.href = "/Folder/GetFolderFromPath/" + MyReturnPath
+                        }
+                        else {
+                            confirm("Please Enter A Valid Password")
+                        }
+                    }
+                })
+            });
+
+            $(".myCustomContainerForFiles").on("click", ".js-file-delete", function () {
+                var button = $(this);
+                $("#ConfirmPasswordModalForFiles").modal('show');
+                $("#testPurpose").val(button.attr("data-file-path"));
+                $("#ReturnPath").val(button.attr("data-return1-path"));
+            });
+
+            $("#btnSave2").click(function () {
+                var ConfirmPasswordForm = $("#ConfirmPasswordFormForFiles").serialize();
+                var Myid = $("#testPurpose").val();
+                var MyReturnPath = $("#ReturnPath").val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Folder/ConfirmPasswordForFile",
+                    data: (ConfirmPasswordForm ? ConfirmPasswordForm + "&" : "") + "filePath=" + Myid,
+                    success: function (res) {
+                        if (res) {
+                            console.log(MyReturnPath)
+                            window.location.href = "/Folder/GetFolderFromPath/" + MyReturnPath
+                        }
+                        else {
+                            confirm("Please Enter A Valid Password")
+                        }
+
+                    }
+                })
+            });
+
+            $(".myCustomContainer").on("click", ".my-rename", function () {
+                var button = $(this);
+                $("#ConfirmPasswordModalForRename").modal('show');
+                $("#testPurpose").val(button.attr("data-folder-path"));
+                $("#ReturnPath").val(button.attr("data-return-path"));
+            });
+
+            $("#btnSaveRenameFolder").click(function () {
+                var ConfirmPasswordForm = $("#ConfirmPasswordFormForRename").serialize();
+                var Myid = $("#testPurpose").val();
+                var MyReturnPath = $("#ReturnPath").val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Folder/ConfirmPasswordForFolderRename",
+                    data: ConfirmPasswordForm,
+                    success: function (res) {
+                        if (res) {
+                            $("#ConfirmPasswordModalForRename").modal('hide');
+                            $("#RenameFolderModal").modal('show');
+                        }
+                        else {
+                            confirm("Please Enter A Valid Password")
+                        }
+
+                    }
+                })
+            });
+
+            $("#RenameFolderButton").click(function () {
+                var RenameFolderForm = $("#RenameFolderForm").serialize();
+                var Myid = $("#testPurpose").val();
+                var MyReturnPath = $("#ReturnPath").val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Folder/RenameFolderModal",
+                    data: (RenameFolderForm ? RenameFolderForm + "&" : "") + "folderPath=" + Myid,
+                    success: function (res) {
+                        if (res) {
+                            window.location.href = "/Folder/GetFolderFromPath/" + MyReturnPath
+                        }
+                        else {
+                            confirm("please enter a folder name")
+                        }
+                    }
+                })
+            });
+
+            $(".mycontainer").on("click", "#CreateFolderButton", function () {
+                $("#ConfirmPasswordToCreateFolderModal").modal('show');
+            });
+
+            $("#btnSaveToCreateFolder").click(function () {
+                var ConfirmPasswordForm = $("#ConfirmPasswordToCreateFolderForm").serialize();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Folder/ConfirmPasswordForFolderRename",
+                    data: ConfirmPasswordForm,
+                    success: function (res) {
+                        if (res) {
+                            $("#ConfirmPasswordToCreateFolderModal").modal('hide');
+                            $("#createFolderModal").modal('show');
+                        }
+                        else {
+                            confirm("Please Enter A Valid Password")
+                        }
+
+                    }
+                })
+            });
+
+            $(".mycontainer").on("click", "#UploadFileButton", function () {
+                $("#ConfirmPasswordToUploadFileModal").modal('show');
+            });
+
+            $("#btnSaveToUploadFile").click(function () {
+                var ConfirmPasswordForm = $("#ConfirmPasswordToUploadFileForm").serialize();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Folder/ConfirmPasswordForFolderRename",
+                    data: ConfirmPasswordForm,
+                    success: function (res) {
+                        if (res) {
+                            $("#ConfirmPasswordToUploadFileModal").modal('hide');
+                            $("#uploadFileModal").modal('show');
+                        }
+                        else {
+                            confirm("Please Enter A Valid Password")
+                        }
+
+                    }
+                })
             });
         });
     </script>

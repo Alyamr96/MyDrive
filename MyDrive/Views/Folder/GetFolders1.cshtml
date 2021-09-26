@@ -65,20 +65,43 @@
         display: flex;
     }
 
-        .mycontainer .Second-button {
-            margin-left: 15px;
-        }
+    .Companies {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .Companies .CustomFolder {
+        display: flex;
+        flex-direction: column;
+        margin: 30px;
+    }
+
+    .Companies .CustomFolder span {
+        display: block;
+        padding-left: 0;
+        width: 100px;
+        font-family: Arial, Helvetica, sans-serif;
+        color: black;
+        text-align: center;
+    }
+
+    .Companies .CustomFolder img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+    }
 </style>
 
 <!--<h2>Folders</h2>-->
 
 <div class="mycontainer">
-    <p>
+   <!-- <p>
         <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#createFolderModal">@MyDrive.Resources.Language.Create_Folder</a>
-    </p>
+    </p> -->
 
     <p class="Second-button">
-        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#uploadFileModal">@MyDrive.Resources.Language.Upload_File</a>
+        <!--<a href="#" class="btn btn-primary" data-toggle="modal" data-target="#uploadFileModal">@MyDrive.Resources.Language.Upload_File</a>-->
+        <button class="btn btn-primary" id="UploadFileButton">@MyDrive.Resources.Language.Upload_File</button>
     </p>
 </div>
 @using (Html.BeginForm("UploadFiles", "Folder", FormMethod.Post, new { enctype = "multipart/form-data" }))
@@ -129,7 +152,29 @@
     </div>
 }
 
-<div class="modal fade" id="RenameFolderModal">
+<div class="modal fade" id="ConfirmPasswordToUploadFileModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Confirm Password</h2>
+            </div>
+            <div class="modal-body">
+                <form id="ConfirmPasswordToUploadFileForm">
+                    @Html.LabelFor(m => m.Password)
+                    @Html.Password("password", "", new { id = "passwordForFolderDelete", Textmode = "Password" })
+                    @Html.ValidationMessageFor(m => m.Password)
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group">
+                    <a href="#" id="btnSaveToUploadFile" class="btn btn-primary">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--<div class="modal fade" id="RenameFolderModal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -148,7 +193,7 @@
             </div>
         </div>
     </div>
-</div>
+</div>-->
 
 <div class="modal fade" id="RenameFileModal">
     <div class="modal-dialog">
@@ -171,20 +216,59 @@
     </div>
 </div>
 
-<div class="myCustomContainer">
+<!--<div class="myCustomContainer">
 
 
     @for (int i = 0; i < Model.Folders.Count(); i++)
     {
 
     <div class="CustomFolder">
-        <!--<a href="~/Folder/RenameFolder/@Model.Folders[i].Path" class="btn-link"><i class="fas fa-pen"></i></a>-->
+        <a href="~/Folder/RenameFolder/@Model.Folders[i].Path" class="btn-link"><i class="fas fa-pen"></i></a>
         <button class="btn-link my-rename" data-folder-path="@Model.Folders[i].Path"><i class="fas fa-pen"></i></button>
         <button class="btn-link my-delete" data-folder-path="@Model.Folders[i].Path"><i class="fas fa-backspace"></i></button>
-        <!--<button class="btn-link js-delete" data-folder-path="@Model.Folders[i].Path"><i class="fas fa-backspace"></i></button>-->
-        <a href="/Folder/GetFolderFromPath/@Model.Folders[i].Path"> <i class="fas fa-folder myFolderIcon"></i><span>@Model.Folders[i].Name</span></a>
+        <button class="btn-link js-delete" data-folder-path="@Model.Folders[i].Path"><i class="fas fa-backspace"></i></button>
+        <a href="/Folder/GetFolderFromPath/@Model.Folders[i].Path"> <i class="fas fa-folder myFolderIcon"></i><span>@Model.Folders[i].Path</span></a>
     </div>
     }
+</div>-->
+<div><h2>Companies</h2></div>
+
+<div class="Companies">
+    @for (int i = 0; i < Model.Companies.Count(); i++)
+    {
+        string replaceString = Model.Companies[i].LogoPath.Replace(@"\", "/");
+        string[] imagePath = replaceString.Split('/');
+        string imagePath1 = imagePath[imagePath.Length - 1];
+        string replacePath = Model.Companies[i].Path.Replace(@"\", "/");
+        string[] words = replacePath.Split('/');
+        string FinalPath = words[words.Length - 1];
+        <div class="CustomFolder">
+            <button class="btn-link my-delete" data-folder-path="@Model.Companies[i].Id"><i class="fas fa-backspace"></i></button>
+            <a href="/Folder/GetFolderFromPath/@FinalPath"><img src="~/Images/@imagePath1" alt="Company logo" /><span>@FinalPath</span></a>
+        </div>
+    }
+</div>
+
+<div class="modal fade" id="ConfirmPasswordModalForCompanyDelete">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Confirm Password</h2>
+            </div>
+            <div class="modal-body">
+                <form id="ConfirmPasswordFormForCompanyDelete">
+                    @Html.LabelFor(m => m.Password)
+                    @Html.Password("password", "", new { id = "passwordForFolderDelete1", Textmode = "Password" })
+                    @Html.ValidationMessageFor(m => m.Password)
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group">
+                    <a href="#" id="btnSaveForCompanyDelete" class="btn btn-primary">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
@@ -197,7 +281,7 @@
             <div class="modal-body">
                 <form id="ConfirmPasswordForm">
                     @Html.LabelFor(m => m.Password)
-                    @Html.Password("password", "", new { id = "passwordForFolderDelete", Textmode = "Password" })
+                    @Html.Password("password", "", new { id = "passwordForFolderDelete2", Textmode = "Password" })
                     @Html.ValidationMessageFor(m => m.Password)
                 </form>
             </div>
@@ -232,6 +316,7 @@
     </div>
 </div>
 
+<div><h2>Files</h2></div>
 <div class="myCustomContainerForFiles">
     @foreach (var fileName in Model.Files)
     {
@@ -464,6 +549,55 @@
                 var button = $(this);
                 $("#ConfirmPasswordModalForFileRename").modal('show');
                 $("#testPurpose").val(button.attr("data-folder-path"));
+            });
+
+            $(".mycontainer").on("click", "#UploadFileButton", function () {
+                $("#ConfirmPasswordToUploadFileModal").modal('show');
+            });
+
+            $("#btnSaveToUploadFile").click(function () {
+                var ConfirmPasswordForm = $("#ConfirmPasswordToUploadFileForm").serialize();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Folder/ConfirmPasswordForFolderRename",
+                    data: ConfirmPasswordForm,
+                    success: function (res) {
+                        if (res) {
+                            $("#ConfirmPasswordToUploadFileModal").modal('hide');
+                            $("#uploadFileModal").modal('show');
+                        }
+                        else {
+                            confirm("Please Enter A Valid Password")
+                        }
+
+                    }
+                })
+            });
+
+            $(".Companies").on("click", ".my-delete", function () {
+                var button = $(this);
+                $("#ConfirmPasswordModalForCompanyDelete").modal('show');
+                $("#testPurpose").val(button.attr("data-folder-path"));
+            });
+
+            $("#btnSaveForCompanyDelete").click(function () {
+                var ConfirmPasswordForm = $("#ConfirmPasswordFormForCompanyDelete").serialize();
+                var Myid = $("#testPurpose").val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Folder/ConfirmPasswordForCompanyDelete",
+                    data: (ConfirmPasswordForm ? ConfirmPasswordForm + "&" : "") + "id=" + Myid,
+                    success: function (res) {
+                        if (res) {
+                            window.location.href = "/Folder/GetFolders1"
+                        }
+                        else {
+                            confirm("Please Enter A Valid Password")
+                        }
+                    }
+                })
             });
 
             

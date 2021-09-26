@@ -18,5 +18,11 @@ namespace MyDrive.ViewModels
         public string FolderPathToDelete { get; set; }
 
         public string RenameFolderName { get; set; }
+
+        public List<string> FoldersToDelete { get; set; }
+
+        public List<string> FilesToDelete { get; set; }
+
+        public List<Company> Companies { get; set; }
     }
 }
