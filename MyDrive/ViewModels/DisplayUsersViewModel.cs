@@ -8,6 +8,12 @@ namespace MyDrive.ViewModels
 {
     public class DisplayUsersViewModel
     {
-        public List<DriveUsers> Users { get; set; }
+        public List<ApplicationUser> UsersWithoutCompanies { get; set; }
+
+        public List<ApplicationUser> UsersWithCompanies { get; set; }
+
+        public List<UsersInCompanies> RecordsOfUsersInCompanies { get; set; }
+
+        public List<Company> Companies { get; set; }
     }
 }

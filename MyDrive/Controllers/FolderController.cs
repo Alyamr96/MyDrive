@@ -309,7 +309,7 @@ namespace MyDrive.Controllers
         public ActionResult UploadFileWithinPath(string folderName, HttpPostedFileBase postedFile)
         {
             string myFolderName = folderName.Replace(";", @"\");
-            string path = absoloutePath + @"/" + myFolderName;
+            string path = Server.MapPath("~/Files/") + myFolderName;
             if (postedFile == null)
                 postedFile = Request.Files["userFile"];
 
@@ -321,6 +321,9 @@ namespace MyDrive.Controllers
             else
                 return RedirectToAction("FileExistsView");
 
+            var myFile = new FileModel { Name = postedFile.FileName, Path = filePath, Date = DateTime.Now };
+            _context.Files.Add(myFile);
+            _context.SaveChanges();
             return RedirectToAction("GetFolderFromPath/" + folderName);
         }
 
@@ -919,8 +922,19 @@ namespace MyDrive.Controllers
                     if (result)
                     {
                         var companyInDb = _context.Companies.Single(c => c.Id == id);
+                        var records = _context.UsersInCompanies.ToList();
+                        foreach(var record in records)
+                        {
+                            if(record.CompanyId == companyInDb.Id)
+                            {
+                                _context.UsersInCompanies.Remove(record);
+                                _context.SaveChanges();
+                            }
+                        }
+                        Directory.Delete(companyInDb.Path, true);
+                        System.IO.File.Delete(companyInDb.LogoPath);
                         _context.Companies.Remove(companyInDb);
-                        _context.SaveChanges();
+                        _context.SaveChanges();                      
                         return Json(true, JsonRequestBehavior.AllowGet);
                     }
                     else
@@ -937,6 +951,68 @@ namespace MyDrive.Controllers
             else
                 return Json(false, JsonRequestBehavior.AllowGet);
 
+        }
+
+        [HttpPost]
+        public ActionResult ConfirmPasswordForCompanyDelete1(FoldersandFilesViewModel viewModel, int id)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = User.Identity.GetUserId();
+                ApplicationUser user1 = UserManager.FindById(userId);
+                try
+                {
+                    var result = UserManager.CheckPassword(user1, viewModel.Password);
+                    if (result)
+                    {
+                        var companyInDb = _context.Companies.Single(c => c.Id == id);
+                        var usersInDb = _context.Users.ToList();
+                        var records = _context.UsersInCompanies.ToList();
+                        List<ApplicationUser> UsersToBeAssignedToNewCompany = new List<ApplicationUser>();
+                        foreach(var user in usersInDb)
+                        {
+                            List<UsersInCompanies> CompaniesUserAssignedTo = new List<UsersInCompanies>();
+                            foreach(var record in records)
+                            {
+                                if (record.UserId == user.Id)
+                                    CompaniesUserAssignedTo.Add(record);
+                            }
+                            if(CompaniesUserAssignedTo.Count == 1)
+                            {
+                                if (CompaniesUserAssignedTo[0].CompanyId == id)
+                                    UsersToBeAssignedToNewCompany.Add(user);
+                            }
+                        }
+                        if (UsersToBeAssignedToNewCompany.Count == 0)
+                        {
+                            _context.Companies.Remove(companyInDb);
+                            _context.SaveChanges();
+                            return Json(true, JsonRequestBehavior.AllowGet);
+                        }
+                        else
+                            return Json("Some Users Wont be assigned to a Company", JsonRequestBehavior.AllowGet);
+                        
+                    }
+                    else
+                    {
+                        return Json(false, JsonRequestBehavior.AllowGet);
+                    }
+
+                }
+                catch (System.ArgumentNullException e)
+                {
+                    return Json(false, JsonRequestBehavior.AllowGet);
+                }
+            }
+            else
+                return Json(false, JsonRequestBehavior.AllowGet);
+
+        }
+
+        [Route("Folder/AssignUsersToNewCompany/{companyId}")]
+        public ActionResult AssignUsersToNewCompany(int companyId)
+        {
+            return Content(companyId.ToString());
         }
     }
 }

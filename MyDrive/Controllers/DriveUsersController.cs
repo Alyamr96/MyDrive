@@ -30,7 +30,27 @@ namespace MyDrive.Controllers
         public ActionResult DisplayUsers()
         {
             var users = _context.Users.ToList();
-            return View(users);
+            var records = _context.UsersInCompanies.ToList();
+            List<ApplicationUser> usersWithoutCompanies = new List<ApplicationUser>();
+            List<ApplicationUser> usersWithCompanies = new List<ApplicationUser>();
+            var companies = _context.Companies.ToList();
+            foreach(var user in users)
+            {
+                int count = 0;
+                foreach(var record in records)
+                {
+                    if(record.UserId == user.Id)
+                    {
+                        count++;
+                    }
+                }
+                if (count == 0)
+                    usersWithoutCompanies.Add(user);
+                else
+                    usersWithCompanies.Add(user);
+            }
+            var viewModel = new DisplayUsersViewModel { UsersWithoutCompanies = usersWithoutCompanies, UsersWithCompanies = usersWithCompanies, RecordsOfUsersInCompanies = records, Companies = companies };
+            return View(viewModel);
         }
         /*public ActionResult DisplayApiUsers()
         {

@@ -591,7 +591,8 @@
                     data: (ConfirmPasswordForm ? ConfirmPasswordForm + "&" : "") + "id=" + Myid,
                     success: function (res) {
                         if (res) {
-                            window.location.href = "/Folder/GetFolders1"
+                            console.log("success")
+                            window.location.href = "/DriveUsers/DisplayUsers"
                         }
                         else {
                             confirm("Please Enter A Valid Password")

@@ -7,10 +7,11 @@
 <h2>Manage Users in @ViewBag.CompanyName</h2>
 
 <div><h4>Users In @ViewBag.CompanyName</h4></div>
-<table class="table table-bordered table-hover">
+<table id="Assigned" class="table table-bordered table-hover">
     <thead>
         <tr>
             <th>User Name</th>
+            <th>User Email</th>
             <th>Remove From Company</th>
         </tr>
     </thead>
@@ -21,7 +22,8 @@
             {
                 <tr>
                     <td>@user.FirstName @user.LastName</td>
-                    <td>Assign</td>
+                    <td>@user.Email</td>
+                    <td><button class="btn btn-danger" id="RemoveButton" data-user-Id="@user.Id" data-company-name="@ViewBag.CompanyName">Remove</button></td>
                 </tr>
             }
 
@@ -30,10 +32,11 @@
 </table>
 
 <div><h4>Users Not In @ViewBag.CompanyName</h4></div>
-<table class="table table-bordered table-hover">
+<table id="NotAssigned" class="table table-bordered table-hover">
     <thead>
         <tr>
             <th>User Name</th>
+            <th>User Email</th>
             <th>Assign To Company</th>
         </tr>
     </thead>
@@ -44,10 +47,65 @@
             {
                 <tr>
                     <td>@user.FirstName @user.LastName</td>
-                    <td>@Html.ActionLink("Assign", "AssignToCompany", "Company", new { UserEmail = @user.Email, CompanyName = ViewBag.CompanyName }, null)</td>
+                    <td>@user.Email</td>
+                    <td><button class="btn btn-primary" id="AssignButton" data-user-Id="@user.Id" data-company-name="@ViewBag.CompanyName">Assign</button></td>
                 </tr>
             }
 
         }
     </tbody>
 </table>
+
+<input type="hidden" id="StoreId" value="@ViewBag.CompanyId" />
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $("#Assigned").dataTable();
+            $("#NotAssigned").dataTable();
+
+            $("#NotAssigned").on("click", "#AssignButton", function () {
+                var button = $(this);
+                var UserId = button.attr("data-user-Id");
+                var CompanyName = button.attr("data-company-name");
+                var ReturnPath = $("#StoreId").val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Company/AssignToCompany",
+                    data: {CompanyName: CompanyName, UserId: UserId},
+                    success: function (res) {
+                        if (res) {
+                            window.location.href = "/Company/ManageUsers/" + ReturnPath
+                        }
+                        else {
+                            console.log("error")
+                        }
+                    }
+                })              
+            });
+
+            $("#Assigned").on("click", "#RemoveButton", function () {
+                var button = $(this);
+                var UserId = button.attr("data-user-Id");
+                var CompanyName = button.attr("data-company-name");
+                var ReturnPath = $("#StoreId").val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Company/RemoveFromCompany",
+                    data: { CompanyName: CompanyName, UserId: UserId },
+                    success: function (res) {
+                        if (res) {
+                            window.location.href = "/Company/ManageUsers/" + ReturnPath
+                        }
+                        else {
+                            console.log("error")
+                        }
+                    }
+                })
+            });
+        });
+    </script>
+}

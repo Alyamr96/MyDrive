@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MyDrive.Models.ApplicationUser>
+﻿@model MyDrive.ViewModels.DisplayUsersViewModel
 @{
     ViewBag.Title = "DisplayUsers";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -6,44 +6,89 @@
 
 <h2>@MyDrive.Resources.Language.Users</h2>
 
-    <table id="myusers" class="table table-bordered table-hover">
-        <thead>
-            <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>@Html.DisplayNameFor(model => model.Email)</th>
-                <th>Phone Number</th>
-                @if (User.IsInRole("CanManageUsers"))
+<table id="myusersWithoutCompanies" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+            <th>Delete User</th>
+            <th>Assign To Company</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.UsersWithoutCompanies)
+        {
+            if (item.Email != "admin@mydrive.com")
             {
-                <th>Delete</th>
+                <tr>
+                    <td>@item.FirstName</td>
+                    <td>@Html.DisplayFor(modelItem => item.LastName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                    <td><span>0</span>@Html.DisplayFor(modelItem => item.PhoneNumberInt)</td>
+                    <td><a href="#">Delete User</a></td>
+                    <td><a href="/Company/Index" class="btn btn-danger">Assign To Company</a></td>
+                </tr>
             }
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
+        }
+    </tbody>
+</table>
+
+<table id="myusers" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Phone Number</th>
+            <th>Delete User</th>
+            <th>Companies assigned to</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.UsersWithCompanies)
+        {
+            if (item.Email != "admin@mydrive.com")
             {
-                if (item.Email != "admin@mydrive.com")
+                var records = Model.RecordsOfUsersInCompanies;
+                var companiesTable = Model.Companies;
+                string[] companies = new string[records.Count];
+                string CompanyIds = "";
+                for (int i =0; i<records.Count; i++)
                 {
-            <tr>
-                <td>@item.FirstName</td>
-                <td>@Html.DisplayFor(modelItem => item.LastName)</td>
-                <td>@Html.DisplayFor(modelItem => item.Email)</td>
-                <td><span>0</span>@Html.DisplayFor(modelItem => item.PhoneNumberInt)</td>
-                @if (User.IsInRole("CanManageUsers"))
-                {
-                    <td><a href="#">Delete</a></td>
+                    if(records[i].UserId == item.Id)
+                    {
+                        foreach(var CompanyTable in companiesTable)
+                        {
+                            if(records[i].CompanyId == CompanyTable.Id)
+                            {
+                                CompanyIds += "," + CompanyTable.Name;
+                            }
+                        }
+                    }
                 }
-            </tr>
-                }
+                CompanyIds = CompanyIds.Substring(1);
+                <tr>
+                    <td>@item.FirstName</td>
+                    <td>@Html.DisplayFor(modelItem => item.LastName)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                    <td><span>0</span>@Html.DisplayFor(modelItem => item.PhoneNumberInt)</td>
+                    <td><a href="#">Delete User</a></td>
+                    <td>@CompanyIds</td>
+                </tr>
             }
-        </tbody>
-    </table>
+        }
+    </tbody>
+</table>
+    
 
 @section scripts
 {
     <script>
         $(document).ready(function () {
             $("#myusers").DataTable();
+            $("#myusersWithoutCompanies").dataTable();
         })
     </script>
 }

@@ -80,6 +80,7 @@ namespace MyDrive.Controllers
                     }
                     catch (System.IO.DirectoryNotFoundException e)
                     {
+                        Console.WriteLine(e.Message);
                         Company ReturnCompany = new Company { Name = company.Name };
                         return View("CreateCompany", ReturnCompany);
                     }
@@ -181,6 +182,7 @@ namespace MyDrive.Controllers
                     }
                     catch (System.IO.DirectoryNotFoundException e)
                     {
+                        Console.WriteLine(e.Message);
                         Company ReturnCompany = new Company { Name = company.Name };
                         return View("CreateCompany", ReturnCompany);
                     }
@@ -245,12 +247,51 @@ namespace MyDrive.Controllers
             var viewModel = new UsersInCompaniesViewModel { UsersInCompany = UsersInCompany, UsersNotInCompany = UsersNotInCompany};
             var CompanyFromDb = _context.Companies.Single(c => c.Id == id);
             ViewBag.CompanyName = CompanyFromDb.Name;
+            ViewBag.CompanyId = CompanyFromDb.Id;
             return View(viewModel);
         }
 
-        public ActionResult AssignToCompany(string CompanyName, int UserEmail)
+        [HttpPost]
+        public ActionResult AssignToCompany(string CompanyName, string UserId)
         {
-            return Content(CompanyName + UserEmail);
+            if (CompanyName == null)
+                return Json(false, JsonRequestBehavior.AllowGet);          
+            else if (UserId == null)
+                return Json(false, JsonRequestBehavior.AllowGet);
+            else
+            {
+                var company = _context.Companies.Single(c => c.Name == CompanyName);
+                var record = new UsersInCompanies {CompanyId = company.Id, UserId = UserId };
+                _context.UsersInCompanies.Add(record);
+                _context.SaveChanges();
+                return Json(true, JsonRequestBehavior.AllowGet);
+            }             
+        }
+
+        [HttpPost]
+        public ActionResult RemoveFromCompany(string CompanyName, string UserId)
+        {
+            if (CompanyName == null)
+                return Json(false, JsonRequestBehavior.AllowGet);
+            else if (UserId == null)
+                return Json(false, JsonRequestBehavior.AllowGet);
+            else
+            {
+                var company = _context.Companies.Single(c => c.Name == CompanyName);
+                var records = _context.UsersInCompanies.ToList();
+                foreach(var record in records)
+                {
+                    if(record.CompanyId == company.Id)
+                    {
+                        if(record.UserId == UserId)
+                        {
+                            _context.UsersInCompanies.Remove(record);
+                            _context.SaveChanges();
+                        }
+                    }
+                }
+                return Json(true, JsonRequestBehavior.AllowGet);
+            }
         }
     }
 }
