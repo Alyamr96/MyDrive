@@ -299,7 +299,9 @@ namespace MyDrive.Controllers
             {
                 name = postedFile.FileName
             };
-            var myFile = new FileModel { Name = postedFile.FileName, Path = filePath, Date = DateTime.Now};
+            var userId = User.Identity.GetUserId();
+            ApplicationUser user1 = UserManager.FindById(userId);
+            var myFile = new FileModel { Name = postedFile.FileName, Path = filePath, Date = DateTime.Now, UserId = user1.Id};
             _context.Files.Add(myFile);
             _context.SaveChanges();
             return RedirectToAction("GetFolders1");
@@ -321,7 +323,9 @@ namespace MyDrive.Controllers
             else
                 return RedirectToAction("FileExistsView");
 
-            var myFile = new FileModel { Name = postedFile.FileName, Path = filePath, Date = DateTime.Now };
+            var userId = User.Identity.GetUserId();
+            ApplicationUser user1 = UserManager.FindById(userId);
+            var myFile = new FileModel { Name = postedFile.FileName, Path = filePath, Date = DateTime.Now, UserId = user1.Id };
             _context.Files.Add(myFile);
             _context.SaveChanges();
             return RedirectToAction("GetFolderFromPath/" + folderName);
@@ -1013,6 +1017,28 @@ namespace MyDrive.Controllers
         public ActionResult AssignUsersToNewCompany(int companyId)
         {
             return Content(companyId.ToString());
+        }
+
+        [Route("Folder/DeleteFileFromTable/{filePath}")]
+        public ActionResult DeleteFileFromTable(string filePath)
+        {
+            string myFilePath = filePath.Replace(";", @"\");
+            string myFinalPath = myFilePath.Replace("'", ".");
+            string path = absoloutePath + @"/" + myFinalPath;
+            string pathUsedForDelete = absoloutePath + @"\" + myFinalPath;
+            pathUsedForDelete = pathUsedForDelete.Replace(" ", "");
+            var DatabaseFiles = _context.Files.ToList();
+            //var fileInDb = _context.Files.Single(c => c.Path == pathUsedForDelete);
+            foreach (var DatabaseFile in DatabaseFiles)
+            {
+                if (DatabaseFile.Path == pathUsedForDelete)
+                {
+                    _context.Files.Remove(DatabaseFile);
+                    _context.SaveChanges();
+                }
+            }
+            System.IO.File.Delete(path);
+            return RedirectToAction("ShowFilesInTable");
         }
     }
 }

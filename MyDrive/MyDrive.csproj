@@ -223,6 +223,10 @@
     <Compile Include="Migrations\202109262246112_AddedUsersInCompaniesTable.Designer.cs">
       <DependentUpon>202109262246112_AddedUsersInCompaniesTable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202109281647553_AddedUserIdToFileModel.cs" />
+    <Compile Include="Migrations\202109281647553_AddedUserIdToFileModel.Designer.cs">
+      <DependentUpon>202109281647553_AddedUserIdToFileModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Company.cs" />
@@ -246,6 +250,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\CreateRoleViewModel.cs" />
     <Compile Include="ViewModels\DateFilterViewModel.cs" />
+    <Compile Include="ViewModels\FilterBySizeViewModel.cs" />
     <Compile Include="ViewModels\ListCreateEditDeleteCompaniesViewModel.cs" />
     <Compile Include="ViewModels\SizeFilterViewModel.cs" />
     <Compile Include="ViewModels\DisplayUsersViewModel.cs" />
@@ -522,7 +527,7 @@
     <Content Include="Views\Language\Index.cshtml" />
     <Content Include="Views\Filter\FilterOptions.cshtml" />
     <Content Include="Views\Filter\DateFilterView.cshtml" />
-    <Content Include="Views\Filter\UserNameFilter.cshtml" />
+    <Content Include="Views\Filter\UserEmailFilter.cshtml" />
     <Content Include="Views\Filter\SizeFilter.cshtml" />
     <Content Include="Views\Filter\FolderFileNameFilter.cshtml" />
     <Content Include="Views\Filter\CompanyFilter.cshtml" />
@@ -532,6 +537,9 @@
     <Content Include="Views\Company\FolderExistsView.cshtml" />
     <Content Include="Views\Company\EditCompany.cshtml" />
     <Content Include="Views\Company\ManageUsers.cshtml" />
+    <Content Include="Views\Filter\FilterBySize.cshtml" />
+    <Content Include="Views\Filter\FilterByName.cshtml" />
+    <Content Include="Views\Filter\FilterByEmail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -576,6 +584,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202109262246112_AddedUsersInCompaniesTable.resx">
       <DependentUpon>202109262246112_AddedUsersInCompaniesTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202109281647553_AddedUserIdToFileModel.resx">
+      <DependentUpon>202109281647553_AddedUserIdToFileModel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Language.ar.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

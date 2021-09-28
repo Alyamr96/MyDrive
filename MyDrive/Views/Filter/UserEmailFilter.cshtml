@@ -1,0 +1,17 @@
+﻿
+@{
+    ViewBag.Title = "UserNameFilter";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Filter By Email</h2>
+
+@using (Html.BeginForm("FilterByEmail", "Filter"))
+{
+    <div>
+        <label>Enter A Valid User Email:</label>
+        <input class="form-control" name="Email" id="Email" type="text" value"" />
+        <br />
+        <button class="btn btn-primary">Submit</button>
+    </div>
+}

@@ -129,3 +129,4 @@ C:\Users\cashless\Desktop\MyDrive\MyDrive\bin\FoolproofValidation.dll
 C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.AddedCompanyTable.resources
 C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.AddedIdPkToCompany.resources
 C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.AddedUsersInCompaniesTable.resources
+C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.AddedUserIdToFileModel.resources

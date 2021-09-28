@@ -74,7 +74,7 @@
                     <td>@Html.DisplayFor(modelItem => item.LastName)</td>
                     <td>@Html.DisplayFor(modelItem => item.Email)</td>
                     <td><span>0</span>@Html.DisplayFor(modelItem => item.PhoneNumberInt)</td>
-                    <td><a href="#">Delete User</a></td>
+                    <td><a href="#" data-user-id="@item.Id" class="myDelete">Delete User</a></td>
                     <td>@CompanyIds</td>
                 </tr>
             }
@@ -89,6 +89,25 @@
         $(document).ready(function () {
             $("#myusers").DataTable();
             $("#myusersWithoutCompanies").dataTable();
+            $("#myusers").on("click", ".myDelete", function () {
+                var button = $(this);
+                var data = button.attr("data-user-id");
+
+                $.ajax({
+                    type: "POST",
+                    url: "/DriveUsers/DeleteUser",
+                    data: data,
+                    success: function (res) {
+                        if (res) {
+                            console.log("success")
+                            window.location.href = "/DriveUsers/DisplayUsers"
+                        }
+                        else {
+                            confirm("Something went wrong")
+                        }
+                    }
+                })
+            });
         })
     </script>
 }

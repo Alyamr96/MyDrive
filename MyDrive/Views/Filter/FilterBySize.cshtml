@@ -1,0 +1,35 @@
+﻿@model List<MyDrive.ViewModels.FilterBySizeViewModel>
+@{
+    ViewBag.Title = "FilterBySize";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<table id="Assigned" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Path</th>
+            <th>Size</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var file in Model)
+        {
+            <tr>
+                <td>@file.Name</td>
+                <td>@file.Path</td>
+                <td>@file.Size</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $("#Assigned").dataTable();
+        });
+    </script>
+}

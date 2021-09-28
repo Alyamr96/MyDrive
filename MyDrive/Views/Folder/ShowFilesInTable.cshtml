@@ -11,16 +11,20 @@
         <tr>
             <th>File Name</th>
             <th>File Path</th>
+            <th>View</th>
             <th>Delete</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
+            string myFilePath = item.Path.Replace(@"\", ";");
+            string myFinalPath = myFilePath.Replace(".", "'");
             <tr>
                 <td>@item.Name</td>
                 <td>@item.Path</td>
-                <td><a href="#">Delete</a></td>
+                <td><a href="~/Files/@item.Path" target="_blank">View</a></td>
+                <td><a href="~/Folder/DeleteFileFromTable/@myFinalPath">Delete</a></td>
             </tr>
         }
     </tbody>
@@ -31,6 +35,26 @@
     <script>
         $(document).ready(function () {
             $("#AllFiles").DataTable();
+
+            $("#AllFiles").on("click", ".myDelete", function () {
+                var button = $(this);
+                var data = button.attr("data-folder-path");
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Folder/DeleteFileFromTable",
+                    data: data,
+                    success: function (res) {
+                        if (res) {
+                            console.log("success")
+                            window.location.href = "/Folder/ShowFilesInTable"
+                        }
+                        else {
+                            confirm("Something went wrong")
+                        }
+                    }
+                })
+            });
         })
     </script>
 }
