@@ -170,7 +170,7 @@ namespace MyDrive.Controllers
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    return RedirectToAction("DisplayUsers", "DriveUsers");
+                    return RedirectToAction("GetFolders1", "Folder");
                 }
                 AddErrors(result);
             }
@@ -456,7 +456,7 @@ namespace MyDrive.Controllers
             {
                 return Redirect(returnUrl);
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("GetFolders1", "Folder");
         }
 
         internal class ChallengeResult : HttpUnauthorizedResult

@@ -6,6 +6,7 @@
 
 <h2>@MyDrive.Resources.Language.Users</h2>
 
+<h2>Users Without Companies</h2>
 <table id="myusersWithoutCompanies" class="table table-bordered table-hover">
     <thead>
         <tr>
@@ -35,6 +36,7 @@
     </tbody>
 </table>
 
+<h2>Users In Companies</h2>
 <table id="myusers" class="table table-bordered table-hover">
     <thead>
         <tr>
@@ -81,8 +83,30 @@
         }
     </tbody>
 </table>
-    
 
+<div class="modal fade" id="ConfirmPasswordModalForUserDelete">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Confirm Password</h2>
+            </div>
+            <div class="modal-body">
+                <form id="ConfirmPasswordFormForUserDelete">
+                    @Html.LabelFor(m => m.Password)
+                    @Html.Password("password", "", new { id = "passwordForFolderDelete1", Textmode = "Password" })
+                    @Html.ValidationMessageFor(m => m.Password)
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group">
+                    <a href="#" id="btnSaveForUserDelete" class="btn btn-primary">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+<input id="testPurpose" type="hidden" />
 @section scripts
 {
     <script>
@@ -91,19 +115,25 @@
             $("#myusersWithoutCompanies").dataTable();
             $("#myusers").on("click", ".myDelete", function () {
                 var button = $(this);
-                var data = button.attr("data-user-id");
+                $("#ConfirmPasswordModalForUserDelete").modal('show');
+                $("#testPurpose").val(button.attr("data-user-id"));
+            });
+
+            $("#btnSaveForUserDelete").click(function () {
+                var ConfirmPasswordForm = $("#ConfirmPasswordFormForUserDelete").serialize();
+                var Myid = $("#testPurpose").val();
 
                 $.ajax({
                     type: "POST",
-                    url: "/DriveUsers/DeleteUser",
-                    data: data,
+                    url: "/DriveUsers/ConfirmPasswordForUserDelete",
+                    data: (ConfirmPasswordForm ? ConfirmPasswordForm + "&" : "") + "id=" + Myid,
                     success: function (res) {
                         if (res) {
                             console.log("success")
                             window.location.href = "/DriveUsers/DisplayUsers"
                         }
                         else {
-                            confirm("Something went wrong")
+                            confirm("Please Enter A Valid Password")
                         }
                     }
                 })

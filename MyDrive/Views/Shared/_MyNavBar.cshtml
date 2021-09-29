@@ -54,7 +54,7 @@
             {
                 <li>@Html.ActionLink(MyDrive.Resources.Language.View_All_Uploaded_Files, "ShowFilesInTable", "Folder")</li>
             }
-            <li>@Html.ActionLink(MyDrive.Resources.Language.Create_Folder, "GetFolders1", "Folder")</li>
+            <li>@Html.ActionLink("Driver", "GetFolders1", "Folder")</li>
             @if (User.IsInRole("CanManageUsers"))
             {
                 <li>@Html.ActionLink("Assign Role", "EditUsersInRole", "Administration")</li>
@@ -64,6 +64,7 @@
             <li>@Html.ActionLink("عربي", "Index", "Language", new { language = "ar" }, null)</li>
             <li>@Html.ActionLink("Filters", "FilterOptions", "Filter")</li>
             <li>@Html.ActionLink("Manage Companies", "Index", "Company")</li>
+            <li>@Html.ActionLink("Change Password", "ChangePassword", "Folder")</li>
         </ul>
 
         </div>

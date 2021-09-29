@@ -57,6 +57,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
@@ -248,10 +249,12 @@
       <DependentUpon>Language.resx</DependentUpon>
     </Compile>
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\MyChangePasswordViewModel.cs" />
     <Compile Include="ViewModels\CreateRoleViewModel.cs" />
     <Compile Include="ViewModels\DateFilterViewModel.cs" />
     <Compile Include="ViewModels\FilterBySizeViewModel.cs" />
     <Compile Include="ViewModels\ListCreateEditDeleteCompaniesViewModel.cs" />
+    <Compile Include="ViewModels\ShowFilesInTableViewModel.cs" />
     <Compile Include="ViewModels\SizeFilterViewModel.cs" />
     <Compile Include="ViewModels\DisplayUsersViewModel.cs" />
     <Compile Include="ViewModels\EditRoleViewModel.cs" />
@@ -540,6 +543,7 @@
     <Content Include="Views\Filter\FilterBySize.cshtml" />
     <Content Include="Views\Filter\FilterByName.cshtml" />
     <Content Include="Views\Filter\FilterByEmail.cshtml" />
+    <Content Include="Views\Folder\ChangePassword.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

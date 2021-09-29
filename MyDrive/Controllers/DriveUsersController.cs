@@ -11,12 +11,15 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Microsoft.AspNet.Identity;
 using System.Data.Entity.Validation;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace MyDrive.Controllers
 {
     public class DriveUsersController : Controller
     {
         private ApplicationDbContext _context;
+        private ApplicationSignInManager _signInManager;
+        private ApplicationUserManager _userManager;
         public DriveUsersController()
         {
             _context = new ApplicationDbContext();
@@ -24,6 +27,36 @@ namespace MyDrive.Controllers
         protected override void Dispose(bool disposing)
         {
             _context.Dispose();
+        }
+
+        public DriveUsersController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
+        {
+            UserManager = userManager;
+            SignInManager = signInManager;
+        }
+
+        public ApplicationSignInManager SignInManager
+        {
+            get
+            {
+                return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
+            }
+            private set
+            {
+                _signInManager = value;
+            }
+        }
+
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
         }
         // GET: DriveUsers
 
@@ -51,6 +84,58 @@ namespace MyDrive.Controllers
             }
             var viewModel = new DisplayUsersViewModel { UsersWithoutCompanies = usersWithoutCompanies, UsersWithCompanies = usersWithCompanies, RecordsOfUsersInCompanies = records, Companies = companies };
             return View(viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult ConfirmPasswordForUserDelete(DisplayUsersViewModel viewModel, string id)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = User.Identity.GetUserId();
+                ApplicationUser user1 = UserManager.FindById(userId);
+                try
+                {
+                    var result = UserManager.CheckPassword(user1, viewModel.Password);
+                    if (result)
+                    {
+                        var user = _context.Users.Single(c => c.Id == id);
+                        var UsersInCompanies = _context.UsersInCompanies.ToList();
+                        var FileRecords = _context.Files.ToList();
+                        foreach(var UserInCompany in UsersInCompanies)
+                        {
+                            if(UserInCompany.UserId == user.Id)
+                            {
+                                _context.UsersInCompanies.Remove(UserInCompany);
+                                _context.SaveChanges();
+                            }
+                        }
+                        foreach (var FileRecord in FileRecords)
+                        {
+                            if (FileRecord.UserId == user.Id)
+                            {
+                                _context.Files.Remove(FileRecord);
+                                _context.SaveChanges();
+                            }
+                        }
+                        _context.Users.Remove(user);
+                        _context.SaveChanges();
+
+                        return Json(true, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(false, JsonRequestBehavior.AllowGet);
+                    }
+
+                }
+                catch (System.ArgumentNullException e)
+                {
+                    return Json(false, JsonRequestBehavior.AllowGet);
+                }
+            }
+            else
+                return Json(false, JsonRequestBehavior.AllowGet);
+
         }
         /*public ActionResult DisplayApiUsers()
         {

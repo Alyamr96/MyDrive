@@ -1,4 +1,4 @@
-﻿@model List<MyDrive.Models.FileModel>
+﻿@model MyDrive.ViewModels.ShowFilesInTableViewModel
 @{
     ViewBag.Title = "ShowFilesInTable";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -16,19 +16,41 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Files)
         {
-            string myFilePath = item.Path.Replace(@"\", ";");
-            string myFinalPath = myFilePath.Replace(".", "'");
             <tr>
                 <td>@item.Name</td>
-                <td>@item.Path</td>
+                <td>Home\@item.Path</td>
                 <td><a href="~/Files/@item.Path" target="_blank">View</a></td>
-                <td><a href="~/Folder/DeleteFileFromTable/@myFinalPath">Delete</a></td>
+                <td><a href="#" class="myDelete" data-file-path="@item.Path">Delete</a></td>
             </tr>
         }
     </tbody>
 </table>
+
+<div class="modal fade" id="ConfirmPasswordModalForFileDelete">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Confirm Password</h2>
+            </div>
+            <div class="modal-body">
+                <form id="ConfirmPasswordFormForFileDelete">
+                    @Html.LabelFor(m => m.Password)
+                    @Html.Password("password", "", new { id = "passwordForFolderDelete1", Textmode = "Password" })
+                    @Html.ValidationMessageFor(m => m.Password)
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group">
+                    <a href="#" id="btnSaveForFileDelete" class="btn btn-primary">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input id="testPurpose" type="hidden" />
 
 @section scripts
 {
@@ -38,19 +60,25 @@
 
             $("#AllFiles").on("click", ".myDelete", function () {
                 var button = $(this);
-                var data = button.attr("data-folder-path");
+                $("#ConfirmPasswordModalForFileDelete").modal('show');
+                $("#testPurpose").val(button.attr("data-file-path"));
+            });
+
+            $("#btnSaveForFileDelete").click(function () {
+                var ConfirmPasswordForm = $("#ConfirmPasswordFormForFileDelete").serialize();
+                var Myid = $("#testPurpose").val();
 
                 $.ajax({
                     type: "POST",
-                    url: "/Folder/DeleteFileFromTable",
-                    data: data,
+                    url: "/Folder/ConfirmPasswordForFileDeleteFromTable",
+                    data: (ConfirmPasswordForm ? ConfirmPasswordForm + "&" : "") + "id=" + Myid,
                     success: function (res) {
                         if (res) {
                             console.log("success")
                             window.location.href = "/Folder/ShowFilesInTable"
                         }
                         else {
-                            confirm("Something went wrong")
+                            confirm("Please Enter A Valid Password")
                         }
                     }
                 })

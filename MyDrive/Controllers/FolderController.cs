@@ -11,6 +11,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Windows.Forms;
 
 namespace MyDrive.Controllers
 {
@@ -154,7 +155,23 @@ namespace MyDrive.Controllers
         public ActionResult GetFoldersFromPath(string folderName)
         {
             string myFolderName = folderName.Replace(";", @"\");
-            string path = absoloutePath + @"/" + myFolderName;
+            string path = Server.MapPath("~/Files/") + myFolderName;
+            /*string pathReplacement = path.Replace(@"\", ";");
+            string[] words = pathReplacement.Split(';');
+            List<string> myFinalPath = new List<string>();
+            for(int i=0; i< words.Length; i++)
+            {
+                myFinalPath.Add(words[i]);
+            }
+            List<string> myFinalPathNoDups = myFinalPath.Distinct().ToList();
+            string pathNoDups = "";
+            for(int i=0; i<myFinalPathNoDups.Count; i++)
+            {
+                pathNoDups = pathNoDups + @"\" + myFinalPathNoDups[i];
+            }
+            pathNoDups = pathNoDups.Substring(1);
+            ViewBag.abc = pathNoDups;
+            ViewBag.abcd = path;*/
             List<string> dirs = new List<string>(Directory.EnumerateDirectories(path));
             List<string> foldersPathAfterFile = new List<string>(dirs.Count);
             List<string> folderPathAfterFileWithoutBackSlash = new List<string>(dirs.Count);
@@ -396,8 +413,9 @@ namespace MyDrive.Controllers
             {
                 files.Add(new FileModel { Name = fileNames[i], Path = filesPathAfterFile[i] });
             }
+            var viewModel = new ShowFilesInTableViewModel { Files = files };
 
-            return View(files);
+            return View(viewModel);
         }
 
         [Route("Folder/RenameFolder/{folderPath}")]
@@ -1019,26 +1037,103 @@ namespace MyDrive.Controllers
             return Content(companyId.ToString());
         }
 
-        [Route("Folder/DeleteFileFromTable/{filePath}")]
-        public ActionResult DeleteFileFromTable(string filePath)
+        [HttpPost]
+        public ActionResult ConfirmPasswordForFileDeleteFromTable(ShowFilesInTableViewModel viewModel, string id)
         {
-            string myFilePath = filePath.Replace(";", @"\");
-            string myFinalPath = myFilePath.Replace("'", ".");
-            string path = absoloutePath + @"/" + myFinalPath;
-            string pathUsedForDelete = absoloutePath + @"\" + myFinalPath;
-            pathUsedForDelete = pathUsedForDelete.Replace(" ", "");
-            var DatabaseFiles = _context.Files.ToList();
-            //var fileInDb = _context.Files.Single(c => c.Path == pathUsedForDelete);
-            foreach (var DatabaseFile in DatabaseFiles)
+            if (ModelState.IsValid)
             {
-                if (DatabaseFile.Path == pathUsedForDelete)
+                var userId = User.Identity.GetUserId();
+                ApplicationUser user1 = UserManager.FindById(userId);
+                try
                 {
-                    _context.Files.Remove(DatabaseFile);
-                    _context.SaveChanges();
+                    var result = UserManager.CheckPassword(user1, viewModel.Password);
+                    if (result)
+                    {
+                        string DeletePath = Server.MapPath("~/Files/") + id;
+                        System.IO.File.Delete(DeletePath);
+                        var FileRecords = _context.Files.ToList();
+                        foreach(var FileRecord in FileRecords)
+                        {
+                            if(FileRecord.Path == DeletePath)
+                            {
+                                _context.Files.Remove(FileRecord);
+                                _context.SaveChanges();
+                            }
+                        }
+                        return Json(true, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(false, JsonRequestBehavior.AllowGet);
+                    }
+
+                }
+                catch (System.ArgumentNullException e)
+                {
+                    return Json(false, JsonRequestBehavior.AllowGet);
                 }
             }
-            System.IO.File.Delete(path);
-            return RedirectToAction("ShowFilesInTable");
+            else
+                return Json(false, JsonRequestBehavior.AllowGet);
+
+        }
+
+        public ActionResult ChangePassword()
+        {
+            var viewModel = new MyChangePasswordViewModel {Flag = false, Flag2 = false };
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult ChangePassword1(MyChangePasswordViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                var returnModel = new MyChangePasswordViewModel { Password = viewModel.Password, OldPassword = viewModel.OldPassword, ConfirmPassword = viewModel.ConfirmPassword };
+                return View("ChangePassword", returnModel);
+            }
+            else
+            {
+                var userId = User.Identity.GetUserId();
+                ApplicationUser user1 = UserManager.FindById(userId);
+                try
+                {
+                    var result = UserManager.CheckPassword(user1, viewModel.OldPassword);
+                    if (result)
+                    {
+                        if (viewModel.Password.Any(char.IsDigit))
+                        {
+                            if (viewModel.Password.Any(char.IsLower))
+                            {
+                                if (viewModel.Password.Any(char.IsUpper))
+                                {
+                                    if(viewModel.Password.Any(ch => !char.IsLetterOrDigit(ch)))
+                                    {
+                                        if(viewModel.Password.Length > 8)
+                                        {
+                                            UserManager.ChangePassword(user1.Id, viewModel.OldPassword, viewModel.Password);
+                                            return RedirectToAction("GetFolders1", "Folder");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        var returnModel = new MyChangePasswordViewModel { Password = viewModel.Password, OldPassword = viewModel.OldPassword, ConfirmPassword = viewModel.ConfirmPassword, Flag2 = true };
+                        return View("ChangePassword", returnModel);
+                    }
+                    else
+                    {
+                        var returnModel = new MyChangePasswordViewModel { Password = viewModel.Password, OldPassword = viewModel.OldPassword, ConfirmPassword = viewModel.ConfirmPassword, Flag = true };
+                        return View("ChangePassword", returnModel);
+                    }
+
+                }
+                catch (System.ArgumentNullException e)
+                {
+                    ModelState.AddModelError("", "Wrong Password");
+                    return View("ChangePassword", viewModel);
+                }
+            }
         }
     }
 }

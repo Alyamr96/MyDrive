@@ -222,13 +222,14 @@
                 {
             finalReturnPath = finalReturnPath + returnPath[i] + ";";
                 }
-        <div class="CustomFolder">        
-           <!-- <a href="~/Folder/RenameFolder/@folderName.Path" class="btn-link"><i class="fas fa-pen"></i></a>  -->
-            <button class="btn-link my-rename" data-folder-path="@folderName.Path" data-return-path="@finalReturnPath"><i class="fas fa-pen"></i></button>
-            <!--<button class="btn-link js-delete" data-folder-path="@folderName.Path"><i class="fas fa-backspace"></i></button>-->
-            <button class="btn-link my-delete" data-folder-path="@folderName.Path" data-return-path="@finalReturnPath"><i class="fas fa-backspace"></i></button>
-            <a href="/Folder/GetFolderFromPath/@folderName.Path"> <i class="fas fa-folder myFolderIcon"></i><span>@folderName.Name</span></a>
-        </div>
+    <div class="CustomFolder">
+        <!-- <a href="~/Folder/RenameFolder/@folderName.Path" class="btn-link"><i class="fas fa-pen"></i></a>  -->
+        <button class="btn-link my-rename" data-folder-path="@folderName.Path" data-return-path="@finalReturnPath"><i class="fas fa-pen"></i></button>
+        <!--<button class="btn-link js-delete" data-folder-path="@folderName.Path"><i class="fas fa-backspace"></i></button>-->
+        <button class="btn-link my-delete" data-folder-path="@folderName.Path" data-return-path="@finalReturnPath"><i class="fas fa-backspace"></i></button>
+        <button class="btn-link my-copy" data-folder-name="@folderName.Name"><i class="fas fa-copy"></i></button>
+        <a href="/Folder/GetFolderFromPath/@folderName.Path"> <i class="fas fa-folder myFolderIcon"></i><span>@folderName.Name</span></a>
+    </div>
     }
 </div>
 
@@ -321,7 +322,8 @@
 
 <input id="testPurpose" type="hidden" />
 <input id="ReturnPath" type="hidden" />
-
+<input id="CurrentUrl" type="hidden" value="@HttpContext.Current.Request.Url.AbsoluteUri"/>
+<input id="CurrentUrl2" type="hidden"/>
 @section scripts
 {
     <script>
@@ -503,6 +505,26 @@
 
                     }
                 })
+            });
+
+            $(".myCustomContainer").on("click", ".my-copy", function () {
+                var button = $(this);
+                var ReturnValue = $("#CurrentUrl").val();
+                $("#CurrentUrl2").val(ReturnValue);
+                if ($("#CurrentUrl2").val().substring($("#CurrentUrl2").val().length - button.attr("data-folder-name").length) != button.attr("data-folder-name")) {
+                    var MyUrl = $("#CurrentUrl2").val() + ";" + button.attr("data-folder-name");
+                }
+                else {
+                    var MyUrl = $("#CurrentUrl2").val();
+                }
+                $("#CurrentUrl2").val(MyUrl);
+                var copyText = document.getElementById("CurrentUrl2");
+                copyText.type = 'text';
+                copyText.select();
+                document.execCommand("copy");
+                $("CurrentUrl2").val(ReturnValue);
+                copyText.type = 'hidden';
+                //button.hide();
             });
         });
     </script>
