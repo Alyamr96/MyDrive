@@ -16,6 +16,20 @@ namespace MyDrive.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private ApplicationDbContext _context;
+        static readonly List<string> Permissions = new List<String>{"Create User" ,"View Users", "Delete User", "Assign Users To Companies", "View All Uploaded Files", "Delete File", "Upload File", "Delete Company", "Delete Folder", "Create Folder", "Delete Multiple Folders/Files", "View Roles", "Create Role", "Edit Role", "Delete Role", "View Filters", "Manage Companies"};
+        List<string> AddedPermissionsToNewRole = new List<string>();
+        List<string> RemovedPermissionsToNewRole = new List<string>();
+
+        public AdministrationController()
+        {
+            _context = new ApplicationDbContext();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            _context.Dispose();
+        }
 
         public AdministrationController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
@@ -46,14 +60,11 @@ namespace MyDrive.Controllers
                 _userManager = value;
             }
         }
-        public AdministrationController()
-        {
-
-        }
         [HttpGet]
         public ActionResult CreateRole()
         {
-            return View();
+            var viewModel = new CreateRoleViewModel { Permissions = Permissions, PermissionsAddedToRole = AddedPermissionsToNewRole, Flag = false };
+            return View(viewModel);
         }
         [HttpPost]
         public async Task<ActionResult> CreateRolePost(CreateRoleViewModel model)
@@ -69,7 +80,7 @@ namespace MyDrive.Controllers
                 IdentityResult result = await roleManager.CreateAsync(identityRole);
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("DisplayUsers", "DriveUsers");
+                    return RedirectToAction("ListRoles", "Administration");
                 }
 
                 foreach(var error in result.Errors)
@@ -77,18 +88,87 @@ namespace MyDrive.Controllers
                     ModelState.AddModelError("", error);
                 }
             }
-            
-            return View(model);
+            return View("CreateRole",model);
         }
-        /*public ActionResult ListRoles()
+        [HttpGet]
+        public ActionResult ListRoles()
         {
             var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
             var roleManager = new RoleManager<IdentityRole>(roleStore);
-            var roles = roleManager.Roles;
-            return View(roles);
+            var roles = roleManager.Roles.ToList();
+            var viewModel = new ListRolesViewModel { Roles = roles };
+            return View(viewModel);
         }
 
-        public async Task<ActionResult> EditRole(string id)
+        [HttpPost]
+        public ActionResult ConfirmPasswordForRoleCreate(ListRolesViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = User.Identity.GetUserId();
+                ApplicationUser user1 = UserManager.FindById(userId);
+                try
+                {
+                    var result = UserManager.CheckPassword(user1, viewModel.Password);
+                    if (result)
+                    {
+                        return Json(true, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(false, JsonRequestBehavior.AllowGet);
+                    }
+
+                }
+                catch (System.ArgumentNullException e)
+                {
+                    return Json(false, JsonRequestBehavior.AllowGet);
+                }
+            }
+            else
+                return Json(false, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult ConfirmPasswordForRoleDelete(ListRolesViewModel viewModel, string id)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = User.Identity.GetUserId();
+                ApplicationUser user1 = UserManager.FindById(userId);
+                try
+                {
+                    var result = UserManager.CheckPassword(user1, viewModel.Password);
+                    if (result)
+                    {
+                        var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
+                        var roleManager = new RoleManager<IdentityRole>(roleStore);
+                        var role = roleManager.FindById(id);
+                        roleManager.Delete(role);
+                        return Json(true, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(false, JsonRequestBehavior.AllowGet);
+                    }
+
+                }
+                catch (System.ArgumentNullException e)
+                {
+                    return Json(false, JsonRequestBehavior.AllowGet);
+                }
+            }
+            else
+                return Json(false, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult AssignPermissionToRole(string PermissionName)
+        {
+            AddedPermissionsToNewRole.Add(PermissionName);
+            return Json(true, JsonRequestBehavior.AllowGet);
+        }
+        /*public async Task<ActionResult> EditRole(string id)
         {
             var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
             var roleManager = new RoleManager<IdentityRole>(roleStore);
@@ -144,7 +224,7 @@ namespace MyDrive.Controllers
             return View(model);
         }*/
         // shows all users who are not in role
-        public ActionResult EditUsersInRole()
+        /*public ActionResult EditUsersInRole()
         {
             var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
             var roleManager = new RoleManager<IdentityRole>(roleStore);
@@ -200,6 +280,6 @@ namespace MyDrive.Controllers
             var roles = roleManager.Roles;
             UserManager.RemoveFromRole(userId, "DeleteFolders");
             return RedirectToAction("DisplayUsers", "DriveUsers");
-        }
+        }*/
     }
 }

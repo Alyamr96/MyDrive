@@ -1,0 +1,140 @@
+﻿@model MyDrive.ViewModels.ListRolesViewModel
+@{
+    ViewBag.Title = "ListRoles";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>List Of Roles</h2>
+<style>
+    .MyButtons {
+        margin-bottom: 20px;
+    }
+</style>
+
+<div class="MyButtons">
+    <button id="CreateRoleButton" class="btn btn-primary">Create Role</button>
+    <!--<a href="~/Administration/CreateRole" class="btn btn-primary">Create Role</a>-->
+</div>
+
+<div class="modal fade" id="ConfirmPasswordToCreateRoleModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Confirm Password</h2>
+            </div>
+            <div class="modal-body">
+                <form id="ConfirmPasswordToCreateRoleForm">
+                    @Html.LabelFor(m => m.Password)
+                    @Html.Password("password", "", new { id = "passwordForFolderDelete", Textmode = "Password" })
+                    @Html.ValidationMessageFor(m => m.Password)
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group">
+                    <a href="#" id="btnSaveToCreateRole" class="btn btn-primary">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ConfirmPasswordToDeleteRoleModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Confirm Password</h2>
+            </div>
+            <div class="modal-body">
+                <form id="ConfirmPasswordToDeleteRoleForm">
+                    @Html.LabelFor(m => m.Password)
+                    @Html.Password("password", "", new { id = "passwordForFolderDelete", Textmode = "Password" })
+                    @Html.ValidationMessageFor(m => m.Password)
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group">
+                    <a href="#" id="btnSaveToDeleteRole" class="btn btn-primary">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<table id="RolesTable" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Role Name</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Roles)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td><a href="#">Edit Role</a></td>
+                <td><a href="#" id="DeleteRole" data-role-id="@item.Id">Delete Role</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<input id="testPurpose" type="hidden" />
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $("#RolesTable").dataTable();
+
+            $(".MyButtons").on("click", "#CreateRoleButton", function () {
+                $("#ConfirmPasswordToCreateRoleModal").modal('show');
+            });
+
+            $("#btnSaveToCreateRole").click(function () {
+                var ConfirmPasswordForm = $("#ConfirmPasswordToCreateRoleForm").serialize();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Administration/ConfirmPasswordForRoleCreate",
+                    data: ConfirmPasswordForm,
+                    success: function (res) {
+                        if (res) {
+                            console.log("success")
+                            window.location.href = "/Administration/CreateRole"
+                        }
+                        else {
+                            confirm("Please Enter A Valid Password")
+                        }
+                    }
+                })
+            });
+
+            $("#RolesTable").on("click", "#DeleteRole", function () {
+                var button = $(this);
+                $("#ConfirmPasswordToDeleteRoleModal").modal('show');
+                $("#testPurpose").val(button.attr("data-role-id"));
+            });
+
+            $("#btnSaveToDeleteRole").click(function () {
+                var ConfirmPasswordForm = $("#ConfirmPasswordToDeleteRoleForm").serialize();
+                var Myid = $("#testPurpose").val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Administration/ConfirmPasswordForRoleDelete",
+                    data: (ConfirmPasswordForm ? ConfirmPasswordForm + "&" : "") + "id=" + Myid,
+                    success: function (res) {
+                        if (res) {
+                            console.log("success")
+                            window.location.href = "/Administration/ListRoles"
+                        }
+                        else {
+                            confirm("Please Enter A Valid Password")
+                        }
+                    }
+                })
+            });
+        });
+    </script>
+}

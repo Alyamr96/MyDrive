@@ -49,17 +49,10 @@
             <h2>@MyDrive.Resources.Language.SIDEBAR</h2>
           <!--  @Html.Partial("_LoginPartial")-->
         <ul>
-            <li>@Html.ActionLink(MyDrive.Resources.Language.Drive_Users, "DisplayUsers", "DriveUsers")</li>
-            @if (User.IsInRole("CanManageUsers"))
-            {
-                <li>@Html.ActionLink(MyDrive.Resources.Language.View_All_Uploaded_Files, "ShowFilesInTable", "Folder")</li>
-            }
-            <li>@Html.ActionLink("Driver", "GetFolders1", "Folder")</li>
-            @if (User.IsInRole("CanManageUsers"))
-            {
-                <li>@Html.ActionLink("Assign Role", "EditUsersInRole", "Administration")</li>
-                <li>@Html.ActionLink("Remove Role", "EditUsersInRole2", "Administration")</li>
-            }
+            <li>@Html.ActionLink(MyDrive.Resources.Language.Drive_Users, "DisplayUsers", "DriveUsers")</li>          
+            <li>@Html.ActionLink(MyDrive.Resources.Language.View_All_Uploaded_Files, "ShowFilesInTable", "Folder")</li>          
+            <li>@Html.ActionLink("Driver", "GetFolders1", "Folder")</li>         
+            <li>@Html.ActionLink("List Roles", "ListRoles", "Administration")</li>       
             <li>@Html.ActionLink("English", "Index", "Language", new { language = "en" }, null)</li>
             <li>@Html.ActionLink("عربي", "Index", "Language", new { language = "ar" }, null)</li>
             <li>@Html.ActionLink("Filters", "FilterOptions", "Filter")</li>

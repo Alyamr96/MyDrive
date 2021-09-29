@@ -18,7 +18,7 @@ namespace MyDrive
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "DriveUsers", action = "DisplayUsers", id = UrlParameter.Optional }
+                defaults: new { controller = "Folder", action = "GetFolders1", id = UrlParameter.Optional }
             );
         }
     }

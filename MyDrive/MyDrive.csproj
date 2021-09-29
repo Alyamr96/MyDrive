@@ -249,6 +249,7 @@
       <DependentUpon>Language.resx</DependentUpon>
     </Compile>
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\ListRolesViewModel.cs" />
     <Compile Include="ViewModels\MyChangePasswordViewModel.cs" />
     <Compile Include="ViewModels\CreateRoleViewModel.cs" />
     <Compile Include="ViewModels\DateFilterViewModel.cs" />
@@ -544,6 +545,7 @@
     <Content Include="Views\Filter\FilterByName.cshtml" />
     <Content Include="Views\Filter\FilterByEmail.cshtml" />
     <Content Include="Views\Folder\ChangePassword.cshtml" />
+    <Content Include="Views\Administration\ListRoles.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
