@@ -1,0 +1,72 @@
+﻿@model MyDrive.ViewModels.EditRole2ViewModel
+@{
+    ViewBag.Title = "EditRole2";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Edit Role</h2>
+
+<style>
+    .TableClass {
+        margin-top: 20px;
+    }
+</style>
+
+@using (Html.BeginForm("EditRolePost", "Administration"))
+{
+    <div class="form-group">
+        @Html.LabelFor(m => Model.RoleName)
+        @Html.TextBoxFor(m => Model.RoleName, new { @class = "form-control", @readonly = true })
+        @Html.ValidationMessageFor(m => Model.RoleName)
+        @if (Model.Flag == true)
+        {
+            <p>Cant add permission to an empty role, please enter role Name</p>
+        }
+    </div>
+    @Html.HiddenFor(m => Model.RoleId)
+    <!--<button type="submit" class="btn btn-primary">Save</button>-->
+}
+
+@if (Model.RoleName != null)
+{
+    <div class="TableClass">
+        <table id="TableId" class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Permission</th>
+                    <th>Assign To Role</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var permission in Model.Permissions)
+                {
+                    if (Model.PermissionsAddedToRole.Contains(permission))
+                    {
+                        <tr>
+                            <td>@permission</td>
+                            <td><a href="~/Administration/RemovePermissionFromRole/@permission/@Model.RoleId.Replace('-',';')" data-permission-name="@permission" id="DeleteFromRole">Remove From Role</a></td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td>@permission</td>
+                            <td><a href="~/Administration/AssignPermissionToRole/@permission/@Model.RoleId.Replace('-',';')">Assign</a></td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+<a href="~/Administration/ListRoles" class="btn btn-primary">Save</a>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $("#TableId").dataTable();
+        });
+    </script>
+}

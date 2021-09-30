@@ -66,6 +66,7 @@ namespace MyDrive.Controllers
             var records = _context.UsersInCompanies.ToList();
             List<ApplicationUser> usersWithoutCompanies = new List<ApplicationUser>();
             List<ApplicationUser> usersWithCompanies = new List<ApplicationUser>();
+            //List<ApplicationUser> usersWithoutRoles = new List<ApplicationUser>();
             var companies = _context.Companies.ToList();
             foreach(var user in users)
             {

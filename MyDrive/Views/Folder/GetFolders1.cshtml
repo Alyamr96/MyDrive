@@ -101,7 +101,11 @@
 
     <p class="Second-button">
         <!--<a href="#" class="btn btn-primary" data-toggle="modal" data-target="#uploadFileModal">@MyDrive.Resources.Language.Upload_File</a>-->
-        <button class="btn btn-primary" id="UploadFileButton">@MyDrive.Resources.Language.Upload_File</button>
+        @if (Model.UserPermissions.Contains("Upload File"))
+        {
+            <button class="btn btn-primary" id="UploadFileButton">@MyDrive.Resources.Language.Upload_File</button>
+
+        }
     </p>
 </div>
 @using (Html.BeginForm("UploadFiles", "Folder", FormMethod.Post, new { enctype = "multipart/form-data" }))

@@ -18,72 +18,19 @@
         @Html.LabelFor(m => Model.RoleName)
         @Html.TextBoxFor(m => Model.RoleName, new { @class = "form-control", id = "RoleNameTextBox" })
         @Html.ValidationMessageFor(m => Model.RoleName)
-        @if (Model.Flag == true)
-        {
-            <p>Cant add permission to an empty role, please enter role Name</p>
-        }
+        @if(Model.Flag == true)
+                {
+                    <p>A role with this name already Exists</p>
+                }
     </div>
     <button type="submit" class="btn btn-primary">Save</button>
 }
 
-@if (Model.RoleName != null)
-{
-    <div class="TableClass">
-        <table id="TableId" class="table table-bordered table-hover">
-            <thead>
-                <tr>
-                    <th>Permission</th>
-                    <th>Assign To Role</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var permission in Model.Permissions)
-                {
-                    if (Model.PermissionsAddedToRole.Contains(permission))
-                    {
-                        <tr>
-                            <td>@permission</td>
-                            <td><a href="#" data-permission-name="@permission" id="DeleteFromRole">Remove From Role</a></td>
-                        </tr>
-                    }
-                    else
-                    {
-                        <tr>
-                            <td>@permission</td>
-                            <td><a href="#" data-permission-name="@permission" id="AssignToRole">Assign</a></td>
-                        </tr>
-                    }
-                }
-            </tbody>
-        </table>
-    </div>
-}
 
 
 @section scripts
 {
     <script>
-        $(document).ready(function () {
-            $("#TableId").dataTable();
-
-            $(".TableClass").on("click", "#AssignToRole", function () {
-                var button = $(this);
-                var PermissionName = button.attr("data-permission-name");
-
-                $.ajax({
-                    type: "POST",
-                    url: "/Administration/AssignPermissionToRole",
-                    data: PermissionName,
-                    success: function (res) {
-                        if (res) {
-                            console.log("sucess")
-                        }
-                        else {
-                            confirm("Please Enter A Valid Password")
-                        }
-                    }
-                })
-            });
-        });
+        
     </script>
 }

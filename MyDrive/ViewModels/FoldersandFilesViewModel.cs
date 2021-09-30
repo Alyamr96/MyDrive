@@ -24,5 +24,7 @@ namespace MyDrive.ViewModels
         public List<string> FilesToDelete { get; set; }
 
         public List<Company> Companies { get; set; }
+
+        public List<string> UserPermissions { get; set; } 
     }
 }

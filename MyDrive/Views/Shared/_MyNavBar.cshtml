@@ -38,6 +38,7 @@
         background: #CC5500;
     }
 
+
 </style>
     
 <div class="navbar navbar-inverse navbar-fixed-top">
@@ -49,15 +50,16 @@
             <h2>@MyDrive.Resources.Language.SIDEBAR</h2>
           <!--  @Html.Partial("_LoginPartial")-->
         <ul>
-            <li>@Html.ActionLink(MyDrive.Resources.Language.Drive_Users, "DisplayUsers", "DriveUsers")</li>          
-            <li>@Html.ActionLink(MyDrive.Resources.Language.View_All_Uploaded_Files, "ShowFilesInTable", "Folder")</li>          
-            <li>@Html.ActionLink("Driver", "GetFolders1", "Folder")</li>         
-            <li>@Html.ActionLink("List Roles", "ListRoles", "Administration")</li>       
-            <li>@Html.ActionLink("English", "Index", "Language", new { language = "en" }, null)</li>
-            <li>@Html.ActionLink("عربي", "Index", "Language", new { language = "ar" }, null)</li>
-            <li>@Html.ActionLink("Filters", "FilterOptions", "Filter")</li>
-            <li>@Html.ActionLink("Manage Companies", "Index", "Company")</li>
-            <li>@Html.ActionLink("Change Password", "ChangePassword", "Folder")</li>
+            <li>@Html.ActionLink(MyDrive.Resources.Language.Drive_Users, "DisplayUsers", "DriveUsers", null,new {Style = "color:White" })</li>
+            <li>@Html.ActionLink(MyDrive.Resources.Language.View_All_Uploaded_Files, "ShowFilesInTable", "Folder", null, new { Style = "color:White" })</li>
+            <li>@Html.ActionLink("Driver", "GetFolders1", "Folder", null, new { Style = "color:White" })</li>
+            <li>@Html.ActionLink("List Roles", "ListRoles", "Administration", null, new { Style = "color:White" })</li>
+            <li>@Html.ActionLink("English", "Index", "Language", new { language = "en" }, new { Style = "color:White" })</li>
+            <li>@Html.ActionLink("عربي", "Index", "Language", new { language = "ar" }, new { Style = "color:White" })</li>
+            <li>@Html.ActionLink("Filters", "FilterOptions", "Filter", null, new { Style = "color:White" })</li>
+            <li>@Html.ActionLink("Manage Companies", "Index", "Company", null, new { Style = "color:White" })</li>
+            <li>@Html.ActionLink("Change Password", "ChangePassword", "Folder", null, new { Style = "color:White" })</li>
+           <!-- <li>@Html.ActionLink("Create User", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>-->
         </ul>
 
         </div>

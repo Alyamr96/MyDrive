@@ -141,11 +141,31 @@ namespace MyDrive.Controllers
             }
             // Folders and files viewModel
             var companiesInDb = _context.Companies.ToList();
+            // get list of permissions
+            var userId = User.Identity.GetUserId();
+            ApplicationUser user1 = UserManager.FindById(userId);
+            var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
+            var roleManager = new RoleManager<IdentityRole>(roleStore);
+            var roles = roleManager.Roles.ToList();
+            string RolesUserAssignedTo = "";
+            var PermissionRecords = _context.RolePermissions.ToList();
+            List<string> UserPermissions = new List<string>();
+            foreach (var role in roles)
+            {
+                if (UserManager.IsInRole(userId, role.Name) == true)
+                    RolesUserAssignedTo = role.Id;
+            }
+            foreach(var record in PermissionRecords)
+            {
+                if (record.RoleId == RolesUserAssignedTo)
+                    UserPermissions.Add(record.PermissionName);
+            }
             var FoldersAndFiles = new FoldersandFilesViewModel
             {
                 Folders = folders,
                 Files = files,
-                Companies = companiesInDb
+                Companies = companiesInDb,
+                UserPermissions = UserPermissions
             };
            
             return View(FoldersAndFiles);

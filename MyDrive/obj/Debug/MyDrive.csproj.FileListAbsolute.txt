@@ -130,3 +130,6 @@ C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.AddedComp
 C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.AddedIdPkToCompany.resources
 C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.AddedUsersInCompaniesTable.resources
 C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.AddedUserIdToFileModel.resources
+C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.AddedRolePermissionsTable.resources
+C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.AddRoleToAdmin.resources
+C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.AddAdminToDoEverythingRole.resources

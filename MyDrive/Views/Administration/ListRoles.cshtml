@@ -8,11 +8,16 @@
 <style>
     .MyButtons {
         margin-bottom: 20px;
+        display:flex;
+    }
+
+    .MyButtons #SecondButton{
+        margin-left: 15px;
     }
 </style>
-
 <div class="MyButtons">
     <button id="CreateRoleButton" class="btn btn-primary">Create Role</button>
+    <a id="SecondButton" href="~/Administration/UserRoles" class="btn btn-primary">Users In Roles</a>
     <!--<a href="~/Administration/CreateRole" class="btn btn-primary">Create Role</a>-->
 </div>
 
@@ -60,6 +65,28 @@
     </div>
 </div>
 
+<div class="modal fade" id="ConfirmPasswordToEditRoleModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Confirm Password</h2>
+            </div>
+            <div class="modal-body">
+                <form id="ConfirmPasswordToEditRoleForm">
+                    @Html.LabelFor(m => m.Password)
+                    @Html.Password("password", "", new { id = "passwordForFolderDelete", Textmode = "Password" })
+                    @Html.ValidationMessageFor(m => m.Password)
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group">
+                    <a href="#" id="btnSaveToEditRole" class="btn btn-primary">Confirm</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <table id="RolesTable" class="table table-bordered table-hover">
     <thead>
         <tr>
@@ -71,11 +98,16 @@
     <tbody>
         @foreach (var item in Model.Roles)
         {
-            <tr>
-                <td>@item.Name</td>
-                <td><a href="#">Edit Role</a></td>
-                <td><a href="#" id="DeleteRole" data-role-id="@item.Id">Delete Role</a></td>
-            </tr>
+            string roleIdNormalized = item.Id.Replace('-', ';');
+            if (item.Name != ("CanDoEverything"))
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td><a href="#" data-role-id="@roleIdNormalized" id="EditRole">Edit Role</a></td>
+                    <!--<td><a href="~/Administration/EditRole/@roleIdNormalized">Edit Role</a></td>-->
+                    <td><a href="#" id="DeleteRole" data-role-id="@item.Id">Delete Role</a></td>
+                </tr>
+            }
         }
     </tbody>
 </table>
@@ -128,6 +160,32 @@
                         if (res) {
                             console.log("success")
                             window.location.href = "/Administration/ListRoles"
+                        }
+                        else {
+                            confirm("Please Enter A Valid Password")
+                        }
+                    }
+                })
+            });
+
+            $("#RolesTable").on("click", "#EditRole", function () {
+                var button = $(this);
+                $("#ConfirmPasswordToEditRoleModal").modal('show');
+                $("#testPurpose").val(button.attr("data-role-id"));
+            });
+
+            $("#btnSaveToEditRole").click(function () {
+                var ConfirmPasswordForm = $("#ConfirmPasswordToEditRoleForm").serialize();
+                var Myid = $("#testPurpose").val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "/Administration/ConfirmPasswordForRoleEdit",
+                    data: ConfirmPasswordForm,
+                    success: function (res) {
+                        if (res) {
+                            console.log("success")
+                            window.location.href = "/Administration/EditRole/" + Myid
                         }
                         else {
                             confirm("Please Enter A Valid Password")

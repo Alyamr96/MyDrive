@@ -6,6 +6,16 @@
 
 <h2>@MyDrive.Resources.Language.Users</h2>
 
+<style>
+    .MyButtons {
+        margin-bottom: 20px;
+    }
+</style>
+
+<div class="MyButtons">
+    @Html.ActionLink("Create User", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink", @class = "btn btn-primary" })
+</div>
+
 <h2>Users Without Companies</h2>
 <table id="myusersWithoutCompanies" class="table table-bordered table-hover">
     <thead>
@@ -28,7 +38,7 @@
                     <td>@Html.DisplayFor(modelItem => item.LastName)</td>
                     <td>@Html.DisplayFor(modelItem => item.Email)</td>
                     <td><span>0</span>@Html.DisplayFor(modelItem => item.PhoneNumberInt)</td>
-                    <td><a href="#">Delete User</a></td>
+                    <td><a href="#" data-user-id="@item.Id" class="myDelete">Delete User</a></td>
                     <td><a href="/Company/Index" class="btn btn-danger">Assign To Company</a></td>
                 </tr>
             }
@@ -57,13 +67,13 @@
                 var companiesTable = Model.Companies;
                 string[] companies = new string[records.Count];
                 string CompanyIds = "";
-                for (int i =0; i<records.Count; i++)
+                for (int i = 0; i < records.Count; i++)
                 {
-                    if(records[i].UserId == item.Id)
+                    if (records[i].UserId == item.Id)
                     {
-                        foreach(var CompanyTable in companiesTable)
+                        foreach (var CompanyTable in companiesTable)
                         {
-                            if(records[i].CompanyId == CompanyTable.Id)
+                            if (records[i].CompanyId == CompanyTable.Id)
                             {
                                 CompanyIds += "," + CompanyTable.Name;
                             }
@@ -105,7 +115,7 @@
         </div>
     </div>
 </div>
-    
+
 <input id="testPurpose" type="hidden" />
 @section scripts
 {
@@ -113,7 +123,14 @@
         $(document).ready(function () {
             $("#myusers").DataTable();
             $("#myusersWithoutCompanies").dataTable();
+
             $("#myusers").on("click", ".myDelete", function () {
+                var button = $(this);
+                $("#ConfirmPasswordModalForUserDelete").modal('show');
+                $("#testPurpose").val(button.attr("data-user-id"));
+            });
+
+            $("#myusersWithoutCompanies").on("click", ".myDelete", function () {
                 var button = $(this);
                 $("#ConfirmPasswordModalForUserDelete").modal('show');
                 $("#testPurpose").val(button.attr("data-user-id"));

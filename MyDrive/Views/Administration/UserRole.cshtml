@@ -1,0 +1,61 @@
+﻿@model MyDrive.ViewModels.UserAndRoleViewModel
+@{
+    ViewBag.Title = "UserRole";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>UserRole</h2>
+
+<table id="UsersWithRoles" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>User Email</th>
+            <th>Role Names</th>
+            <th>Remove From Role</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var UserAndRole in Model.UsersWithRoles)
+        {
+            if (UserAndRole.User.Email != "admin@mydrive.com")
+            {
+                string userIdNormalized = UserAndRole.User.Id.Replace('-', ';');
+                <tr>
+                    <td>@UserAndRole.User.Email</td>
+                    <td>@UserAndRole.Role.Name</td>
+                    <td><a href="~/Administration/RemoveUserFromRole1/@userIdNormalized/@UserAndRole.Role.Name">Remove From Role</a></td>
+                </tr>
+
+            }
+        }
+    </tbody>
+</table>
+
+<table id="UsersWithoutRoles" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>User Email</th>
+            <th>Assign To Role</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var UserAndRole in Model.UsersWithoutRoles)
+        {
+            string UserIdNormalized = UserAndRole.User.Id.Replace('-', ';');
+            <tr>
+                <td>@UserAndRole.User.Email</td>
+                <td><a href="~/Administration/AssignUserToRole/@UserIdNormalized">Assign To Role</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $("#UsersWithRoles").dataTable();
+            $("#UsersWithoutRoles").dataTable();
+        });
+    </script>
+}

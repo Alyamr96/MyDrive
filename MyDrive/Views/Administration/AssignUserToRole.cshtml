@@ -1,0 +1,38 @@
+﻿@model List<Microsoft.AspNet.Identity.EntityFramework.IdentityRole>
+@{
+    ViewBag.Title = "AssignUserToRole";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Assign Role To User</h2>
+
+<table id="Roles" class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Role Name</th>
+            <th>Assign to this role</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            if (item.Name != "CanDoEverything")
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td><a href="~/Administration/AssignUserToRole1/@ViewBag.userId/@item.Name">Assign</a></td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $("#Roles").dataTable();
+        });
+    </script>
+}

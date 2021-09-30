@@ -17,9 +17,9 @@ namespace MyDrive.Controllers
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
         private ApplicationDbContext _context;
-        static readonly List<string> Permissions = new List<String>{"Create User" ,"View Users", "Delete User", "Assign Users To Companies", "View All Uploaded Files", "Delete File", "Upload File", "Delete Company", "Delete Folder", "Create Folder", "Delete Multiple Folders/Files", "View Roles", "Create Role", "Edit Role", "Delete Role", "View Filters", "Manage Companies"};
-        List<string> AddedPermissionsToNewRole = new List<string>();
-        List<string> RemovedPermissionsToNewRole = new List<string>();
+        static readonly List<string> Permissions = new List<String>{"Create User" ,"View Users", "Delete User", "Assign Users To Companies", "View All Uploaded Files", "Delete File", "Upload File", "Delete Company", "Delete Folder", "Create Folder", "Delete Multiple FoldersAndFiles", "View Roles", "Create Role", "Edit Role", "Delete Role", "View Filters", "Manage Companies"};
+        //static List<string> AddedPermissionsToNewRole = new List<string>();
+        //List<string> RemovedPermissionsToNewRole = new List<string>();
 
         public AdministrationController()
         {
@@ -63,7 +63,7 @@ namespace MyDrive.Controllers
         [HttpGet]
         public ActionResult CreateRole()
         {
-            var viewModel = new CreateRoleViewModel { Permissions = Permissions, PermissionsAddedToRole = AddedPermissionsToNewRole, Flag = false };
+            var viewModel = new CreateRoleViewModel { Permissions = Permissions };
             return View(viewModel);
         }
         [HttpPost]
@@ -82,12 +82,13 @@ namespace MyDrive.Controllers
                 {
                     return RedirectToAction("ListRoles", "Administration");
                 }
-
-                foreach(var error in result.Errors)
+                else
                 {
-                    ModelState.AddModelError("", error);
+                    var viewModel1 = new CreateRoleViewModel { RoleName = model.RoleName, Flag = true };
+                    return View("CreateRole", viewModel1);
                 }
             }
+
             return View("CreateRole",model);
         }
         [HttpGet]
@@ -141,6 +142,15 @@ namespace MyDrive.Controllers
                     var result = UserManager.CheckPassword(user1, viewModel.Password);
                     if (result)
                     {
+                        var records = _context.RolePermissions.ToList();
+                        foreach (var record in records)
+                        {
+                            if (record.RoleId == id)
+                            {
+                                _context.RolePermissions.Remove(record);
+                            }
+                        }
+                        _context.SaveChanges();
                         var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
                         var roleManager = new RoleManager<IdentityRole>(roleStore);
                         var role = roleManager.FindById(id);
@@ -163,11 +173,190 @@ namespace MyDrive.Controllers
         }
 
         [HttpPost]
-        public ActionResult AssignPermissionToRole(string PermissionName)
+        public ActionResult ConfirmPasswordForRoleEdit(ListRolesViewModel viewModel)
         {
-            AddedPermissionsToNewRole.Add(PermissionName);
-            return Json(true, JsonRequestBehavior.AllowGet);
+            if (ModelState.IsValid)
+            {
+                var userId = User.Identity.GetUserId();
+                ApplicationUser user1 = UserManager.FindById(userId);
+                try
+                {
+                    var result = UserManager.CheckPassword(user1, viewModel.Password);
+                    if (result)
+                    {
+                        return Json(true, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return Json(false, JsonRequestBehavior.AllowGet);
+                    }
+
+                }
+                catch (System.ArgumentNullException e)
+                {
+                    return Json(false, JsonRequestBehavior.AllowGet);
+                }
+            }
+            else
+                return Json(false, JsonRequestBehavior.AllowGet);
         }
+
+        [Route("Administration/EditRole/{roleId}")]
+        public ActionResult EditRole2(string roleId)
+        {
+            roleId = roleId.Replace(';', '-');
+            var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
+            var roleManager = new RoleManager<IdentityRole>(roleStore);
+            var role = roleManager.FindById(roleId);
+            List<string> RolePermissions = new List<string>();
+            var records = _context.RolePermissions.ToList();
+            foreach(var record in records)
+            {
+                if (record.RoleId == role.Id)
+                    RolePermissions.Add(record.PermissionName);
+            }
+            var viewModel = new EditRole2ViewModel {RoleId = role.Id, RoleName = role.Name, Permissions = Permissions, PermissionsAddedToRole = RolePermissions, Flag= false };
+            return View(viewModel);
+        }
+
+        [Route("Administration/AssignPermissionToRole/{permission}/{roleId}")]
+        public ActionResult AssignPermissionToRole(string permission, string roleId)
+        {
+            roleId = roleId.Replace(';', '-');
+            var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
+            var roleManager = new RoleManager<IdentityRole>(roleStore);
+            var role = roleManager.FindById(roleId);
+            RolePermissions myRecord = new RolePermissions {RoleId = role.Id, PermissionName = permission };
+            _context.RolePermissions.Add(myRecord);
+            _context.SaveChanges();
+            List<string> RolePermissions = new List<string>();
+            var records = _context.RolePermissions.ToList();
+            foreach (var record in records)
+            {
+                if (record.RoleId == role.Id)
+                    RolePermissions.Add(record.PermissionName);
+            }
+            var viewModel = new EditRole2ViewModel { RoleId = role.Id, RoleName = role.Name, Permissions = Permissions, PermissionsAddedToRole = RolePermissions, Flag = false };
+            return View("EditRole2",viewModel);
+        }
+
+        [Route("Administration/RemovePermissionFromRole/{permission}/{roleId}")]
+        public ActionResult RemovePermissionFromRole(string permission, string roleId)
+        {
+            roleId = roleId.Replace(';', '-');
+            var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
+            var roleManager = new RoleManager<IdentityRole>(roleStore);
+            var role = roleManager.FindById(roleId);
+            List<string> RolePermissions = new List<string>();
+            var records = _context.RolePermissions.ToList();
+            foreach (var record in records)
+            {
+                if (record.RoleId == role.Id && record.PermissionName == permission)
+                {
+                    _context.RolePermissions.Remove(record);
+                }
+                if (record.RoleId == role.Id && record.PermissionName != permission)
+                    RolePermissions.Add(record.PermissionName);
+            }
+            _context.SaveChanges();
+            var viewModel = new EditRole2ViewModel { RoleId = role.Id, RoleName = role.Name, Permissions = Permissions, PermissionsAddedToRole = RolePermissions, Flag = false };
+            return View("EditRole2", viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult EditRolePost(EditRole2ViewModel viewModel)
+        {
+            var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
+            var roleManager = new RoleManager<IdentityRole>(roleStore);
+            var roles = roleManager.Roles.ToList();
+            foreach(var role1 in roles)
+            {
+                if (role1.Id == viewModel.RoleId.Replace(';', '-')) 
+                {
+                    role1.Name = viewModel.RoleName;
+                    _context.SaveChanges();
+                }
+            }
+            var role = roleManager.FindById(viewModel.RoleId.Replace(';','-'));
+            role.Name = viewModel.RoleName;
+            _context.SaveChanges();
+            //return Content(viewModel.RoleName + "//" + role.Name);
+            return RedirectToAction("ListRoles");
+        }
+
+        [Route("Administration/UserRoles")]
+        public ActionResult UserRole()
+        {
+            List<UserAndRole> UsersInRoles = new List<UserAndRole>();
+            List<UserAndRole> UsersNotInRoles = new List<UserAndRole>();
+            var users = _context.Users.ToList();
+            var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
+            var roleManager = new RoleManager<IdentityRole>(roleStore);
+            var roles = roleManager.Roles.ToList();
+            foreach(var user in users)
+            {
+                IdentityRole Role1 = null;
+                int count = 0;
+                foreach (var role in roles)
+                {
+                    Role1 = role;
+                    if (UserManager.IsInRole(user.Id, role.Name) == true)
+                    {
+                        UsersInRoles.Add(new UserAndRole {User = user, Role = role });
+                        count++;
+                    }
+                }
+                if (count == 0)
+                    UsersNotInRoles.Add(new UserAndRole { User = user, Role = Role1 });
+            }
+            var viewModel = new UserAndRoleViewModel {UsersWithRoles = UsersInRoles, UsersWithoutRoles = UsersNotInRoles };
+            return View(viewModel);
+        }
+
+        [Route("Administration/AssignUserToRole/{userId}")]
+        public ActionResult AssignUserToRole(string userId)
+        {
+            userId = userId.Replace(';', '-');
+            string userIdNormalized = userId.Replace('-', ';');
+            ViewBag.userId = userIdNormalized;
+            var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
+            var roleManager = new RoleManager<IdentityRole>(roleStore);
+            var roles = roleManager.Roles.ToList();
+            List<IdentityRole> RolesUserNotAssignedTo = new List<IdentityRole>();
+            foreach(var role in roles)
+            {
+                if (UserManager.IsInRole(userId, role.Name) == false)
+                    RolesUserNotAssignedTo.Add(role);
+            }
+            return View(RolesUserNotAssignedTo);
+        }
+
+        [Route("Administration/AssignUserToRole1/{userId}/{Name}")]
+        public ActionResult AssignUserToRole1(string userId, string Name)
+        {
+            UserManager.AddToRole(userId.Replace(';','-'), Name);
+            return RedirectToAction("UserRole");
+        }
+
+        [Route("Administration/RemoveUserFromRole1/{userIdNormalized}/{Name}")]
+        public ActionResult RemoveUserFromRole1(string userIdNormalized, string Name)
+        {
+            UserManager.RemoveFromRole(userIdNormalized.Replace(';', '-'), Name);
+            return RedirectToAction("UserRole");
+        }
+
+        /*public ActionResult ClickMe()
+        {
+            var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
+            var roleManager = new RoleManager<IdentityRole>(roleStore);
+            //var roles = roleManager.Roles;
+            var userId = User.Identity.GetUserId();
+            ApplicationUser user1 = UserManager.FindById(userId);
+            UserManager.AddToRole(user1.Id, "CanDoEverything");
+            _context.SaveChanges();
+            return RedirectToAction("ListRoles");
+        }*/
+
         /*public async Task<ActionResult> EditRole(string id)
         {
             var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
