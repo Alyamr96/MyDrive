@@ -69,7 +69,8 @@ namespace MyDrive.Controllers
                     else
                         return RedirectToAction("FolderExistsView");
 
-
+                    //var justCreatedCompany = _context.Companies.Single(c => c.Name == company.Name);
+                    _context.UsersInCompanies.Add(new UsersInCompanies { UserId = "a26e8a5a-1609-459f-a213-2d1ad04c8ab6", CompanyName = company.Name });
                     return RedirectToAction("Index");
                 }
                 else
@@ -107,6 +108,7 @@ namespace MyDrive.Controllers
                 string pathInDb = Server.MapPath("~/Files/") + company.Name;
                 if (!Directory.Exists(pathInDb))
                 {
+                    _context.UsersInCompanies.Add(new UsersInCompanies { UserId = "a26e8a5a-1609-459f-a213-2d1ad04c8ab6", CompanyName = company.Name });
                     Directory.CreateDirectory(pathInDb);
                     var CompanyInDb = new Company { Name = company.Name, Path = pathInDb, LogoPath = filePath };
                     _context.Companies.Add(CompanyInDb);
@@ -261,7 +263,7 @@ namespace MyDrive.Controllers
             else
             {
                 var company = _context.Companies.Single(c => c.Name == CompanyName);
-                var record = new UsersInCompanies {CompanyId = company.Id, UserId = UserId };
+                var record = new UsersInCompanies {CompanyId = company.Id, UserId = UserId, CompanyName = company.Name };
                 _context.UsersInCompanies.Add(record);
                 _context.SaveChanges();
                 return Json(true, JsonRequestBehavior.AllowGet);

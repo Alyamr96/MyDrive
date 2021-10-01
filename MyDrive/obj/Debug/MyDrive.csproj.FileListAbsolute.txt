@@ -133,3 +133,7 @@ C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.AddedUser
 C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.AddedRolePermissionsTable.resources
 C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.AddRoleToAdmin.resources
 C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.AddAdminToDoEverythingRole.resources
+C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.AddedCompaniesToViewFilesTable.resources
+C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.ChangedPkOnCompaniesToViewFilesTable.resources
+C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.AddedCompaniesToViewFile2Table.resources
+C:\Users\cashless\Desktop\MyDrive\MyDrive\obj\Debug\MyDrive.Migrations.AddedCompanyNameInUsersInCompaniesTable.resources

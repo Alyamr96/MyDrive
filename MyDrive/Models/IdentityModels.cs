@@ -33,6 +33,10 @@ namespace MyDrive.Models
         public DbSet<UsersInCompanies> UsersInCompanies { get; set; }
 
         public DbSet<RolePermissions> RolePermissions { get; set; }
+
+        public DbSet<CompaniesToViewFiles> CompaniesToViewFiles { get; set; }
+
+        public DbSet<CompaniesToViewFiles2> CompaniesToViewFiles2 { get; set; }
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {

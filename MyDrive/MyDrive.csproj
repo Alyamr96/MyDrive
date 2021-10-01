@@ -240,8 +240,26 @@
     <Compile Include="Migrations\202109301621581_AddAdminToDoEverythingRole.Designer.cs">
       <DependentUpon>202109301621581_AddAdminToDoEverythingRole.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202110011432478_AddedCompaniesToViewFilesTable.cs" />
+    <Compile Include="Migrations\202110011432478_AddedCompaniesToViewFilesTable.Designer.cs">
+      <DependentUpon>202110011432478_AddedCompaniesToViewFilesTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202110011434083_ChangedPkOnCompaniesToViewFilesTable.cs" />
+    <Compile Include="Migrations\202110011434083_ChangedPkOnCompaniesToViewFilesTable.Designer.cs">
+      <DependentUpon>202110011434083_ChangedPkOnCompaniesToViewFilesTable.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202110011451576_AddedCompaniesToViewFile2Table.cs" />
+    <Compile Include="Migrations\202110011451576_AddedCompaniesToViewFile2Table.Designer.cs">
+      <DependentUpon>202110011451576_AddedCompaniesToViewFile2Table.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202110011546412_AddedCompanyNameInUsersInCompaniesTable.cs" />
+    <Compile Include="Migrations\202110011546412_AddedCompanyNameInUsersInCompaniesTable.Designer.cs">
+      <DependentUpon>202110011546412_AddedCompanyNameInUsersInCompaniesTable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\CompaniesToViewFiles.cs" />
+    <Compile Include="Models\CompaniesToViewFiles2.cs" />
     <Compile Include="Models\Company.cs" />
     <Compile Include="Models\DriveUsers.cs" />
     <Compile Include="Models\FileModel.cs" />
@@ -621,6 +639,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202109301621581_AddAdminToDoEverythingRole.resx">
       <DependentUpon>202109301621581_AddAdminToDoEverythingRole.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110011432478_AddedCompaniesToViewFilesTable.resx">
+      <DependentUpon>202110011432478_AddedCompaniesToViewFilesTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110011434083_ChangedPkOnCompaniesToViewFilesTable.resx">
+      <DependentUpon>202110011434083_ChangedPkOnCompaniesToViewFilesTable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110011451576_AddedCompaniesToViewFile2Table.resx">
+      <DependentUpon>202110011451576_AddedCompaniesToViewFile2Table.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202110011546412_AddedCompanyNameInUsersInCompaniesTable.resx">
+      <DependentUpon>202110011546412_AddedCompanyNameInUsersInCompaniesTable.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Language.ar.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

@@ -141,6 +141,12 @@ namespace MyDrive.Controllers
             }
             // Folders and files viewModel
             var companiesInDb = _context.Companies.ToList();
+            List<SelectListItem> AvailableCompanies = new List<SelectListItem>();
+            List<string> SelectedCompanies = new List<string>();
+            foreach(var company in companiesInDb)
+            {
+                AvailableCompanies.Add(new SelectListItem { Text = company.Name, Value = company.Name });
+            }
             // get list of permissions
             var userId = User.Identity.GetUserId();
             ApplicationUser user1 = UserManager.FindById(userId);
@@ -160,12 +166,27 @@ namespace MyDrive.Controllers
                 if (record.RoleId == RolesUserAssignedTo)
                     UserPermissions.Add(record.PermissionName);
             }
+            var CompaniesToViewFiles = _context.CompaniesToViewFiles2.ToList();
+            List<string> CompaniesUserIn = new List<string>();
+            var UsersInCompanies = _context.UsersInCompanies.ToList();
+            foreach(var record in UsersInCompanies)
+            {
+                if (record.UserId == user1.Id)
+                    CompaniesUserIn.Add(record.CompanyName);
+            }
             var FoldersAndFiles = new FoldersandFilesViewModel
             {
                 Folders = folders,
                 Files = files,
                 Companies = companiesInDb,
-                UserPermissions = UserPermissions
+                UserPermissions = UserPermissions,
+                AvailableCompanies = AvailableCompanies,
+                SelectedCompanies = SelectedCompanies,
+                SelectCompaniesToUploadFiles = false,
+                AttachFileToUpload = false,
+                CompaniesToViewFiles = CompaniesToViewFiles,
+                CompaniesUserIn = CompaniesUserIn,
+                AbsolotePath = Server.MapPath("~/Files/")
             };
            
             return View(FoldersAndFiles);
@@ -313,7 +334,7 @@ namespace MyDrive.Controllers
         }
 
         [HttpPost]
-        public ActionResult UploadFiles(HttpPostedFileBase postedFile)
+        public ActionResult UploadFiles(HttpPostedFileBase postedFile, FoldersandFilesViewModel viewModel)
         {
             string filePath = "";
             filePath = Server.MapPath("~/Files/");
@@ -325,6 +346,8 @@ namespace MyDrive.Controllers
                 Directory.CreateDirectory(filePath);
 
             filePath = filePath + Path.GetFileName(postedFile.FileName);
+
+            var companies = viewModel.SelectedCompanies;
             if (!System.IO.File.Exists(filePath))
             {
                 postedFile.SaveAs(filePath);
@@ -332,6 +355,12 @@ namespace MyDrive.Controllers
             else
                 return RedirectToAction("FileExistsView");
             ViewBag.Message = "File Saved";
+            foreach (var company in companies)
+            {
+                var myRecord = new CompaniesToViewFiles2 { CompanyName = company, FilePath = filePath };
+                _context.CompaniesToViewFiles2.Add(myRecord);
+                _context.SaveChanges();
+            }
             var FileModel = new FileViewModel()
             {
                 name = postedFile.FileName
@@ -393,6 +422,16 @@ namespace MyDrive.Controllers
                 if(DatabaseFile.Path == pathUsedForDelete)
                 {
                     _context.Files.Remove(DatabaseFile);
+                    _context.SaveChanges();
+                }
+            }
+            var DatabaseFiles1 = _context.CompaniesToViewFiles2.ToList();
+            //var fileInDb = _context.Files.Single(c => c.Path == pathUsedForDelete);
+            foreach (var DatabaseFile in DatabaseFiles1)
+            {
+                if (DatabaseFile.FilePath == pathUsedForDelete)
+                {
+                    _context.CompaniesToViewFiles2.Remove(DatabaseFile);
                     _context.SaveChanges();
                 }
             }
@@ -964,10 +1003,20 @@ namespace MyDrive.Controllers
                     if (result)
                     {
                         var companyInDb = _context.Companies.Single(c => c.Id == id);
+                        var DatabaseFiles1 = _context.CompaniesToViewFiles2.ToList();
+                        //var fileInDb = _context.Files.Single(c => c.Path == pathUsedForDelete);
+                        foreach (var DatabaseFile in DatabaseFiles1)
+                        {
+                            if (DatabaseFile.CompanyName == companyInDb.Name)
+                            {
+                                _context.CompaniesToViewFiles2.Remove(DatabaseFile);
+                                _context.SaveChanges();
+                            }
+                        }
                         var records = _context.UsersInCompanies.ToList();
                         foreach(var record in records)
                         {
-                            if(record.CompanyId == companyInDb.Id)
+                            if(record.CompanyName == companyInDb.Name)
                             {
                                 _context.UsersInCompanies.Remove(record);
                                 _context.SaveChanges();

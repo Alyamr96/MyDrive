@@ -120,6 +120,18 @@
                     <form id="uploadFileModal">
                         <label>Choose File:</label>
                         <input type="file" id="userFile" name="userFile" /><br />
+                        <label>Choose Which Companies To View The File</label>
+                        @foreach (var item in Model.AvailableCompanies)
+                        {
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox"
+                                           name="SelectedCompanies"
+                                           value="@item.Value"
+                                           @if (Model.SelectedCompanies.Contains(item.Value)) { <text> checked </text> } /> @item.Text
+                                    </label>
+                                </div>
+                            }
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -235,6 +247,12 @@
     </div>
     }
 </div>-->
+<div>
+    @if(Model.AttachFileToUpload == true)
+            {
+                <p>Attach File First To Upload It Please</p>
+            }
+</div>
 <div><h2>Companies</h2></div>
 
 <div class="Companies">
@@ -324,16 +342,35 @@
 <div class="myCustomContainerForFiles">
     @foreach (var fileName in Model.Files)
     {
-        string filePathNormalized = @fileName.Path.Replace(@"\", ";");
-        string finalPathNormalized = filePathNormalized.Replace(".", "'");
+        {
+            string[] CompaniesThatViewFile1 = new string[1000];
+            List<string> CompaniesThatViewFile = new List<string>();
+            foreach (var record in Model.CompaniesToViewFiles)
+            {
+                string absolotePath = Model.AbsolotePath + fileName.Path;
+                if (record.FilePath == absolotePath)
+                {
+                    CompaniesThatViewFile.Add(record.CompanyName);
+                }
+            }
+            CompaniesThatViewFile1 = CompaniesThatViewFile.ToArray();
+            string[] userCompanies = Model.CompaniesUserIn.ToArray();
+            if (userCompanies.Intersect(CompaniesThatViewFile1).Any())
+            {
 
 
-    <div class="CustomFile">
-       <!-- <a href="~/Folder/RenameFile/@finalPathNormalized" class="btn-link"><i class="fas fa-pen"></i></a>-->
-        <!--<button class="btn-link myFile-rename" data-file-path="@finalPathNormalized"><i class="fas fa-pen"></i></button>-->
-        <button class="btn-link js-file-delete" data-file-path="@finalPathNormalized"><i class="fas fa-backspace"></i></button>
-        <a href="~/files/@fileName.Path" target="_blank"> <i class="fas fa-file myFolderIcon"></i><span>@fileName.Name</span></a>
-    </div>
+                string filePathNormalized = @fileName.Path.Replace(@"\", ";");
+                string finalPathNormalized = filePathNormalized.Replace(".", "'");
+
+
+                <div class="CustomFile">
+                    <!-- <a href="~/Folder/RenameFile/@finalPathNormalized" class="btn-link"><i class="fas fa-pen"></i></a>-->
+                    <!--<button class="btn-link myFile-rename" data-file-path="@finalPathNormalized"><i class="fas fa-pen"></i></button>-->
+                    <button class="btn-link js-file-delete" data-file-path="@finalPathNormalized"><i class="fas fa-backspace"></i></button>
+                    <a href="~/files/@fileName.Path" target="_blank"> <i class="fas fa-file myFolderIcon"></i><span>@fileName.Name</span></a>
+                </div>
+            }
+        }
     }
 </div>
 
