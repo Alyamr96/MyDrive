@@ -275,10 +275,53 @@ namespace MyDrive.Controllers
                 files.Add(new FileModel { Name = fileNames[i], Path = filesPathAfterFile[i] });
             }
             // FoldersandFilesViewModel
+            var companiesInDb = _context.Companies.ToList();
+            List<SelectListItem> AvailableCompanies = new List<SelectListItem>();
+            List<string> SelectedCompanies = new List<string>();
+            foreach (var company in companiesInDb)
+            {
+                AvailableCompanies.Add(new SelectListItem { Text = company.Name, Value = company.Name });
+            }
+            // get list of permissions
+            var userId = User.Identity.GetUserId();
+            ApplicationUser user1 = UserManager.FindById(userId);
+            var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
+            var roleManager = new RoleManager<IdentityRole>(roleStore);
+            var roles = roleManager.Roles.ToList();
+            string RolesUserAssignedTo = "";
+            var PermissionRecords = _context.RolePermissions.ToList();
+            List<string> UserPermissions = new List<string>();
+            foreach (var role in roles)
+            {
+                if (UserManager.IsInRole(userId, role.Name) == true)
+                    RolesUserAssignedTo = role.Id;
+            }
+            foreach (var record in PermissionRecords)
+            {
+                if (record.RoleId == RolesUserAssignedTo)
+                    UserPermissions.Add(record.PermissionName);
+            }
+            var CompaniesToViewFiles = _context.CompaniesToViewFiles2.ToList();
+            List<string> CompaniesUserIn = new List<string>();
+            var UsersInCompanies = _context.UsersInCompanies.ToList();
+            foreach (var record in UsersInCompanies)
+            {
+                if (record.UserId == user1.Id)
+                    CompaniesUserIn.Add(record.CompanyName);
+            }
             var FoldersAndFiles = new FoldersandFilesViewModel
             {
                 Folders = folders,
-                Files = files
+                Files = files,
+                Companies = companiesInDb,
+                UserPermissions = UserPermissions,
+                AvailableCompanies = AvailableCompanies,
+                SelectedCompanies = SelectedCompanies,
+                SelectCompaniesToUploadFiles = false,
+                AttachFileToUpload = false,
+                CompaniesToViewFiles = CompaniesToViewFiles,
+                CompaniesUserIn = CompaniesUserIn,
+                AbsolotePath = Server.MapPath("~/Files/")
             };
             return View(FoldersAndFiles);
             //return View(folders);
@@ -334,64 +377,96 @@ namespace MyDrive.Controllers
         }
 
         [HttpPost]
-        public ActionResult UploadFiles(HttpPostedFileBase postedFile, FoldersandFilesViewModel viewModel)
+        public ActionResult UploadFiles(FoldersandFilesViewModel viewModel)
         {
             string filePath = "";
             filePath = Server.MapPath("~/Files/");
 
-            if (postedFile == null)
-                postedFile = Request.Files["userFile"];
+            //if (viewModel.File == null)
+                //postedFile = Request.Files["userFile"];
 
             if (!Directory.Exists(filePath))
                 Directory.CreateDirectory(filePath);
 
-            filePath = filePath + Path.GetFileName(postedFile.FileName);
+            filePath = filePath + Path.GetFileName(viewModel.File.FileName);
 
             var companies = viewModel.SelectedCompanies;
             if (!System.IO.File.Exists(filePath))
             {
-                postedFile.SaveAs(filePath);
+                viewModel.File.SaveAs(filePath);
             }
             else
                 return RedirectToAction("FileExistsView");
             ViewBag.Message = "File Saved";
-            foreach (var company in companies)
+            if(companies == null)
             {
-                var myRecord = new CompaniesToViewFiles2 { CompanyName = company, FilePath = filePath };
-                _context.CompaniesToViewFiles2.Add(myRecord);
-                _context.SaveChanges();
+                var allCompanies = _context.Companies.ToList();
+                foreach(var allcompany in allCompanies)
+                {
+                    var myRecord = new CompaniesToViewFiles2 { CompanyName = allcompany.Name, FilePath = filePath };
+                    _context.CompaniesToViewFiles2.Add(myRecord);
+                    _context.SaveChanges();
+                }
+            }
+            else {
+                foreach (var company in companies)
+                {
+                    var myRecord = new CompaniesToViewFiles2 { CompanyName = company, FilePath = filePath };
+                    _context.CompaniesToViewFiles2.Add(myRecord);
+                    _context.SaveChanges();
+                }
             }
             var FileModel = new FileViewModel()
             {
-                name = postedFile.FileName
+                name = viewModel.File.FileName
             };
             var userId = User.Identity.GetUserId();
             ApplicationUser user1 = UserManager.FindById(userId);
-            var myFile = new FileModel { Name = postedFile.FileName, Path = filePath, Date = DateTime.Now, UserId = user1.Id};
+            var myFile = new FileModel { Name = viewModel.File.FileName, Path = filePath, Date = DateTime.Now, UserId = user1.Id};
             _context.Files.Add(myFile);
             _context.SaveChanges();
             return RedirectToAction("GetFolders1");
         }
 
         [Route("Folder/UploadFileWithinPath/{folderName}")]
-        public ActionResult UploadFileWithinPath(string folderName, HttpPostedFileBase postedFile)
+        public ActionResult UploadFileWithinPath(string folderName, FoldersandFilesViewModel viewModel)
         {
             string myFolderName = folderName.Replace(";", @"\");
             string path = Server.MapPath("~/Files/") + myFolderName;
-            if (postedFile == null)
-                postedFile = Request.Files["userFile"];
+            //if (viewModel.File == null)
+                //postedFile = Request.Files["userFile"];
 
-            string filePath = path + @"\" + Path.GetFileName(postedFile.FileName);
+            string filePath = path + @"\" + Path.GetFileName(viewModel.File.FileName);
             if (!System.IO.File.Exists(filePath))
             {
-                postedFile.SaveAs(filePath);
+                viewModel.File.SaveAs(filePath);
             }
             else
                 return RedirectToAction("FileExistsView");
 
+            var companies = viewModel.SelectedCompanies;
+            if (companies == null)
+            {
+                var allCompanies = _context.Companies.ToList();
+                foreach (var allcompany in allCompanies)
+                {
+                    var myRecord = new CompaniesToViewFiles2 { CompanyName = allcompany.Name, FilePath = filePath };
+                    _context.CompaniesToViewFiles2.Add(myRecord);
+                    _context.SaveChanges();
+                }
+            }
+            else
+            {
+                foreach (var company in companies)
+                {
+                    var myRecord = new CompaniesToViewFiles2 { CompanyName = company, FilePath = filePath };
+                    _context.CompaniesToViewFiles2.Add(myRecord);
+                    _context.SaveChanges();
+                }
+            }
             var userId = User.Identity.GetUserId();
             ApplicationUser user1 = UserManager.FindById(userId);
-            var myFile = new FileModel { Name = postedFile.FileName, Path = filePath, Date = DateTime.Now, UserId = user1.Id };
+            var myFile = new FileModel { Name = viewModel.File.FileName, Path = filePath, Date = DateTime.Now, UserId = user1.Id };
             _context.Files.Add(myFile);
             _context.SaveChanges();
             return RedirectToAction("GetFolderFromPath/" + folderName);
@@ -403,7 +478,23 @@ namespace MyDrive.Controllers
             //var userid = User.Identity.GetUserId();
             //ApplicationUser user1 = UserManager.FindByIdAsync(userid).Result;
             string myFolderPath = folderPath.Replace(";", @"\");
-            string path = absoloutePath + @"/" + myFolderPath;
+            string path = Server.MapPath("~/Files/") + myFolderPath;
+            string[] fileEntries = Directory.GetFiles(path, "*", SearchOption.AllDirectories);
+            for (int i = 0; i < fileEntries.Length; i++)
+            {
+                string myFilePath = fileEntries[i].Replace(@"\", ";");
+                string myFinalPath = myFilePath.Replace(".", "'");
+                for (int j = 0; j < myFinalPath.Length; j++)
+                {
+                    string test = myFinalPath.Substring(j, 5);
+                    if (test.CompareTo("Files") == 0)
+                    {
+                        int number = j + 6;
+                        DeleteFile(myFinalPath.Substring(number));
+                        break;
+                    }
+                }
+            }
             Directory.Delete(path, true);
         }
 
@@ -729,16 +820,48 @@ namespace MyDrive.Controllers
             List<string> FilesToDeleteNoDuplicates = FilesToDelete.Distinct().ToList();
             for (int i = 0; i < FoldersToDeleteNoDuplicates.Count; i++)
             {
-                Directory.Delete(FoldersToDeleteNoDuplicates[i], true);
+                string myFolderPath = FoldersToDeleteNoDuplicates[i].Replace(@"\", ";");
+                for (int j = 0; j < myFolderPath.Length; j++)
+                {
+                    string test = myFolderPath.Substring(j, 5);
+                    if (test.CompareTo("Files") == 0)
+                    {
+                        int number = j + 6;
+                        DeleteFolder(myFolderPath.Substring(number));
+                        break;
+                    }
+                }
             }
             for (int i = 0; i < FilesToDeleteNoDuplicates.Count; i++)
             {
-                System.IO.File.Delete(FilesToDeleteNoDuplicates[i]);
+                string myFilePath = FilesToDeleteNoDuplicates[i].Replace(@"\", ";");
+                string myFinalPath = myFilePath.Replace(".", "'");
+                for (int j = 0; j < myFinalPath.Length; j++)
+                {
+                    string test = myFinalPath.Substring(j, 5);
+                    if (test.CompareTo("Files") == 0)
+                    {
+                        int number = j + 6;
+                        DeleteFile(myFinalPath.Substring(number));
+                        break;
+                    }
+                }
             }
             FoldersToDelete.Clear();
             FilesToDelete.Clear();
             // starting here are operations to return to folders
-            string returnPath = FoldersToDeleteNoDuplicates[0];
+            string returnPath = "";
+            if(FoldersToDeleteNoDuplicates.Count == 0)
+            {
+                if(FilesToDeleteNoDuplicates.Count == 0)
+                {
+                    return RedirectToAction("NothingSelected");
+                }
+                else
+                  returnPath = FilesToDeleteNoDuplicates[0];
+            }
+            else
+              returnPath = FoldersToDeleteNoDuplicates[0];
             for (int i = 0; i < returnPath.Length; i++)
             {
                 string test = returnPath.Substring(i, 5);
@@ -758,6 +881,12 @@ namespace MyDrive.Controllers
             }
             returnPath1 = returnPath1.Substring(0, returnPath1.Length - 1);
             return RedirectToAction("GetFolderFromPath/" + returnPath1);
+        }
+
+        [HttpPost]
+        public ActionResult NothingSelected()
+        {
+            return View();
         }
 
         public ActionResult FolderExistsView()
@@ -791,8 +920,6 @@ namespace MyDrive.Controllers
         [HttpPost]
         public ActionResult ConfirmPassword(FoldersandFilesViewModel viewModel, string folderPath)
         {
-            if (ModelState.IsValid)
-            {
                 var userId = User.Identity.GetUserId();
                 ApplicationUser user1 = UserManager.FindById(userId);
                 try
@@ -812,18 +939,13 @@ namespace MyDrive.Controllers
                 catch(System.ArgumentNullException e)
                 {
                     return Json(false, JsonRequestBehavior.AllowGet);
-                }    
-            }
-            else
-                return Json(false, JsonRequestBehavior.AllowGet);
+                }
             
         }
 
         [HttpPost]
         public ActionResult ConfirmPasswordForFile(FoldersandFilesViewModel viewModel, string filePath)
         {
-            if (ModelState.IsValid)
-            {
                 var userId = User.Identity.GetUserId();
                 ApplicationUser user1 = UserManager.FindById(userId);
                 try
@@ -841,17 +963,12 @@ namespace MyDrive.Controllers
                 {
                     return Json(false, JsonRequestBehavior.AllowGet);
                 }
-            }
-            else
-                return Json(false, JsonRequestBehavior.AllowGet);
             
         }
 
         [HttpPost]
         public ActionResult ConfirmPasswordForFolderRename(FoldersandFilesViewModel viewModel)
         {
-            if (ModelState.IsValid)
-            {
                 var userId = User.Identity.GetUserId();
                 ApplicationUser user1 = UserManager.FindById(userId);
                 try
@@ -868,9 +985,29 @@ namespace MyDrive.Controllers
                 {
                     return Json(false, JsonRequestBehavior.AllowGet);
                 }
+        }
+
+        [HttpPost]
+        public ActionResult ConfirmPasswordForFileUpload(FoldersandFilesViewModel viewModel)
+        {
+
+            var userId = User.Identity.GetUserId();
+            ApplicationUser user1 = UserManager.FindById(userId);
+            try
+            {
+                var result = UserManager.CheckPassword(user1, viewModel.Password);
+                if (result)
+                {
+                    return Json(true, JsonRequestBehavior.AllowGet);
+                }
+                else
+                    return Json(false, JsonRequestBehavior.AllowGet);
             }
-            else
+            catch (System.ArgumentNullException e)
+            {
                 return Json(false, JsonRequestBehavior.AllowGet);
+            }
+
         }
 
         [HttpPost]
@@ -966,8 +1103,6 @@ namespace MyDrive.Controllers
         [HttpPost]
         public ActionResult ConfirmPasswordToDeleteAllSelected(FoldersandFilesViewModel viewModel)
         {
-            if (ModelState.IsValid)
-            {
                 var userId = User.Identity.GetUserId();
                 ApplicationUser user1 = UserManager.FindById(userId);
                 try
@@ -985,16 +1120,12 @@ namespace MyDrive.Controllers
                 {
                     return Json(false, JsonRequestBehavior.AllowGet);
                 }
-            }
-            else
-                return Json(false, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         public ActionResult ConfirmPasswordForCompanyDelete(FoldersandFilesViewModel viewModel, int id)
         {
-            if (ModelState.IsValid)
-            {
+            
                 var userId = User.Identity.GetUserId();
                 ApplicationUser user1 = UserManager.FindById(userId);
                 try
@@ -1022,8 +1153,19 @@ namespace MyDrive.Controllers
                                 _context.SaveChanges();
                             }
                         }
-                        Directory.Delete(companyInDb.Path, true);
-                        System.IO.File.Delete(companyInDb.LogoPath);
+                    //Directory.Delete(companyInDb.Path, true);
+                    string myFolderPath = companyInDb.Path.Replace(@"\", ";");
+                    for (int j = 0; j < myFolderPath.Length; j++)
+                    {
+                        string test = myFolderPath.Substring(j, 5);
+                        if (test.CompareTo("Files") == 0)
+                        {
+                            int number = j + 6;
+                            DeleteFolder(myFolderPath.Substring(number));
+                            break;
+                        }
+                    }
+                    System.IO.File.Delete(companyInDb.LogoPath);
                         _context.Companies.Remove(companyInDb);
                         _context.SaveChanges();                      
                         return Json(true, JsonRequestBehavior.AllowGet);
@@ -1038,9 +1180,7 @@ namespace MyDrive.Controllers
                 {
                     return Json(false, JsonRequestBehavior.AllowGet);
                 }
-            }
-            else
-                return Json(false, JsonRequestBehavior.AllowGet);
+            
 
         }
 
@@ -1127,6 +1267,18 @@ namespace MyDrive.Controllers
                             {
                                 _context.Files.Remove(FileRecord);
                                 _context.SaveChanges();
+                            }
+                        }
+                        var FileRecord1 = _context.CompaniesToViewFiles2.ToList();
+                        if(FileRecord1 != null)
+                        {
+                            foreach(var record in FileRecord1)
+                            {
+                                if(record.FilePath == DeletePath)
+                                {
+                                    _context.CompaniesToViewFiles2.Remove(record);
+                                    _context.SaveChanges();
+                                }
                             }
                         }
                         return Json(true, JsonRequestBehavior.AllowGet);

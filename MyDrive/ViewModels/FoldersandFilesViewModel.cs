@@ -41,5 +41,9 @@ namespace MyDrive.ViewModels
         public List<string> CompaniesUserIn { get; set; }
 
         public string AbsolotePath { get; set; }
+
+        [Required(ErrorMessage = "File is Required")]
+        [Display(Name = "Upload A File")]
+        public HttpPostedFileBase File { get; set; }
     }
 }

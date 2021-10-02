@@ -583,6 +583,7 @@
     <Content Include="Views\Administration\EditRole2.cshtml" />
     <Content Include="Views\Administration\UserRole.cshtml" />
     <Content Include="Views\Administration\AssignUserToRole.cshtml" />
+    <Content Include="Views\Folder\NothingSelected.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

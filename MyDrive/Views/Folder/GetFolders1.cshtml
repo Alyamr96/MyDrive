@@ -118,8 +118,9 @@
                 </div>
                 <div class="modal-body">
                     <form id="uploadFileModal">
-                        <label>Choose File:</label>
-                        <input type="file" id="userFile" name="userFile" /><br />
+                        @Html.LabelFor(m => m.File)
+                        @Html.TextBoxFor(m => m.File, new {type = "file"})
+                        @Html.ValidationMessageFor(m => m.File)
                         <label>Choose Which Companies To View The File</label>
                         @foreach (var item in Model.AvailableCompanies)
                         {
@@ -601,7 +602,7 @@
 
                 $.ajax({
                     type: "POST",
-                    url: "/Folder/ConfirmPasswordForFolderRename",
+                    url: "/Folder/ConfirmPasswordForFileUpload",
                     data: ConfirmPasswordForm,
                     success: function (res) {
                         if (res) {
