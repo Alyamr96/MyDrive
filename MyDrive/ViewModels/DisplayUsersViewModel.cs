@@ -17,5 +17,7 @@ namespace MyDrive.ViewModels
         public List<Company> Companies { get; set; }
 
         public string Password { get; set; }
+
+        public List<string> UserPermissions { get; set; }
     }
 }

@@ -16,7 +16,11 @@
     }
 </style>
 <div class="MyButtons">
-    <button id="CreateRoleButton" class="btn btn-primary">Create Role</button>
+    @if (Model.UserPermissions.Contains("Create Role"))
+    {
+        <button id="CreateRoleButton" class="btn btn-primary">Create Role</button>
+
+    }
     <a id="SecondButton" href="~/Administration/UserRoles" class="btn btn-primary">Users In Roles</a>
     <!--<a href="~/Administration/CreateRole" class="btn btn-primary">Create Role</a>-->
 </div>
@@ -91,8 +95,16 @@
     <thead>
         <tr>
             <th>Role Name</th>
-            <th>Edit</th>
-            <th>Delete</th>
+            @if (Model.UserPermissions.Contains("Edit Role"))
+            {
+                <th>Edit</th>
+
+            }
+            @if (Model.UserPermissions.Contains("Delete Role"))
+            {
+                <th>Delete</th>
+
+            }
         </tr>
     </thead>
     <tbody>
@@ -101,12 +113,20 @@
             string roleIdNormalized = item.Id.Replace('-', ';');
             if (item.Name != ("CanDoEverything"))
             {
-                <tr>
-                    <td>@item.Name</td>
-                    <td><a href="#" data-role-id="@roleIdNormalized" id="EditRole">Edit Role</a></td>
-                    <!--<td><a href="~/Administration/EditRole/@roleIdNormalized">Edit Role</a></td>-->
-                    <td><a href="#" id="DeleteRole" data-role-id="@item.Id">Delete Role</a></td>
-                </tr>
+        <tr>
+            <td>@item.Name</td>
+            @if (Model.UserPermissions.Contains("Edit Role"))
+            {
+                <td><a href="#" data-role-id="@roleIdNormalized" id="EditRole">Edit Role</a></td>
+
+            }
+            <!--<td><a href="~/Administration/EditRole/@roleIdNormalized">Edit Role</a></td>-->
+            @if (Model.UserPermissions.Contains("Delete Role"))
+            {
+                <td><a href="#" id="DeleteRole" data-role-id="@item.Id">Delete Role</a></td>
+
+            }
+        </tr>
             }
         }
     </tbody>

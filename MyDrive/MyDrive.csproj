@@ -584,6 +584,7 @@
     <Content Include="Views\Administration\UserRole.cshtml" />
     <Content Include="Views\Administration\AssignUserToRole.cshtml" />
     <Content Include="Views\Folder\NothingSelected.cshtml" />
+    <Content Include="Views\Administration\ReturnNavBar.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

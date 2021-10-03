@@ -104,7 +104,6 @@
         @if (Model.UserPermissions.Contains("Upload File"))
         {
             <button class="btn btn-primary" id="UploadFileButton">@MyDrive.Resources.Language.Upload_File</button>
-
         }
     </p>
 </div>
@@ -265,10 +264,14 @@
         string replacePath = Model.Companies[i].Path.Replace(@"\", "/");
         string[] words = replacePath.Split('/');
         string FinalPath = words[words.Length - 1];
-        <div class="CustomFolder">
+    <div class="CustomFolder">
+        @if (Model.UserPermissions.Contains("Delete Company"))
+        {
             <button class="btn-link my-delete" data-folder-path="@Model.Companies[i].Id"><i class="fas fa-backspace"></i></button>
-            <a href="/Folder/GetFolderFromPath/@FinalPath"><img src="~/Images/@imagePath1" alt="Company logo" /><span>@FinalPath</span></a>
-        </div>
+
+        }
+        <a href="/Folder/GetFolderFromPath/@FinalPath"><img src="~/Images/@imagePath1" alt="Company logo" /><span>@FinalPath</span></a>
+    </div>
     }
 </div>
 
@@ -364,12 +367,16 @@
                 string finalPathNormalized = filePathNormalized.Replace(".", "'");
 
 
-                <div class="CustomFile">
-                    <!-- <a href="~/Folder/RenameFile/@finalPathNormalized" class="btn-link"><i class="fas fa-pen"></i></a>-->
-                    <!--<button class="btn-link myFile-rename" data-file-path="@finalPathNormalized"><i class="fas fa-pen"></i></button>-->
-                    <button class="btn-link js-file-delete" data-file-path="@finalPathNormalized"><i class="fas fa-backspace"></i></button>
-                    <a href="~/files/@fileName.Path" target="_blank"> <i class="fas fa-file myFolderIcon"></i><span>@fileName.Name</span></a>
-                </div>
+    <div class="CustomFile">
+        <!-- <a href="~/Folder/RenameFile/@finalPathNormalized" class="btn-link"><i class="fas fa-pen"></i></a>-->
+        <!--<button class="btn-link myFile-rename" data-file-path="@finalPathNormalized"><i class="fas fa-pen"></i></button>-->
+        @if (Model.UserPermissions.Contains("Delete File"))
+        {
+            <button class="btn-link js-file-delete" data-file-path="@finalPathNormalized"><i class="fas fa-backspace"></i></button>
+
+        }
+        <a href="~/files/@fileName.Path" target="_blank"> <i class="fas fa-file myFolderIcon"></i><span>@fileName.Name</span></a>
+    </div>
             }
         }
     }

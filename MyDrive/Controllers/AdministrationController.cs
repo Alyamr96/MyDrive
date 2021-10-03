@@ -94,10 +94,25 @@ namespace MyDrive.Controllers
         [HttpGet]
         public ActionResult ListRoles()
         {
+            var userId = User.Identity.GetUserId();
+            ApplicationUser user1 = UserManager.FindById(userId);
             var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
             var roleManager = new RoleManager<IdentityRole>(roleStore);
             var roles = roleManager.Roles.ToList();
-            var viewModel = new ListRolesViewModel { Roles = roles };
+            string RolesUserAssignedTo = "";
+            var PermissionRecords = _context.RolePermissions.ToList();
+            List<string> UserPermissions = new List<string>();
+            foreach (var role in roles)
+            {
+                if (UserManager.IsInRole(userId, role.Name) == true)
+                    RolesUserAssignedTo = role.Id;
+            }
+            foreach (var record in PermissionRecords)
+            {
+                if (record.RoleId == RolesUserAssignedTo)
+                    UserPermissions.Add(record.PermissionName);
+            }
+            var viewModel = new ListRolesViewModel { Roles = roles, UserPermissions = UserPermissions };
             return View(viewModel);
         }
 
@@ -343,6 +358,38 @@ namespace MyDrive.Controllers
         {
             UserManager.RemoveFromRole(userIdNormalized.Replace(';', '-'), Name);
             return RedirectToAction("UserRole");
+        }
+
+        public ActionResult ReturnNavBar()
+        {
+            var userId = User.Identity.GetUserId();
+            ApplicationUser user1 = UserManager.FindById(userId);
+            var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
+            var roleManager = new RoleManager<IdentityRole>(roleStore);
+            var roles = roleManager.Roles.ToList();
+            string RolesUserAssignedTo = "";
+            var PermissionRecords = _context.RolePermissions.ToList();
+            List<string> UserPermissions = new List<string>();
+            foreach (var role in roles)
+            {
+                try
+                {
+                    if (UserManager.IsInRole(userId, role.Name) == true)
+                        RolesUserAssignedTo = role.Id;
+                }
+                catch(Exception e)
+                {
+                    FoldersandFilesViewModel vm1 = new FoldersandFilesViewModel { UserPermissions = UserPermissions };
+                    return PartialView(vm1);
+                }
+            }
+            foreach (var record in PermissionRecords)
+            {
+                if (record.RoleId == RolesUserAssignedTo)
+                    UserPermissions.Add(record.PermissionName);
+            }
+            FoldersandFilesViewModel vm = new FoldersandFilesViewModel {UserPermissions = UserPermissions };
+            return PartialView(vm);
         }
 
         /*public ActionResult ClickMe()

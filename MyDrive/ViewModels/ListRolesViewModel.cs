@@ -11,5 +11,7 @@ namespace MyDrive.ViewModels
         public List<IdentityRole> Roles { get; set; }
 
         public string Password { get; set; }
+
+        public List<string> UserPermissions { get; set; }
     }
 }

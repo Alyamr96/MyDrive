@@ -12,6 +12,7 @@ using Newtonsoft.Json.Linq;
 using Microsoft.AspNet.Identity;
 using System.Data.Entity.Validation;
 using Microsoft.AspNet.Identity.Owin;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace MyDrive.Controllers
 {
@@ -62,6 +63,24 @@ namespace MyDrive.Controllers
 
         public ActionResult DisplayUsers()
         {
+            var userId = User.Identity.GetUserId();
+            ApplicationUser user1 = UserManager.FindById(userId);
+            var roleStore = new RoleStore<IdentityRole>(new ApplicationDbContext());
+            var roleManager = new RoleManager<IdentityRole>(roleStore);
+            var roles = roleManager.Roles.ToList();
+            string RolesUserAssignedTo = "";
+            var PermissionRecords = _context.RolePermissions.ToList();
+            List<string> UserPermissions = new List<string>();
+            foreach (var role in roles)
+            {
+                if (UserManager.IsInRole(userId, role.Name) == true)
+                    RolesUserAssignedTo = role.Id;
+            }
+            foreach (var record in PermissionRecords)
+            {
+                if (record.RoleId == RolesUserAssignedTo)
+                    UserPermissions.Add(record.PermissionName);
+            }
             var users = _context.Users.ToList();
             var records = _context.UsersInCompanies.ToList();
             List<ApplicationUser> usersWithoutCompanies = new List<ApplicationUser>();
@@ -83,7 +102,7 @@ namespace MyDrive.Controllers
                 else
                     usersWithCompanies.Add(user);
             }
-            var viewModel = new DisplayUsersViewModel { UsersWithoutCompanies = usersWithoutCompanies, UsersWithCompanies = usersWithCompanies, RecordsOfUsersInCompanies = records, Companies = companies };
+            var viewModel = new DisplayUsersViewModel { UsersWithoutCompanies = usersWithoutCompanies, UsersWithCompanies = usersWithCompanies, RecordsOfUsersInCompanies = records, Companies = companies, UserPermissions = UserPermissions};
             return View(viewModel);
         }
 

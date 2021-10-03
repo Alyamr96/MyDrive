@@ -22,7 +22,7 @@
     }
 
     .Mywrapper .Mysidebar h2 {
-        color: #fff;
+        color: #000000;
         text-transform: uppercase;
         text-align: center;
         margin-bottom: 20px;
@@ -49,7 +49,8 @@
         <div class="Mysidebar">
             <h2>@MyDrive.Resources.Language.SIDEBAR</h2>
           <!--  @Html.Partial("_LoginPartial")-->
-        <ul>
+    @Html.Action("ReturnNavBar", "Administration")    
+    <!--<ul>
             <li>@Html.ActionLink(MyDrive.Resources.Language.Drive_Users, "DisplayUsers", "DriveUsers", null,new {Style = "color:White" })</li>
             <li>@Html.ActionLink(MyDrive.Resources.Language.View_All_Uploaded_Files, "ShowFilesInTable", "Folder", null, new { Style = "color:White" })</li>
             <li>@Html.ActionLink("Driver", "GetFolders1", "Folder", null, new { Style = "color:White" })</li>
@@ -59,8 +60,7 @@
             <li>@Html.ActionLink("Filters", "FilterOptions", "Filter", null, new { Style = "color:White" })</li>
             <li>@Html.ActionLink("Manage Companies", "Index", "Company", null, new { Style = "color:White" })</li>
             <li>@Html.ActionLink("Change Password", "ChangePassword", "Folder", null, new { Style = "color:White" })</li>
-           <!-- <li>@Html.ActionLink("Create User", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>-->
-        </ul>
+        </ul>-->
 
         </div>
 </div>

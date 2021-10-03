@@ -11,5 +11,7 @@ namespace MyDrive.ViewModels
         public List<FileModel> Files { get; set; }
 
         public string Password { get; set; }
+
+        public List<CompaniesToViewFiles2> Records { get; set; }
     }
 }

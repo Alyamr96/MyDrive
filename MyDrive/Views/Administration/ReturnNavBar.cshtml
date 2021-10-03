@@ -1,0 +1,30 @@
+﻿@model MyDrive.ViewModels.FoldersandFilesViewModel
+
+
+<ul>
+    @if (Model.UserPermissions.Contains("View Users"))
+    {
+        <li>@Html.ActionLink(MyDrive.Resources.Language.Drive_Users, "DisplayUsers", "DriveUsers", null, new { Style = "color:Black" })</li>
+    }
+    @if (Model.UserPermissions.Contains("View All Uploaded Files"))
+    {
+        <li>@Html.ActionLink(MyDrive.Resources.Language.View_All_Uploaded_Files, "ShowFilesInTable", "Folder", null, new { Style = "color:Black" })</li>
+    }
+    <li>@Html.ActionLink("Driver", "GetFolders1", "Folder", null, new { Style = "color:Black" })</li>
+    @if (Model.UserPermissions.Contains("View Roles"))
+    {
+        <li>@Html.ActionLink("List Roles", "ListRoles", "Administration", null, new { Style = "color:Black" })</li>
+    }
+    <li>@Html.ActionLink("English", "Index", "Language", new { language = "en" }, new { Style = "color:Black" })</li>
+    <li>@Html.ActionLink("عربي", "Index", "Language", new { language = "ar" }, new { Style = "color:Black" })</li>
+    @if (Model.UserPermissions.Contains("View Filters"))
+    {
+        <li>@Html.ActionLink("Filters", "FilterOptions", "Filter", null, new { Style = "color:Black" })</li>
+    }
+    @if (Model.UserPermissions.Contains("Manage Companies"))
+    {
+        <li>@Html.ActionLink("Manage Companies", "Index", "Company", null, new { Style = "color:Black" })</li>
+    }
+    <li>@Html.ActionLink("Change Password", "ChangePassword", "Folder", null, new { Style = "color:Black" })</li>
+    <!-- <li>@Html.ActionLink("Create User", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>-->
+</ul>

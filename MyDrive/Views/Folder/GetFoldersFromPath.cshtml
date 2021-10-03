@@ -83,20 +83,32 @@
 <div class="mycontainer">
     <p>
         <!--<a href="#" id="CreateFolderButton" class="btn btn-primary" data-toggle="modal" data-target="#createFolderModal">@MyDrive.Resources.Language.Create_Folder</a>-->
-        <button class="btn btn-primary" id="CreateFolderButton">@MyDrive.Resources.Language.Create_Folder</button>
+        @if (Model.UserPermissions.Contains("Create Folder"))
+        {
+            <button class="btn btn-primary" id="CreateFolderButton">@MyDrive.Resources.Language.Create_Folder</button>
+
+        }
     </p>
 
     <p class="Second-button">
-       <!-- <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#uploadFileModal">@MyDrive.Resources.Language.Upload_File</a>-->
-        <button class="btn btn-primary" id="UploadFileButton">@MyDrive.Resources.Language.Upload_File</button>
+        <!-- <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#uploadFileModal">@MyDrive.Resources.Language.Upload_File</a>-->
+        @if (Model.UserPermissions.Contains("Upload File"))
+        {
+            <button class="btn btn-primary" id="UploadFileButton">@MyDrive.Resources.Language.Upload_File</button>
+
+        }
     </p>
     @if ("hi" == "hi")
     {
         string path = HttpContext.Current.Request.Url.AbsolutePath;
         string myPath = path.Split('/').Last();
-        <p class="Third-button">
-            <a href="~/Folder/DeleteMultiple/@myPath" class="btn btn-primary">@MyDrive.Resources.Language.Delete_Multiple_Files</a>
-        </p>
+<p class="Third-button">
+    @if (Model.UserPermissions.Contains("Delete Multiple FoldersAndFiles"))
+    {
+        <a href="~/Folder/DeleteMultiple/@myPath" class="btn btn-primary">@MyDrive.Resources.Language.Delete_Multiple_Files</a>
+
+    }
+</p>
     }
 
 </div>
@@ -239,7 +251,11 @@
         <!-- <a href="~/Folder/RenameFolder/@folderName.Path" class="btn-link"><i class="fas fa-pen"></i></a>  -->
         <button class="btn-link my-rename" data-folder-path="@folderName.Path" data-return-path="@finalReturnPath"><i class="fas fa-pen"></i></button>
         <!--<button class="btn-link js-delete" data-folder-path="@folderName.Path"><i class="fas fa-backspace"></i></button>-->
-        <button class="btn-link my-delete" data-folder-path="@folderName.Path" data-return-path="@finalReturnPath"><i class="fas fa-backspace"></i></button>
+        @if (Model.UserPermissions.Contains("Delete Folder"))
+        {
+            <button class="btn-link my-delete" data-folder-path="@folderName.Path" data-return-path="@finalReturnPath"><i class="fas fa-backspace"></i></button>
+
+        }
         <button class="btn-link my-copy" data-folder-name="@folderName.Name"><i class="fas fa-copy"></i></button>
         <a href="/Folder/GetFolderFromPath/@folderName.Path"> <i class="fas fa-folder myFolderIcon"></i><span>@folderName.Name</span></a>
     </div>
@@ -317,12 +333,16 @@
                     finalReturnPath = finalReturnPath + returnPath[i] + ";";
                 }
 
-                <div class="CustomFile">
-                    <!--<a href="~/Folder/RenameFile/@finalPathNormalized" class="btn-link"><i class="fas fa-pen"></i></a>-->
-                    <!--<button class="btn-link js-file-delete" data-file-path="@finalPathNormalized"><i class="fas fa-backspace"></i></button>-->
-                    <button class="btn-link js-file-delete" data-file-path="@finalPathNormalized" data-return1-path="@finalReturnPath"><i class="fas fa-backspace"></i></button>
-                    <a href="~/files/@fileName.Path" target="_blank"> <i class="fas fa-file myFolderIcon"></i><span>@fileName.Name</span></a>
-                </div>
+    <div class="CustomFile">
+        <!--<a href="~/Folder/RenameFile/@finalPathNormalized" class="btn-link"><i class="fas fa-pen"></i></a>-->
+        <!--<button class="btn-link js-file-delete" data-file-path="@finalPathNormalized"><i class="fas fa-backspace"></i></button>-->
+        @if (Model.UserPermissions.Contains("Delete File"))
+        {
+            <button class="btn-link js-file-delete" data-file-path="@finalPathNormalized" data-return1-path="@finalReturnPath"><i class="fas fa-backspace"></i></button>
+
+        }
+        <a href="~/files/@fileName.Path" target="_blank"> <i class="fas fa-file myFolderIcon"></i><span>@fileName.Name</span></a>
+    </div>
             }
         }
     }

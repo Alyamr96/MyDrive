@@ -13,7 +13,11 @@
 </style>
 
 <div class="MyButtons">
-    @Html.ActionLink("Create User", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink", @class = "btn btn-primary" })
+    @if (Model.UserPermissions.Contains("Create User"))
+    {
+        @Html.ActionLink("Create User", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink", @class = "btn btn-primary" })
+
+    }
 </div>
 
 <h2>Users Without Companies</h2>
@@ -24,8 +28,16 @@
             <th>Last Name</th>
             <th>Email</th>
             <th>Phone Number</th>
-            <th>Delete User</th>
-            <th>Assign To Company</th>
+            @if (Model.UserPermissions.Contains("Delete User"))
+            {
+                <th>Delete User</th>
+
+            }
+            @if (Model.UserPermissions.Contains("Assign Users To Companies"))
+            {
+                <th>Assign To Company</th>
+
+            }
         </tr>
     </thead>
     <tbody>
@@ -33,14 +45,22 @@
         {
             if (item.Email != "admin@mydrive.com")
             {
-                <tr>
-                    <td>@item.FirstName</td>
-                    <td>@Html.DisplayFor(modelItem => item.LastName)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Email)</td>
-                    <td><span>0</span>@Html.DisplayFor(modelItem => item.PhoneNumberInt)</td>
-                    <td><a href="#" data-user-id="@item.Id" class="myDelete">Delete User</a></td>
-                    <td><a href="/Company/Index" class="btn btn-danger">Assign To Company</a></td>
-                </tr>
+        <tr>
+            <td>@item.FirstName</td>
+            <td>@Html.DisplayFor(modelItem => item.LastName)</td>
+            <td>@Html.DisplayFor(modelItem => item.Email)</td>
+            <td><span>0</span>@Html.DisplayFor(modelItem => item.PhoneNumberInt)</td>
+            @if (Model.UserPermissions.Contains("Delete User"))
+            {
+                <td><a href="#" data-user-id="@item.Id" class="myDelete">Delete User</a></td>
+
+            }
+            @if (Model.UserPermissions.Contains("Assign Users To Companies"))
+            {
+                <td><a href="/Company/Index" class="btn btn-danger">Assign To Company</a></td>
+
+            }
+        </tr>
             }
         }
     </tbody>
@@ -54,7 +74,11 @@
             <th>Last Name</th>
             <th>Email</th>
             <th>Phone Number</th>
-            <th>Delete User</th>
+            @if (Model.UserPermissions.Contains("Delete User"))
+            {
+                <th>Delete User</th>
+
+            }
             <th>Companies assigned to</th>
         </tr>
     </thead>
@@ -81,14 +105,18 @@
                     }
                 }
                 CompanyIds = CompanyIds.Substring(1);
-                <tr>
-                    <td>@item.FirstName</td>
-                    <td>@Html.DisplayFor(modelItem => item.LastName)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Email)</td>
-                    <td><span>0</span>@Html.DisplayFor(modelItem => item.PhoneNumberInt)</td>
-                    <td><a href="#" data-user-id="@item.Id" class="myDelete">Delete User</a></td>
-                    <td>@CompanyIds</td>
-                </tr>
+        <tr>
+            <td>@item.FirstName</td>
+            <td>@Html.DisplayFor(modelItem => item.LastName)</td>
+            <td>@Html.DisplayFor(modelItem => item.Email)</td>
+            <td><span>0</span>@Html.DisplayFor(modelItem => item.PhoneNumberInt)</td>
+            @if (Model.UserPermissions.Contains("Delete User"))
+            {
+                <td><a href="#" data-user-id="@item.Id" class="myDelete">Delete User</a></td>
+
+            }
+            <td>@CompanyIds</td>
+        </tr>
             }
         }
     </tbody>

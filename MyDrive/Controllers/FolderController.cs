@@ -563,7 +563,9 @@ namespace MyDrive.Controllers
             {
                 files.Add(new FileModel { Name = fileNames[i], Path = filesPathAfterFile[i] });
             }
-            var viewModel = new ShowFilesInTableViewModel { Files = files };
+            ViewBag.AbsolotePath = Server.MapPath("~/Files/");
+            var records = _context.CompaniesToViewFiles2.ToList();
+            var viewModel = new ShowFilesInTableViewModel { Files = files, Records = records };
 
             return View(viewModel);
         }
